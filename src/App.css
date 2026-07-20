@@ -33,17 +33,8 @@
 .brand-lockup small, .profile-link small { display: block; margin-top: 2px; color: var(--color-muted); font-size: 11px; line-height: 1.3; }
 
 .brand-mark {
-  display: grid;
-  width: 40px;
-  height: 40px;
-  place-items: center;
+  display: block;
   flex: 0 0 auto;
-  color: var(--color-surface);
-  font-family: var(--font-display);
-  font-size: 21px;
-  background: var(--color-ube);
-  border-radius: 14px 14px 14px 4px;
-  box-shadow: 4px 4px 0 var(--color-mango);
 }
 
 .sidebar-nav { display: grid; gap: var(--space-2); margin-top: var(--space-8); }
@@ -304,7 +295,7 @@ p { line-height: 1.6; }
   .app-content-wrap { width: 100%; margin-left: 0; }
   .mobile-header { display: flex; align-items: center; justify-content: space-between; padding: var(--space-4) 20px; background: var(--color-surface); border-bottom: 1px solid var(--color-border); }
   .mobile-brand { padding: 0; }
-  .mobile-brand .brand-mark { width: 34px; height: 34px; font-size: 18px; border-radius: 12px 12px 12px 3px; }
+  .mobile-brand .brand-mark { width: 36px; height: 36px; }
   .icon-button { display: grid; width: 40px; height: 40px; place-items: center; color: var(--color-ube-dark); font-weight: 800; background: var(--color-mango); border: 0; border-radius: 50%; }
   .app-content { padding: var(--space-5) 20px 104px; }
   .mobile-nav { position: fixed; inset: auto 0 0; z-index: 20; display: grid; grid-template-columns: repeat(4, 1fr); padding: var(--space-2) 8px calc(var(--space-2) + env(safe-area-inset-bottom)); background: rgb(255 255 255 / 96%); border-top: 1px solid var(--color-border); box-shadow: 0 -8px 24px rgb(48 37 43 / 6%); }

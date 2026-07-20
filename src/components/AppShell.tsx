@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import type { AppRoute } from '../app/router.ts'
+import { BrandMark } from './BrandMark.tsx'
 
 interface AppShellProps {
   routeName: AppRoute['name']
@@ -21,7 +22,7 @@ export function AppShell({ routeName, onNavigate, children }: AppShellProps) {
     <div className="app-shell">
       <aside className="app-sidebar" aria-label="Main navigation">
         <button className="brand-lockup" type="button" onClick={() => onNavigate('/')}>
-          <span className="brand-mark" aria-hidden="true">H</span>
+          <BrandMark className="brand-mark" />
           <span>
             <strong>Hapag</strong>
             <small>May sahog ka? Luto tayo.</small>
@@ -57,7 +58,7 @@ export function AppShell({ routeName, onNavigate, children }: AppShellProps) {
       <div className="app-content-wrap">
         <header className="mobile-header">
           <button className="mobile-brand" type="button" onClick={() => onNavigate('/')}>
-            <span className="brand-mark" aria-hidden="true">H</span>
+            <BrandMark className="brand-mark" size={36} />
             <strong>Hapag</strong>
           </button>
           <button className="icon-button" type="button" onClick={() => onNavigate('/profile')} aria-label="Open profile">
