@@ -1,4 +1,5 @@
 import { recipeFixtures } from '../data/fixtures.ts'
+import { appConfig, hasRecipeGenerationConfig } from '../config/env.ts'
 import { adaptRecipeListPayload, adaptRecipePayload } from '../schemas/recipeAdapter.ts'
 import type { GenerationRequest, NormalizedIngredient, RecipeService } from '../types/domain.ts'
 
@@ -68,27 +69,75 @@ function normalizeItem(originalText: string, index: number): NormalizedIngredien
 
 const wait = (milliseconds: number) => new Promise((resolve) => setTimeout(resolve, milliseconds))
 
-export const mockRecipeService: RecipeService = {
-  normalizeIngredients(input) {
-    return splitInput(input).map(normalizeItem)
-  },
+const recipeCache = new Map(recipeFixtures.map((recipe) => [recipe.id, recipe]))
 
-  async generateSuggestions() {
-    await wait(350)
-    return adaptRecipeListPayload(recipeFixtures)
-  },
+function normalizeIngredients(input: string) {
+  return splitInput(input).map(normalizeItem)
+}
+
+async function generateWithFixtures() {
+  await wait(350)
+  return adaptRecipeListPayload(recipeFixtures)
+}
+
+export const mockRecipeService: RecipeService = {
+  normalizeIngredients,
+
+  generateSuggestions: generateWithFixtures,
 
   async getRecipe(recipeId: string) {
     await wait(150)
-    const recipe = recipeFixtures.find((candidate) => candidate.id === recipeId)
+    const recipe = recipeCache.get(recipeId)
     return recipe ? adaptRecipePayload(recipe) : undefined
+  },
+}
+
+async function generateWithOpenAI(request: GenerationRequest) {
+  const response = await fetch(`${appConfig.supabaseFunctionUrl}/generate-recipes`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      apikey: appConfig.supabaseAnonKey,
+      Authorization: `Bearer ${appConfig.supabaseAnonKey}`,
+    },
+    body: JSON.stringify(request),
+  })
+
+  if (!response.ok) throw new Error(`Recipe generation failed with status ${response.status}.`)
+
+  const payload: unknown = await response.json()
+  if (!payload || typeof payload !== 'object' || !('recipes' in payload)) throw new Error('Recipe generation returned an invalid payload.')
+
+  const recipes = adaptRecipeListPayload(payload.recipes)
+  recipes.forEach((recipe) => recipeCache.set(recipe.id, recipe))
+  return recipes
+}
+
+export const recipeService: RecipeService = {
+  normalizeIngredients,
+
+  async generateSuggestions(request) {
+    if (!hasRecipeGenerationConfig) return mockRecipeService.generateSuggestions(request)
+
+    try {
+      return await generateWithOpenAI(request)
+    } catch (error) {
+      console.warn('AI generation unavailable; using curated Hapag fixtures.', error)
+      return mockRecipeService.generateSuggestions(request)
+    }
+  },
+
+  async getRecipe(recipeId: string) {
+    const cachedRecipe = recipeCache.get(recipeId)
+    if (cachedRecipe) return adaptRecipePayload(cachedRecipe)
+    return mockRecipeService.getRecipe(recipeId)
   },
 }
 
 export function createDefaultRequest(rawInput: string): GenerationRequest {
   return {
     rawInput,
-    ingredients: mockRecipeService.normalizeIngredients(rawInput),
+    ingredients: normalizeIngredients(rawInput),
     constraints: {
       servings: 3,
       allergies: [],

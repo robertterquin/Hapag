@@ -1,0 +1,4 @@
+project_id = "hapag"
+
+[functions.generate-recipes]
+verify_jwt = true

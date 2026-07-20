@@ -13,7 +13,7 @@ import { StatePanel } from '../components/StatePanel.tsx'
 import { RoutePlaceholder } from '../components/RoutePlaceholder.tsx'
 import { recipeFixtures } from '../data/fixtures.ts'
 import { formatQuantity } from '../lib/format.ts'
-import { mockRecipeService } from '../services/recipeService.ts'
+import { recipeService } from '../services/recipeService.ts'
 import type { DiscoverySession, GenerationConstraints, NormalizedIngredient, Recipe } from '../types/domain.ts'
 
 type GenerationStatus = 'idle' | 'loading' | 'success' | 'error'
@@ -81,7 +81,7 @@ function UlamPage({ session, onUpdate, onGenerate, onRemove }: {
       <IngredientPrompt
         key={session.rawInput}
         initialValue={session.rawInput}
-        onSubmit={(value) => onUpdate({ ...session, rawInput: value, ingredients: mockRecipeService.normalizeIngredients(value) })}
+        onSubmit={(value) => onUpdate({ ...session, rawInput: value, ingredients: recipeService.normalizeIngredients(value) })}
         compact
       />
 
@@ -205,7 +205,7 @@ function RecipeDetailPage({ recipeId, saved, onToggleSave, onStartCooking, onBac
 
   useEffect(() => {
     let active = true
-    mockRecipeService.getRecipe(recipeId).then((nextRecipe) => {
+    recipeService.getRecipe(recipeId).then((nextRecipe) => {
       if (!active) return
       setRecipe(nextRecipe)
       setServings(nextRecipe?.servings ?? 3)
@@ -299,7 +299,7 @@ function CookingPage({ recipeId, onFinish, onBack }: { recipeId: string; onFinis
 
   useEffect(() => {
     let active = true
-    mockRecipeService.getRecipe(recipeId).then((nextRecipe) => { if (active) setRecipe(nextRecipe) })
+    recipeService.getRecipe(recipeId).then((nextRecipe) => { if (active) setRecipe(nextRecipe) })
     return () => { active = false }
   }, [recipeId])
 
@@ -432,7 +432,7 @@ function App() {
   const [pantryItems, setPantryItems] = useState<NormalizedIngredient[]>([])
 
   const startDiscovery = (value: string) => {
-    setSession((current) => ({ ...current, rawInput: value, ingredients: value ? mockRecipeService.normalizeIngredients(value) : [] }))
+    setSession((current) => ({ ...current, rawInput: value, ingredients: value ? recipeService.normalizeIngredients(value) : [] }))
     setGenerationStatus('idle')
     navigate('/ulam')
   }
@@ -443,7 +443,7 @@ function App() {
     setGenerationError(null)
     navigate('/results')
     try {
-      const result = await mockRecipeService.generateSuggestions({ rawInput: session.rawInput, ingredients: session.ingredients, constraints: session.constraints })
+      const result = await recipeService.generateSuggestions({ rawInput: session.rawInput, ingredients: session.ingredients, constraints: session.constraints })
       setSuggestions(result)
       setGenerationStatus('success')
     } catch {
@@ -455,7 +455,7 @@ function App() {
   const toggleSaved = (recipeId: string) => setSavedIds((ids) => ids.includes(recipeId) ? ids.filter((id) => id !== recipeId) : [...ids, recipeId])
   const toggleCooked = (recipeId: string) => setCookedIds((ids) => ids.includes(recipeId) ? ids.filter((id) => id !== recipeId) : [...ids, recipeId])
   const addPantryItem = (value: string) => setPantryItems((items) => {
-    const additions = mockRecipeService.normalizeIngredients(value)
+    const additions = recipeService.normalizeIngredients(value)
     return [...items, ...additions.filter((addition) => !items.some((item) => item.name === addition.name))]
   })
   const generateFromPantry = () => {

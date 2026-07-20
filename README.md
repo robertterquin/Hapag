@@ -37,6 +37,7 @@ Start with:
 11. [`docs/22-phase-7-frontend-foundation-and-workflow.md`](./docs/22-phase-7-frontend-foundation-and-workflow.md)
 12. [`docs/23-phase-8-static-ui-and-state-coverage.md`](./docs/23-phase-8-static-ui-and-state-coverage.md)
 13. [`docs/24-phase-9-recipe-schema-and-fixture-engine.md`](./docs/24-phase-9-recipe-schema-and-fixture-engine.md)
+14. [`docs/25-phase-10-ai-generation-service.md`](./docs/25-phase-10-ai-generation-service.md)
 
 ## Security boundary
 
