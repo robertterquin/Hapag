@@ -1,0 +1,110 @@
+export type Difficulty = 'Easy' | 'Medium' | 'Hard'
+
+export type IngredientUnit =
+  | 'piece'
+  | 'can'
+  | 'bundle'
+  | 'clove'
+  | 'cup'
+  | 'tablespoon'
+  | 'teaspoon'
+  | 'pinch'
+  | 'gram'
+  | 'kilogram'
+  | 'block'
+  | 'to-taste'
+
+export interface NormalizedIngredient {
+  id: string
+  name: string
+  originalText: string
+  confidence: 'high' | 'medium' | 'low'
+  available: boolean
+}
+
+export interface IngredientLine {
+  id: string
+  name: string
+  canonicalName: string
+  quantity: number | string
+  unit: IngredientUnit
+  available: boolean
+  note?: string
+}
+
+export interface RecipeStep {
+  id: string
+  order: number
+  action: string
+  durationMinutes?: number
+  heat?: 'low' | 'medium' | 'high' | 'none'
+}
+
+export interface RecipeSubstitution {
+  id: string
+  original: string
+  substitute: string
+  tradeoff: string
+}
+
+export interface CostEstimate {
+  currency: 'PHP'
+  min: number
+  max: number
+  confidence: 'low' | 'medium' | 'high'
+  note: string
+}
+
+export interface CostLine {
+  ingredient: string
+  estimatedCost: number
+  available: boolean
+}
+
+export interface Recipe {
+  id: string
+  title: string
+  localTitle?: string
+  description: string
+  matchReason: string
+  ingredients: IngredientLine[]
+  steps: RecipeStep[]
+  servings: number
+  timeMinutes: number
+  difficulty: Difficulty
+  estimatedCost: CostEstimate
+  costBreakdown: CostLine[]
+  substitutions: RecipeSubstitution[]
+  tags: string[]
+  dietaryNotes: string[]
+  region?: string
+  spicyLevel: 'mild' | 'medium' | 'hot'
+  source: 'fixture' | 'ai'
+  schemaVersion: string
+}
+
+export interface GenerationConstraints {
+  servings: number
+  budgetLimit?: number
+  dietaryPreference?: 'none' | 'vegetarian' | 'low-sodium' | 'diabetic-friendly'
+  allergies: string[]
+  spiceLevel: 'mild' | 'medium' | 'hot'
+}
+
+export interface GenerationRequest {
+  rawInput: string
+  ingredients: NormalizedIngredient[]
+  constraints: GenerationConstraints
+}
+
+export interface DiscoverySession {
+  rawInput: string
+  ingredients: NormalizedIngredient[]
+  constraints: GenerationConstraints
+}
+
+export interface RecipeService {
+  normalizeIngredients(input: string): NormalizedIngredient[]
+  generateSuggestions(request: GenerationRequest): Promise<Recipe[]>
+  getRecipe(recipeId: string): Promise<Recipe | undefined>
+}

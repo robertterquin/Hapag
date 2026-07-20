@@ -28,6 +28,13 @@ Start with:
 2. [`docs/03-user-journeys.md`](./docs/03-user-journeys.md)
 3. [`docs/13-implementation-plan.md`](./docs/13-implementation-plan.md)
 4. [`docs/16-phase-1-product-definition.md`](./docs/16-phase-1-product-definition.md)
+5. [`docs/17-phase-2-scope-and-success-criteria.md`](./docs/17-phase-2-scope-and-success-criteria.md)
+6. [`docs/18-phase-3-filipino-recipe-domain-research.md`](./docs/18-phase-3-filipino-recipe-domain-research.md)
+7. [`docs/18-phase-3-recipe-fixtures.md`](./docs/18-phase-3-recipe-fixtures.md)
+8. [`docs/19-phase-4-information-architecture-and-user-flow.md`](./docs/19-phase-4-information-architecture-and-user-flow.md)
+9. [`docs/20-phase-5-ux-wireframes-and-interaction-contract.md`](./docs/20-phase-5-ux-wireframes-and-interaction-contract.md)
+10. [`docs/21-phase-6-visual-and-content-system.md`](./docs/21-phase-6-visual-and-content-system.md)
+11. [`docs/22-phase-7-frontend-foundation-and-workflow.md`](./docs/22-phase-7-frontend-foundation-and-workflow.md)
 
 ## Security boundary
 
