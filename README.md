@@ -36,6 +36,7 @@ Start with:
 10. [`docs/21-phase-6-visual-and-content-system.md`](./docs/21-phase-6-visual-and-content-system.md)
 11. [`docs/22-phase-7-frontend-foundation-and-workflow.md`](./docs/22-phase-7-frontend-foundation-and-workflow.md)
 12. [`docs/23-phase-8-static-ui-and-state-coverage.md`](./docs/23-phase-8-static-ui-and-state-coverage.md)
+13. [`docs/24-phase-9-recipe-schema-and-fixture-engine.md`](./docs/24-phase-9-recipe-schema-and-fixture-engine.md)
 
 ## Security boundary
 

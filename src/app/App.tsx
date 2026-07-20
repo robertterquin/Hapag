@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react'
+import '../App.css'
 import { useAppRouter } from './router.ts'
 import { AppShell } from '../components/AppShell.tsx'
 import { CostBreakdown } from '../components/CostBreakdown.tsx'

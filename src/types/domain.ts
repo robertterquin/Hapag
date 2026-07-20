@@ -80,7 +80,7 @@ export interface Recipe {
   region?: string
   spicyLevel: 'mild' | 'medium' | 'hot'
   source: 'fixture' | 'ai'
-  schemaVersion: string
+  schemaVersion: 'recipe.v1'
 }
 
 export interface GenerationConstraints {

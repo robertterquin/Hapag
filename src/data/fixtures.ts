@@ -1,4 +1,5 @@
 import type { Recipe } from '../types/domain.ts'
+import { validateRecipeList } from '../schemas/recipeSchema.ts'
 
 const available = (id: string, name: string, canonicalName: string, quantity: number | string, unit: Recipe['ingredients'][number]['unit']) => ({
   id,
@@ -19,7 +20,7 @@ const missing = (id: string, name: string, canonicalName: string, quantity: numb
   note,
 })
 
-export const recipeFixtures: Recipe[] = [
+const rawRecipeFixtures = [
   {
     id: 'sardines-egg-pechay',
     title: 'Sardines with egg and pechay',
@@ -133,3 +134,5 @@ export const recipeFixtures: Recipe[] = [
     schemaVersion: 'recipe.v1',
   },
 ]
+
+export const recipeFixtures: Recipe[] = validateRecipeList(rawRecipeFixtures)

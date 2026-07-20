@@ -1,4 +1,5 @@
 import { recipeFixtures } from '../data/fixtures.ts'
+import { adaptRecipeListPayload, adaptRecipePayload } from '../schemas/recipeAdapter.ts'
 import type { GenerationRequest, NormalizedIngredient, RecipeService } from '../types/domain.ts'
 
 const aliases: Record<string, string> = {
@@ -74,12 +75,13 @@ export const mockRecipeService: RecipeService = {
 
   async generateSuggestions() {
     await wait(350)
-    return recipeFixtures
+    return adaptRecipeListPayload(recipeFixtures)
   },
 
   async getRecipe(recipeId: string) {
     await wait(150)
-    return recipeFixtures.find((recipe) => recipe.id === recipeId)
+    const recipe = recipeFixtures.find((candidate) => candidate.id === recipeId)
+    return recipe ? adaptRecipePayload(recipe) : undefined
   },
 }
 

@@ -8,12 +8,13 @@
     "typecheck": "tsc -b",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "test": "node --test scripts/foundation.test.mjs",
+    "test": "node --experimental-strip-types --test scripts/foundation.test.mjs scripts/recipe-schema.test.ts",
     "preview": "vite preview"
   },
   "dependencies": {
     "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "react-dom": "^19.2.7",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
