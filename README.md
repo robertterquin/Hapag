@@ -1,0 +1,34 @@
+# Hapag
+
+Hapag is a playful Filipino cooking assistant that helps users turn the ingredients they already have into affordable, practical meals.
+
+> **May sahog ka? Luto tayo.**
+
+## Product flow
+
+**Enter ingredients -> refine constraints -> get suggestions -> choose a recipe -> cook -> save**
+
+The core release supports English, Tagalog, and Taglish ingredient input, familiar Filipino dishes, estimated costs, substitutions, serving adjustment, dietary filters, cooking mode, and saved recipes. Pantry-aware suggestions are planned after the core ingredient-to-recipe flow is stable.
+
+## Tech stack
+
+- React + TypeScript + Vite
+- Supabase Auth, PostgreSQL, Storage, Edge Functions, and Row Level Security
+- OpenAI API through a server-side Supabase Edge Function
+
+## Project documentation
+
+The detailed product plan, UX rules, visual system, scope boundaries, and quality gates are in [`docs/`](./docs/).
+
+The full 18-page project flow and scope PDF is at [`output/pdf/hapag-project-flow-scope.pdf`](./output/pdf/hapag-project-flow-scope.pdf).
+
+Start with:
+
+1. [`docs/01-product-principles.md`](./docs/01-product-principles.md)
+2. [`docs/03-user-journeys.md`](./docs/03-user-journeys.md)
+3. [`docs/13-implementation-plan.md`](./docs/13-implementation-plan.md)
+4. [`docs/16-phase-1-product-definition.md`](./docs/16-phase-1-product-definition.md)
+
+## Security boundary
+
+Never expose the OpenAI API key in the React client. Keep AI requests, validation, rate limits, and secrets inside the server-side function boundary.
