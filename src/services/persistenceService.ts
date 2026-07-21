@@ -1,8 +1,8 @@
 import type { Session, User } from '@supabase/supabase-js'
+import { isPantryUnit } from '../lib/ingredientParser.ts'
 import { adaptRecipePayload } from '../schemas/recipeAdapter.ts'
 import { cacheRecipe } from './recipeService.ts'
-import type { Recipe } from '../types/domain.ts'
-import type { NormalizedIngredient } from '../types/domain.ts'
+import type { NormalizedIngredient, Recipe } from '../types/domain.ts'
 import { supabase } from '../lib/supabase.ts'
 
 export interface UserPreferences {
@@ -22,6 +22,8 @@ export interface PantryRow {
   id: string
   ingredient_name: string
   canonical_name: string
+  quantity: number | string | null
+  unit: string | null
   confidence: 'high' | 'medium' | 'low'
   available: boolean
 }
@@ -46,13 +48,24 @@ export const persistenceService = {
     return data.user
   },
 
-  async signInWithOtp(email: string) {
+  async signInWithPassword(email: string, password: string) {
     const client = requireClient()
-    const { error } = await client.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: `${window.location.origin}/auth` },
+    const { error } = await client.auth.signInWithPassword({ email, password })
+    if (error) throw error
+  },
+
+  async signUp(input: { fullName: string; email: string; password: string }) {
+    const client = requireClient()
+    const { data, error } = await client.auth.signUp({
+      email: input.email,
+      password: input.password,
+      options: {
+        data: { full_name: input.fullName },
+        emailRedirectTo: `${window.location.origin}/auth`,
+      },
     })
     if (error) throw error
+    return { session: data.session }
   },
 
   async signOut() {
@@ -112,16 +125,53 @@ export const persistenceService = {
   },
 
   async loadPantryItems(userId: string): Promise<NormalizedIngredient[]> {
-    const { data, error } = await requireClient().from('pantry_items').select('id,ingredient_name,canonical_name,confidence,available').eq('user_id', userId).order('created_at', { ascending: true })
+    const { data, error } = await requireClient().from('pantry_items').select('id,ingredient_name,canonical_name,quantity,unit,confidence,available').eq('user_id', userId).order('created_at', { ascending: true })
     if (error) throw error
-    return ((data ?? []) as PantryRow[]).map((row) => ({ id: row.id, name: row.ingredient_name, originalText: row.ingredient_name, confidence: row.confidence, available: row.available }))
+    return ((data ?? []) as PantryRow[]).map((row) => ({
+      id: row.id,
+      name: row.ingredient_name,
+      canonicalName: row.canonical_name,
+      originalText: row.ingredient_name,
+      quantity: typeof row.quantity === 'number' && row.quantity > 0 ? row.quantity : Number(row.quantity) > 0 ? Number(row.quantity) : 1,
+      unit: isPantryUnit(row.unit) ? row.unit : 'piece',
+      source: 'pantry',
+      confidence: row.confidence,
+      available: row.available,
+    }))
   },
 
   async savePantryItem(userId: string, item: NormalizedIngredient) {
-    const { data, error } = await requireClient().from('pantry_items').upsert({ user_id: userId, ingredient_name: item.name, canonical_name: item.name.trim().toLowerCase(), confidence: item.confidence, available: item.available }, { onConflict: 'user_id,canonical_name' }).select('id,ingredient_name,canonical_name,confidence,available').single()
+    const { data, error } = await requireClient().from('pantry_items').upsert({ user_id: userId, ingredient_name: item.name, canonical_name: item.canonicalName, quantity: item.quantity, unit: item.unit, confidence: item.confidence, available: item.available }, { onConflict: 'user_id,canonical_name' }).select('id,ingredient_name,canonical_name,quantity,unit,confidence,available').single()
     if (error) throw error
     const row = data as PantryRow
-    return { id: row.id, name: row.ingredient_name, originalText: row.ingredient_name, confidence: row.confidence, available: row.available } satisfies NormalizedIngredient
+    return {
+      id: row.id,
+      name: row.ingredient_name,
+      canonicalName: row.canonical_name,
+      originalText: row.ingredient_name,
+      quantity: typeof row.quantity === 'number' ? row.quantity : Number(row.quantity ?? 1),
+      unit: isPantryUnit(row.unit) ? row.unit : 'piece',
+      source: 'pantry',
+      confidence: row.confidence,
+      available: row.available,
+    } satisfies NormalizedIngredient
+  },
+
+  async updatePantryItem(userId: string, item: Pick<NormalizedIngredient, 'id' | 'name' | 'canonicalName' | 'quantity' | 'unit' | 'confidence' | 'available'>) {
+    const { data, error } = await requireClient().from('pantry_items').update({ ingredient_name: item.name, canonical_name: item.canonicalName, quantity: item.quantity, unit: item.unit, confidence: item.confidence, available: item.available }).eq('id', item.id).eq('user_id', userId).select('id,ingredient_name,canonical_name,quantity,unit,confidence,available').single()
+    if (error) throw error
+    const row = data as PantryRow
+    return {
+      id: row.id,
+      name: row.ingredient_name,
+      canonicalName: row.canonical_name,
+      originalText: row.ingredient_name,
+      quantity: typeof row.quantity === 'number' ? row.quantity : Number(row.quantity ?? 1),
+      unit: isPantryUnit(row.unit) ? row.unit : 'piece',
+      source: 'pantry',
+      confidence: row.confidence,
+      available: row.available,
+    } satisfies NormalizedIngredient
   },
 
   async removePantryItem(userId: string, itemId: string) {

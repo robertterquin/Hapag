@@ -111,6 +111,13 @@ alter table public.saved_recipes enable row level security;
 alter table public.cooked_events enable row level security;
 alter table public.pantry_items enable row level security;
 
+grant usage on schema public to authenticated;
+grant select, insert, update, delete on table public.profiles to authenticated;
+grant select, insert, update, delete on table public.user_preferences to authenticated;
+grant select, insert, update, delete on table public.saved_recipes to authenticated;
+grant select, insert, update, delete on table public.cooked_events to authenticated;
+grant select, insert, update, delete on table public.pantry_items to authenticated;
+
 drop policy if exists profiles_select_own on public.profiles;
 create policy profiles_select_own on public.profiles for select to authenticated using ((select auth.uid()) = id);
 drop policy if exists profiles_insert_own on public.profiles;

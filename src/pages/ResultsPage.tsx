@@ -9,6 +9,7 @@ export interface ResultsPageProps {
   status: GenerationStatus
   suggestions: Recipe[]
   error: string | null
+  savedError: string | null
   savedIds: string[]
   onOpen: (recipeId: string) => void
   onToggleSave: (recipeId: string) => void
@@ -16,7 +17,7 @@ export interface ResultsPageProps {
   onEdit: () => void
 }
 
-export function ResultsPage({ session, status, suggestions, error, savedIds, onOpen, onToggleSave, onRetry, onEdit }: ResultsPageProps) {
+export function ResultsPage({ session, status, suggestions, error, savedError, savedIds, onOpen, onToggleSave, onRetry, onEdit }: ResultsPageProps) {
   if (status === 'loading') {
     return <div className="page-shell"><span className="eyebrow">Recipe results</span><h1>Naghahanap ng ulam...</h1><p className="page-intro">Tinitingnan namin kung ano ang puwedeng gawin sa meron mo.</p><ResultsSkeleton /></div>
   }
@@ -39,6 +40,7 @@ export function ResultsPage({ session, status, suggestions, error, savedIds, onO
         </div>
         <button className="button button-secondary" type="button" onClick={onEdit}>Ayusin ang ingredients</button>
       </div>
+      {savedError ? <div className="error-banner" role="alert">{savedError}</div> : null}
       <div className="active-filter-row" aria-label="Applied constraints">
         <span className="filter-pill">{session.constraints.servings} servings</span>
         {session.constraints.budgetLimit ? <span className="filter-pill">Under ₱{session.constraints.budgetLimit}</span> : null}

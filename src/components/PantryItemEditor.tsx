@@ -1,0 +1,41 @@
+import { useState } from 'react'
+import { pantryUnitLabels, pantryUnits } from '../lib/ingredientParser.ts'
+import type { NormalizedIngredient, PantryUnit } from '../types/domain.ts'
+
+interface PantryItemEditorProps {
+  item: NormalizedIngredient
+  onUpdate: (input: { id: string; name: string; quantity: number; unit: PantryUnit }) => Promise<void>
+  onRemove: (id: string) => Promise<void>
+}
+
+export function PantryItemEditor({ item, onUpdate, onRemove }: PantryItemEditorProps) {
+  const [name, setName] = useState(item.name)
+  const [quantity, setQuantity] = useState(String(item.quantity))
+  const [unit, setUnit] = useState<PantryUnit>(item.unit)
+
+  const save = () => {
+    const numericQuantity = Number(quantity)
+    if (!name.trim() || !Number.isFinite(numericQuantity) || numericQuantity <= 0) return
+    void onUpdate({ id: item.id, name: name.trim(), quantity: numericQuantity, unit })
+  }
+
+  return (
+    <li className="pantry-item-row">
+      <div className="pantry-item-fields">
+        <label className="sr-only" htmlFor={`pantry-name-${item.id}`}>Ingredient name</label>
+        <input id={`pantry-name-${item.id}`} value={name} onChange={(event) => setName(event.target.value)} />
+        <label className="sr-only" htmlFor={`pantry-quantity-${item.id}`}>Quantity</label>
+        <input id={`pantry-quantity-${item.id}`} type="number" min="0.01" step="0.01" value={quantity} onChange={(event) => setQuantity(event.target.value)} />
+        <label className="sr-only" htmlFor={`pantry-unit-${item.id}`}>Unit</label>
+        <select id={`pantry-unit-${item.id}`} value={unit} onChange={(event) => setUnit(event.target.value as PantryUnit)}>
+          {pantryUnits.map((option) => <option value={option} key={option}>{pantryUnitLabels[option]}</option>)}
+        </select>
+      </div>
+      {item.confidence === 'low' ? <span className="pantry-review-note">Check this item</span> : null}
+      <div className="pantry-item-actions">
+        <button className="button button-secondary" type="button" onClick={save}>Save</button>
+        <button className="text-button pantry-remove-button" type="button" onClick={() => void onRemove(item.id)}>Remove</button>
+      </div>
+    </li>
+  )
+}

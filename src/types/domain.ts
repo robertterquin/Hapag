@@ -14,10 +14,28 @@ export type IngredientUnit =
   | 'block'
   | 'to-taste'
 
+export type PantryUnit =
+  | 'piece'
+  | 'can'
+  | 'pack'
+  | 'bottle'
+  | 'bundle'
+  | 'clove'
+  | 'cup'
+  | 'gram'
+  | 'kilogram'
+  | 'block'
+
+export type IngredientSource = 'pantry' | 'manual'
+
 export interface NormalizedIngredient {
   id: string
   name: string
+  canonicalName: string
   originalText: string
+  quantity: number
+  unit: PantryUnit
+  source: IngredientSource
   confidence: 'high' | 'medium' | 'low'
   available: boolean
 }
@@ -104,7 +122,7 @@ export interface DiscoverySession {
 }
 
 export interface RecipeService {
-  normalizeIngredients(input: string): NormalizedIngredient[]
+  normalizeIngredients(input: string, source?: IngredientSource): NormalizedIngredient[]
   generateSuggestions(request: GenerationRequest): Promise<Recipe[]>
   getRecipe(recipeId: string): Promise<Recipe | undefined>
 }

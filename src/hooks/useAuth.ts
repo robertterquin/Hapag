@@ -22,15 +22,27 @@ export function useAuth() {
     return () => { mounted = false; data.subscription.unsubscribe() }
   }, [])
 
-  const signIn = async (email: string) => {
+  const signIn = async (email: string, password: string) => {
     setError(null)
-    try { await persistenceService.signInWithOtp(email) } catch (reason: unknown) {
-      const message = reason instanceof Error ? reason.message : 'Unable to send the sign-in link.'
+    try { await persistenceService.signInWithPassword(email, password) } catch (reason: unknown) {
+      const message = reason instanceof Error ? reason.message : 'Unable to sign in with those credentials.'
       setError(message); throw reason
+    }
+  }
+
+  const signUp = async (input: { fullName: string; email: string; password: string }) => {
+    setError(null)
+    try {
+      const result = await persistenceService.signUp(input)
+      return { requiresEmailConfirmation: !result.session }
+    } catch (reason: unknown) {
+      const message = reason instanceof Error ? reason.message : 'Unable to create your account.'
+      setError(message)
+      throw reason
     }
   }
 
   const signOut = async () => { await persistenceService.signOut() }
 
-  return { session, status, error, signIn, signOut }
+  return { session, status, error, signIn, signUp, signOut }
 }

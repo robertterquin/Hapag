@@ -14,6 +14,8 @@ test('phase 11 master migration contains all user-owned tables', () => {
   assert.match(migration, /on_auth_user_created/)
   assert.match(migration, /saved_recipes_select_own/)
   assert.match(migration, /cooked_events_insert_own/)
+  assert.match(migration, /grant select, insert, update, delete on table public\.saved_recipes to authenticated/)
+  assert.match(migration, /grant select, insert, update, delete on table public\.pantry_items to authenticated/)
 })
 
 test('phase 11 app wiring uses auth and persistence hooks', () => {

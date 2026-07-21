@@ -4,7 +4,7 @@ Phase 11 adds passwordless authentication and private account data without chang
 
 ## Master query
 
-The complete, repeatable schema is [supabase/migrations/0001_hapag_master.sql](../supabase/migrations/0001_hapag_master.sql). It creates the required tables, indexes, timestamps, auth bootstrap trigger, and Row Level Security policies.
+The complete, repeatable schema is [supabase/migrations/0001_hapag_master.sql](../supabase/migrations/0001_hapag_master.sql). It creates the required tables, indexes, timestamps, auth bootstrap trigger, grants, and Row Level Security policies. If the original query was already run, apply [supabase/migrations/0002_grant_authenticated_table_access.sql](../supabase/migrations/0002_grant_authenticated_table_access.sql) to add the missing grants.
 
 Apply it from the Supabase SQL Editor, or after linking the project:
 

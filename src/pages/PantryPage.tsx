@@ -1,10 +1,52 @@
-import { IngredientChips } from '../components/IngredientChips.tsx'
 import { IngredientPrompt } from '../components/IngredientPrompt.tsx'
+import { PantryItemEditor } from '../components/PantryItemEditor.tsx'
 import { StatePanel } from '../components/StatePanel.tsx'
-import type { NormalizedIngredient } from '../types/domain.ts'
+import type { NormalizedIngredient, PantryUnit } from '../types/domain.ts'
 
-export interface PantryPageProps { isAuthenticated: boolean; status: string; error: string | null; pantryItems: NormalizedIngredient[]; onAdd: (value: string) => Promise<void>; onRemove: (id: string) => Promise<void>; onGenerate: () => void; onSignIn: () => void }
+export interface PantryPageProps {
+  isAuthenticated: boolean
+  status: string
+  error: string | null
+  pantryItems: NormalizedIngredient[]
+  onAdd: (value: string) => Promise<void>
+  onUpdate: (input: { id: string; name: string; quantity: number; unit: PantryUnit }) => Promise<void>
+  onRemove: (id: string) => Promise<void>
+  onUseInUlam: () => void
+  onSignIn: () => void
+  onRetry: () => void
+}
 
-export function PantryPage({ isAuthenticated, status, error, pantryItems, onAdd, onRemove, onGenerate, onSignIn }: PantryPageProps) {
-  return <div className="page-shell narrow-page"><span className="eyebrow">Pantry · {isAuthenticated ? 'synced' : 'local preview'}</span><h1>Your ingredients, ready for the next idea.</h1><p className="page-intro">Add a few ingredients and Hapag can turn your pantry into a new cooking starting point.</p>{!isAuthenticated ? <div className="session-note">Sign in to sync your pantry across devices. You can still try it locally.</div> : null}{error ? <div className="error-banner" role="alert">{error}</div> : null}<IngredientPrompt compact onSubmit={(value) => void onAdd(value)} /><section className="pantry-panel" aria-labelledby="pantry-heading"><div className="section-heading-row"><div><span className="section-kicker">Available ingredients</span><h2 id="pantry-heading">{pantryItems.length} in your pantry</h2></div></div>{status !== 'ready' ? <p className="muted-copy">Loading your pantry…</p> : pantryItems.length > 0 ? <IngredientChips ingredients={pantryItems} onRemove={(id) => void onRemove(id)} /> : <StatePanel title="Wala pang laman ang Pantry" description="Magdagdag ng ingredients para makabuo ng pantry-based recipe ideas." actionLabel={!isAuthenticated ? 'Sign in to sync' : undefined} onAction={!isAuthenticated ? onSignIn : undefined} />}<button className="button button-primary full-width" type="button" disabled={pantryItems.length === 0 || status !== 'ready'} onClick={onGenerate}>Generate from Pantry</button></section></div>
+export function PantryPage({ isAuthenticated, status, error, pantryItems, onAdd, onUpdate, onRemove, onUseInUlam, onSignIn, onRetry }: PantryPageProps) {
+  const isLoading = status === 'idle' || status === 'loading'
+
+  return (
+    <div className="page-shell narrow-page">
+      <span className="eyebrow">Pantry · {isAuthenticated ? 'synced' : 'local preview'}</span>
+      <h1>Your ingredients, ready for the next idea.</h1>
+      <p className="page-intro">Keep track of what is available at home, then use it as a starting point for Ulam AI.</p>
+      {!isAuthenticated ? <div className="session-note">Sign in to sync your pantry across devices. You can still try it locally.</div> : null}
+      {error ? <div className="error-banner" role="alert"><strong>Pantry could not update.</strong> {error} <button className="text-button" type="button" onClick={onRetry}>Try again</button></div> : null}
+
+      <IngredientPrompt
+        compact
+        label="Add ingredients to your pantry"
+        placeholder="Hal. 2 lata sardinas, 10 itlog, 2 bell peppers..."
+        submitLabel="Add to pantry"
+        onSubmit={onAdd}
+      />
+
+      <section className="pantry-panel" aria-labelledby="pantry-heading">
+        <div className="section-heading-row">
+          <div>
+            <span className="section-kicker">Available ingredients</span>
+            <h2 id="pantry-heading">{pantryItems.length} in your pantry</h2>
+          </div>
+        </div>
+
+        {isLoading ? <p className="muted-copy">Loading your pantry…</p> : status === 'error' ? <StatePanel tone="error" title="Unable to load your pantry" description="Check your Supabase permissions, then try again." actionLabel="Try again" onAction={onRetry} /> : pantryItems.length > 0 ? <ul className="pantry-item-list" aria-label="Pantry ingredients">{pantryItems.map((item) => <PantryItemEditor key={`${item.id}-${item.name}-${item.quantity}-${item.unit}`} item={item} onUpdate={onUpdate} onRemove={onRemove} />)}</ul> : <StatePanel title="Wala pang laman ang Pantry" description="Add ingredients above to build your pantry and use it for recipe ideas." actionLabel={!isAuthenticated ? 'Sign in to sync' : undefined} onAction={!isAuthenticated ? onSignIn : undefined} />}
+
+        {pantryItems.length > 0 ? <button className="button button-primary full-width" type="button" onClick={onUseInUlam}>Use pantry in Ulam AI</button> : null}
+      </section>
+    </div>
+  )
 }
