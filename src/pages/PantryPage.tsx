@@ -13,7 +13,7 @@ export interface PantryPageProps {
 export function PantryPage({ pantryItems, onAdd, onRemove, onGenerate }: PantryPageProps) {
   return (
     <div className="page-shell narrow-page">
-      <span className="eyebrow">Pantry Â· static preview</span>
+      <span className="eyebrow">Pantry · static preview</span>
       <h1>Your ingredients, ready for the next idea.</h1>
       <p className="page-intro">Add a few ingredients and Hapag can turn your pantry into a new cooking starting point.</p>
       <IngredientPrompt compact onSubmit={onAdd} />

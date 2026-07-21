@@ -41,7 +41,7 @@ export function ResultsPage({ session, status, suggestions, error, savedIds, onO
       </div>
       <div className="active-filter-row" aria-label="Applied constraints">
         <span className="filter-pill">{session.constraints.servings} servings</span>
-        {session.constraints.budgetLimit ? <span className="filter-pill">Under â‚±{session.constraints.budgetLimit}</span> : null}
+        {session.constraints.budgetLimit ? <span className="filter-pill">Under ₱{session.constraints.budgetLimit}</span> : null}
         {session.constraints.dietaryPreference && session.constraints.dietaryPreference !== 'none' ? <span className="filter-pill">{session.constraints.dietaryPreference}</span> : null}
       </div>
       <div className="results-grid">

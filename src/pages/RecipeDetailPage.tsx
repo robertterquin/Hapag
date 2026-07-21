@@ -41,8 +41,8 @@ export function RecipeDetailPage({ recipeId, saved, onToggleSave, onStartCooking
   return (
     <div className="page-shell detail-page">
       <div className="detail-topbar">
-        <button className="back-button" type="button" onClick={onBack}>â† Results</button>
-        <button className={`button ${saved ? 'button-saved' : 'button-secondary'}`} type="button" onClick={onToggleSave}>{saved ? 'â™¥ Saved' : 'â™¡ Save recipe'}</button>
+        <button className="back-button" type="button" onClick={onBack}>← Results</button>
+        <button className={`button ${saved ? 'button-saved' : 'button-secondary'}`} type="button" onClick={onToggleSave}>{saved ? '♥ Saved' : '♡ Save recipe'}</button>
       </div>
       <section className="recipe-hero">
         <span className="recipe-badge">{recipe.tags[0]}</span>
@@ -62,7 +62,7 @@ export function RecipeDetailPage({ recipeId, saved, onToggleSave, onStartCooking
             </div>
             <ul className="detail-ingredient-list">
               {scaledRecipe.ingredients.map((ingredient) => <li className={ingredient.available ? 'ingredient-available' : 'ingredient-missing'} key={ingredient.id}>
-                <span className="ingredient-status" aria-hidden="true">{ingredient.available ? 'âœ“' : '+'}</span>
+                <span className="ingredient-status" aria-hidden="true">{ingredient.available ? '✓' : '+'}</span>
                 <span><strong>{formatQuantity(ingredient.quantity, ingredient.unit)} {ingredient.name}</strong>{ingredient.note ? <small>{ingredient.note}</small> : null}</span>
                 <em>{ingredient.available ? 'Meron ka' : 'Kulang pa'}</em>
               </li>)}
@@ -73,7 +73,7 @@ export function RecipeDetailPage({ recipeId, saved, onToggleSave, onStartCooking
             <div className="section-heading-row"><div><span className="section-kicker">Flexible cooking</span><h2 id="substitutions-heading">Substitutions</h2></div></div>
             <div className="substitution-list">
               {recipe.substitutions.map((substitution) => <button className={`substitution-row ${activeSubstitution === substitution.id ? 'substitution-row-active' : ''}`} type="button" key={substitution.id} onClick={() => setActiveSubstitution(activeSubstitution === substitution.id ? null : substitution.id)}>
-                <span><strong>{substitution.original}</strong><span className="substitution-arrow">â†’</span><strong>{substitution.substitute}</strong></span>
+                <span><strong>{substitution.original}</strong><span className="substitution-arrow">→</span><strong>{substitution.substitute}</strong></span>
                 <small>{activeSubstitution === substitution.id ? substitution.tradeoff : 'View tradeoff'}</small>
               </button>)}
             </div>
@@ -82,7 +82,7 @@ export function RecipeDetailPage({ recipeId, saved, onToggleSave, onStartCooking
           <section className="detail-section" aria-labelledby="steps-heading">
             <div className="section-heading-row"><div><span className="section-kicker">Cook it</span><h2 id="steps-heading">Steps</h2></div></div>
             <ol className="step-preview-list">
-              {recipe.steps.map((step) => <li key={step.id}><span>{step.order}</span><div><strong>{step.action}</strong><small>{step.durationMinutes ? `${step.durationMinutes} min` : 'As needed'}{step.heat && step.heat !== 'none' ? ` Â· ${step.heat} heat` : ''}</small></div></li>)}
+              {recipe.steps.map((step) => <li key={step.id}><span>{step.order}</span><div><strong>{step.action}</strong><small>{step.durationMinutes ? `${step.durationMinutes} min` : 'As needed'}{step.heat && step.heat !== 'none' ? ` · ${step.heat} heat` : ''}</small></div></li>)}
             </ol>
           </section>
         </div>

@@ -48,8 +48,8 @@ export function UlamPage({ session, onUpdateIngredients, onUpdateConstraints, on
           <label className="field-label">Budget limit
             <select value={session.constraints.budgetLimit ?? ''} onChange={(event) => onUpdateConstraints({ budgetLimit: event.target.value ? Number(event.target.value) : undefined })}>
               <option value="">Any budget</option>
-              <option value="100">Under â‚±100</option>
-              <option value="200">Under â‚±200</option>
+              <option value="100">Under ₱100</option>
+              <option value="200">Under ₱200</option>
             </select>
           </label>
           <label className="field-label">Dietary preference

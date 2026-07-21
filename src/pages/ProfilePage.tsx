@@ -8,7 +8,7 @@ export function ProfilePage() {
 
   return (
     <div className="page-shell narrow-page">
-      <span className="eyebrow">Profile and preferences Â· static preview</span>
+      <span className="eyebrow">Profile and preferences · static preview</span>
       <h1>Make Hapag fit your kitchen.</h1>
       <p className="page-intro">These preferences will shape future suggestions. They are local-only until Supabase persistence is connected.</p>
       {saved ? <div className="success-banner" role="status">Naisave ang preferences sa demo session.</div> : null}
