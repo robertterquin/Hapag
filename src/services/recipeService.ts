@@ -71,6 +71,10 @@ const wait = (milliseconds: number) => new Promise((resolve) => setTimeout(resol
 
 const recipeCache = new Map(recipeFixtures.map((recipe) => [recipe.id, recipe]))
 
+export function cacheRecipe(recipe: ReturnType<typeof adaptRecipePayload>) {
+  recipeCache.set(recipe.id, recipe)
+}
+
 function normalizeIngredients(input: string) {
   return splitInput(input).map(normalizeItem)
 }

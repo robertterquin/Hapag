@@ -8,10 +8,12 @@
     "typecheck": "tsc -b",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "test": "node --experimental-strip-types --test scripts/foundation.test.mjs scripts/recipe-schema.test.ts scripts/phase-10.test.mjs",
+    "test": "node --experimental-strip-types --test scripts/foundation.test.mjs scripts/recipe-schema.test.ts scripts/phase-10.test.mjs scripts/phase-11.test.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.93.3",
+    "@supabase/supabase-js": "^2.110.7",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "zod": "^4.4.3"
