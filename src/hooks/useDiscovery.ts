@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { formatPantryInput } from '../lib/ingredientParser.ts'
+import { formatPantryInput, normalizeIngredientDraft } from '../lib/ingredientParser.ts'
 import { recipeService } from '../services/recipeService.ts'
-import type { DiscoverySession, GenerationConstraints, NormalizedIngredient, Recipe } from '../types/domain.ts'
+import type { DiscoverySession, GenerationConstraints, IngredientDraft, NormalizedIngredient, Recipe } from '../types/domain.ts'
 import { normalizeConstraints } from '../lib/recipeControls.ts'
 
 export type GenerationStatus = 'idle' | 'loading' | 'success' | 'error'
@@ -33,24 +33,32 @@ export function useDiscovery() {
     startFromIngredients(formatPantryInput(pantryIngredients), pantryIngredients)
   }
 
+  const replacePantryIngredients = (items: NormalizedIngredient[]) => {
+    setSession((current) => {
+      const manualIngredients = current.ingredients.filter((ingredient) => ingredient.source !== 'pantry')
+      const pantryIngredients = items.map((item) => ({ ...item, source: 'pantry' as const }))
+      const ingredients = [...pantryIngredients, ...manualIngredients]
+      return { ...current, rawInput: formatPantryInput(ingredients), ingredients }
+    })
+    setGenerationStatus('idle')
+  }
+
   const updateIngredients = (value: string) => {
     setSession((current) => ({ ...current, rawInput: value, ingredients: recipeService.normalizeIngredients(value, 'manual') }))
   }
 
-  const addIngredients = (value: string) => {
-    const additions = recipeService.normalizeIngredients(value, 'manual')
-    if (additions.length === 0) return
+  const addIngredients = (input: IngredientDraft) => {
+    const addition = normalizeIngredientDraft(input, 'manual')
+    if (!addition) return
     setSession((current) => {
       const ingredients = [...current.ingredients]
-      for (const addition of additions) {
-        const existingIndex = ingredients.findIndex((ingredient) => ingredient.canonicalName === addition.canonicalName && ingredient.unit === addition.unit)
-        if (existingIndex >= 0) {
-          ingredients[existingIndex] = { ...ingredients[existingIndex], quantity: ingredients[existingIndex].quantity + addition.quantity }
-        } else {
-          ingredients.push(addition)
-        }
+      const existingIndex = ingredients.findIndex((ingredient) => ingredient.source === 'manual' && ingredient.canonicalName === addition.canonicalName && ingredient.unit === addition.unit)
+      if (existingIndex >= 0) {
+        ingredients[existingIndex] = { ...ingredients[existingIndex], quantity: ingredients[existingIndex].quantity + addition.quantity }
+      } else {
+        ingredients.push(addition)
       }
-      return { ...current, rawInput: current.rawInput ? `${current.rawInput}, ${value}` : value, ingredients }
+      return { ...current, rawInput: formatPantryInput(ingredients), ingredients }
     })
   }
 
@@ -84,6 +92,7 @@ export function useDiscovery() {
     startDiscovery,
     startFromIngredients,
     startFromPantry,
+    replacePantryIngredients,
     updateIngredients,
     addIngredients,
     updateConstraints,

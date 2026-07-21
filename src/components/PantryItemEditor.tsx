@@ -8,32 +8,48 @@ interface PantryItemEditorProps {
   onRemove: (id: string) => Promise<void>
 }
 
+type SaveState = 'idle' | 'saving' | 'saved' | 'error'
+
 export function PantryItemEditor({ item, onUpdate, onRemove }: PantryItemEditorProps) {
   const [name, setName] = useState(item.name)
   const [quantity, setQuantity] = useState(String(item.quantity))
   const [unit, setUnit] = useState<PantryUnit>(item.unit)
+  const [saveState, setSaveState] = useState<SaveState>('idle')
 
-  const save = () => {
+  const commit = async (nextUnit = unit) => {
     const numericQuantity = Number(quantity)
-    if (!name.trim() || !Number.isFinite(numericQuantity) || numericQuantity <= 0) return
-    void onUpdate({ id: item.id, name: name.trim(), quantity: numericQuantity, unit })
+    if (!name.trim() || !Number.isFinite(numericQuantity) || numericQuantity <= 0) {
+      setSaveState('error')
+      return
+    }
+    setSaveState('saving')
+    try {
+      await onUpdate({ id: item.id, name: name.trim(), quantity: numericQuantity, unit: nextUnit })
+      setSaveState('saved')
+    } catch {
+      setSaveState('error')
+    }
   }
+
+  const statusLabel = saveState === 'saving' ? 'Saving…' : saveState === 'saved' ? 'Saved' : saveState === 'error' ? 'Could not save' : ''
 
   return (
     <li className="pantry-item-row">
       <div className="pantry-item-fields">
         <label className="sr-only" htmlFor={`pantry-name-${item.id}`}>Ingredient name</label>
-        <input id={`pantry-name-${item.id}`} value={name} onChange={(event) => setName(event.target.value)} />
+        <input id={`pantry-name-${item.id}`} value={name} onChange={(event) => { setName(event.target.value); setSaveState('idle') }} onBlur={() => void commit()} />
         <label className="sr-only" htmlFor={`pantry-quantity-${item.id}`}>Quantity</label>
-        <input id={`pantry-quantity-${item.id}`} type="number" min="0.01" step="0.01" value={quantity} onChange={(event) => setQuantity(event.target.value)} />
+        <input id={`pantry-quantity-${item.id}`} type="number" min="0.01" step="0.01" value={quantity} onChange={(event) => { setQuantity(event.target.value); setSaveState('idle') }} onBlur={() => void commit()} />
         <label className="sr-only" htmlFor={`pantry-unit-${item.id}`}>Unit</label>
-        <select id={`pantry-unit-${item.id}`} value={unit} onChange={(event) => setUnit(event.target.value as PantryUnit)}>
+        <select id={`pantry-unit-${item.id}`} value={unit} onChange={(event) => { const nextUnit = event.target.value as PantryUnit; setUnit(nextUnit); void commit(nextUnit) }}>
           {pantryUnits.map((option) => <option value={option} key={option}>{pantryUnitLabels[option]}</option>)}
         </select>
       </div>
-      {item.confidence === 'low' ? <span className="pantry-review-note">Check this item</span> : null}
+      <div className="pantry-item-meta">
+        {item.confidence === 'low' ? <span className="pantry-review-note">Check this item</span> : null}
+        {statusLabel ? <span className={`pantry-item-status pantry-item-status-${saveState}`} role={saveState === 'error' ? 'alert' : 'status'}>{statusLabel}</span> : null}
+      </div>
       <div className="pantry-item-actions">
-        <button className="button button-secondary" type="button" onClick={save}>Save</button>
         <button className="text-button pantry-remove-button" type="button" onClick={() => void onRemove(item.id)}>Remove</button>
       </div>
     </li>

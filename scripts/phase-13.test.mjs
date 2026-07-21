@@ -21,7 +21,8 @@ test('phase 13 pantry persistence is wired to the RLS-backed pantry table', asyn
 test('phase 13 preserves pantry-to-discovery generation', async () => {
   const app = await read('src/app/App.tsx')
   const page = await read('src/pages/PantryPage.tsx')
-  assert.match(app, /startFromPantry\(pantry\.pantryItems\)/)
+  assert.match(app, /setPantryPickerExpanded\(true\)/)
   assert.match(page, /Use pantry in Ulam AI/)
   assert.match(page, /Sign in to sync your pantry/)
+  assert.match(page, /IngredientAddForm/)
 })

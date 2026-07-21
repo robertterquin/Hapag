@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import '../App.css'
 import { AppShell } from '../components/AppShell.tsx'
 import { useDiscovery } from '../hooks/useDiscovery.ts'
@@ -25,9 +25,11 @@ function App() {
   const savedRecipes = useSavedRecipes(auth.session)
   const preferences = usePreferences(auth.session)
   const pantry = usePantry(auth.session)
+  const [pantryPickerExpanded, setPantryPickerExpanded] = useState(false)
 
   const startDiscovery = (value: string) => {
     discovery.startDiscovery(value)
+    setPantryPickerExpanded(false)
     navigate('/ulam')
   }
 
@@ -38,8 +40,13 @@ function App() {
   }
 
   const usePantryInUlam = () => {
-    discovery.startFromPantry(pantry.pantryItems)
+    setPantryPickerExpanded(true)
     navigate('/ulam')
+  }
+
+  const navigateFromShell = (path: string) => {
+    setPantryPickerExpanded(false)
+    navigate(path)
   }
 
   const requireAuth = () => { navigate('/auth') }
@@ -56,19 +63,19 @@ function App() {
   const page: ReactNode = (() => {
     switch (route.name) {
       case 'home': return <HomePage onStart={startDiscovery} />
-      case 'ulam': return <UlamPage session={discovery.session} onAddIngredients={discovery.addIngredients} onUpdateConstraints={discovery.updateConstraints} onGenerate={generateSuggestions} onRemove={discovery.removeIngredient} />
+      case 'ulam': return <UlamPage session={discovery.session} pantryItems={pantry.pantryItems} pantryPickerExpanded={pantryPickerExpanded} onTogglePantryPicker={() => setPantryPickerExpanded((expanded) => !expanded)} onApplyPantrySelection={discovery.replacePantryIngredients} onAddIngredients={discovery.addIngredients} onUpdateConstraints={discovery.updateConstraints} onGenerate={generateSuggestions} onRemove={discovery.removeIngredient} />
       case 'results': return <ResultsPage session={discovery.session} status={discovery.generationStatus} suggestions={discovery.suggestions} error={discovery.generationError} savedError={savedRecipes.error} savedIds={savedRecipes.savedIds} onOpen={(id) => navigate(`/recipes/${id}`)} onToggleSave={toggleSaved} onRetry={generateSuggestions} onEdit={() => navigate('/ulam')} />
       case 'recipe-detail': return <RecipeDetailPage key={route.recipeId} recipeId={route.recipeId} saved={savedRecipes.savedIds.includes(route.recipeId)} onToggleSave={() => toggleSaved(route.recipeId)} onStartCooking={() => navigate(`/recipes/${route.recipeId}/cook`)} onBack={() => navigate('/results')} />
       case 'cooking': return <CookingPage key={route.recipeId} recipeId={route.recipeId} onFinish={finishCooking} onBack={() => navigate(`/recipes/${route.recipeId}`)} />
       case 'saved': return <SavedPage isAuthenticated={Boolean(auth.session)} status={savedRecipes.status} error={savedRecipes.error} savedIds={savedRecipes.savedIds} savedRecipes={savedRecipes.savedRecipes} cookedRecipes={savedRecipes.cookedRecipes} onOpen={(id) => navigate(`/recipes/${id}`)} onUnsave={(id) => savedRecipes.toggleSaved(id)} onStart={() => navigate('/ulam')} onSignIn={requireAuth} onRetry={savedRecipes.reload} />
-      case 'pantry': return <PantryPage isAuthenticated={Boolean(auth.session)} status={pantry.status} error={pantry.error} pantryItems={pantry.pantryItems} onAdd={pantry.addPantryItems} onUpdate={pantry.updatePantryItem} onRemove={pantry.removePantryItem} onUseInUlam={usePantryInUlam} onSignIn={requireAuth} onRetry={pantry.reload} />
+      case 'pantry': return <PantryPage isAuthenticated={Boolean(auth.session)} status={pantry.status} error={pantry.error} pantryItems={pantry.pantryItems} onAdd={pantry.addPantryItem} onUpdate={pantry.updatePantryItem} onRemove={pantry.removePantryItem} onUseInUlam={usePantryInUlam} onSignIn={requireAuth} onRetry={pantry.reload} />
       case 'profile': return <ProfilePage key={`${auth.session?.user.id ?? 'signed-out'}-${preferences.preferences.language}-${preferences.preferences.default_servings}-${preferences.preferences.dietary_preference}`} session={auth.session} preferences={preferences.preferences} status={preferences.status} error={preferences.error} onSave={preferences.save} onSignIn={requireAuth} onSignOut={auth.signOut} />
       case 'auth': return <AuthPage session={auth.session} status={auth.status} error={auth.error} onSignIn={auth.signIn} onSignUp={auth.signUp} onSignOut={auth.signOut} onContinue={() => navigate('/')} />
       case 'not-found': return <NotFoundPage onBack={() => navigate('/')} />
     }
   })()
 
-  return <AppShell routeName={route.name} onNavigate={navigate}>{page}</AppShell>
+  return <AppShell routeName={route.name} onNavigate={navigateFromShell}>{page}</AppShell>
 }
 
 export default App

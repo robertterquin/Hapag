@@ -127,13 +127,40 @@ p { line-height: 1.6; }
 .full-width { width: 100%; }
 .narrow-page > .full-width { margin-top: var(--space-5); }
 .pantry-panel > .full-width, .detail-side-column > .full-width { margin-top: var(--space-5); }
+.ingredient-add-form { display: grid; gap: var(--space-4); margin-top: var(--space-5); padding: var(--space-5); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 18px; box-shadow: 0 4px 14px rgb(48 37 43 / 4%); }
+.ingredient-add-form .field-label input, .ingredient-add-form .field-label select { width: 100%; min-height: 46px; padding: 0 12px; color: var(--color-ink); background: var(--color-surface); border: 1px solid var(--color-border-strong); border-radius: var(--radius-control); }
+.ingredient-add-form .field-label input:focus, .ingredient-add-form .field-label select:focus { border-color: var(--color-ube); outline: 0; box-shadow: 0 0 0 3px rgb(118 81 169 / 14%); }
+.ingredient-add-fields { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: var(--space-3); }
+.ingredient-add-footer { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
+.pantry-picker { display: grid; gap: var(--space-4); margin-top: var(--space-5); padding: var(--space-5); background: var(--color-lavender); border: 1px solid rgb(118 81 169 / 24%); border-radius: var(--radius-card); }
+.pantry-picker-header { display: flex; align-items: start; justify-content: space-between; gap: var(--space-4); }
+.pantry-picker-header h2 { margin-bottom: var(--space-2); }
+.pantry-picker-header .muted-copy { max-width: 480px; margin-bottom: 0; }
+.pantry-picker-toggle { flex: 0 0 auto; min-height: 40px; padding: 0 var(--space-4); }
+.pantry-picker-list { display: grid; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
+.pantry-picker-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); padding: var(--space-3); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 12px; }
+.pantry-picker-row-selected { border-color: var(--color-ube); box-shadow: 0 0 0 2px rgb(118 81 169 / 10%); }
+.pantry-picker-choice { display: flex; min-width: 0; align-items: center; gap: var(--space-3); color: var(--color-ink); }
+.pantry-picker-choice input { width: 18px; height: 18px; accent-color: var(--color-ube); }
+.pantry-picker-choice span { display: grid; gap: 3px; }
+.pantry-picker-choice small { color: var(--color-muted); font-size: 12px; }
+.pantry-picker-quantity { display: grid; flex: 0 0 auto; gap: 4px; color: var(--color-muted); font-size: 12px; font-weight: 800; }
+.pantry-picker-quantity input { width: 88px; min-height: 40px; padding: 0 10px; color: var(--color-ink); background: var(--color-surface); border: 1px solid var(--color-border-strong); border-radius: 10px; }
+.pantry-picker-quantity input:focus { border-color: var(--color-ube); outline: 0; box-shadow: 0 0 0 3px rgb(118 81 169 / 14%); }
+.pantry-picker-field-error, .pantry-picker-field-notice { max-width: 180px; font-size: 11px; font-weight: 700; }
+.pantry-picker-field-error { color: var(--color-tomato); }
+.pantry-picker-field-notice { color: var(--color-calamansi); }
 .pantry-item-list { display: grid; gap: var(--space-3); margin: var(--space-5) 0 0; padding: 0; list-style: none; }
 .pantry-item-row { display: grid; gap: var(--space-3); padding: var(--space-4); background: #fffaf0; border: 1px solid var(--color-border); border-radius: var(--radius-control); }
 .pantry-item-fields { display: grid; grid-template-columns: minmax(0, 1fr) 110px 140px; gap: var(--space-2); }
 .pantry-item-fields input, .pantry-item-fields select { width: 100%; min-height: 44px; padding: 0 12px; color: var(--color-ink); background: var(--color-surface); border: 1px solid var(--color-border-strong); border-radius: 10px; }
 .pantry-item-fields input:focus, .pantry-item-fields select:focus { border-color: var(--color-ube); outline: 0; box-shadow: 0 0 0 3px rgb(118 81 169 / 14%); }
-.pantry-item-actions { display: flex; align-items: center; gap: var(--space-4); }
-.pantry-item-actions .button { min-height: 40px; padding: 0 var(--space-4); }
+.pantry-item-meta { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); min-height: 18px; }
+.pantry-item-actions { display: flex; align-items: center; justify-content: flex-end; gap: var(--space-4); }
+.pantry-item-status { font-size: 12px; font-weight: 800; }
+.pantry-item-status-saving { color: var(--color-muted); }
+.pantry-item-status-saved { color: var(--color-calamansi); }
+.pantry-item-status-error { color: var(--color-tomato); }
 .pantry-remove-button { color: var(--color-tomato); }
 .pantry-review-note { color: var(--color-tomato); font-size: 12px; font-weight: 700; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
@@ -311,6 +338,13 @@ p { line-height: 1.6; }
   .cooking-controls .button { width: 100%; }
   .pantry-item-fields { grid-template-columns: minmax(0, 1fr) minmax(90px, .45fr); }
   .pantry-item-fields select { grid-column: 1 / -1; }
+  .ingredient-add-fields { grid-template-columns: 1fr 1fr; }
+  .ingredient-add-footer { align-items: stretch; flex-direction: column; }
+  .ingredient-add-footer .button { width: 100%; }
+  .pantry-picker-header, .pantry-picker-row { align-items: stretch; flex-direction: column; }
+  .pantry-picker-toggle { width: 100%; }
+  .pantry-picker-quantity { justify-content: space-between; }
+  .pantry-picker-quantity input { flex: 1; }
   .pantry-item-actions { justify-content: space-between; }
 }
 

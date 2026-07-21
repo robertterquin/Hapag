@@ -1,4 +1,4 @@
-import type { IngredientSource, NormalizedIngredient, PantryUnit } from '../types/domain.ts'
+import type { IngredientDraft, IngredientSource, NormalizedIngredient, PantryUnit } from '../types/domain.ts'
 
 export const pantryUnits: readonly PantryUnit[] = [
   'piece', 'can', 'pack', 'bottle', 'bundle', 'clove', 'cup', 'gram', 'kilogram', 'block',
@@ -139,6 +139,17 @@ function normalizeItem(originalText: string, index: number, source: IngredientSo
 
 export function normalizeIngredientInput(input: string, source: IngredientSource = 'manual') {
   return splitInput(input).map((item, index) => normalizeItem(item, index, source))
+}
+
+export function normalizeIngredientDraft(input: IngredientDraft, source: IngredientSource = 'manual'): NormalizedIngredient | undefined {
+  const parsed = normalizeIngredientInput(`${input.quantity} ${input.unit} ${input.name}`, source)[0]
+  if (!parsed || !input.name.trim() || !Number.isFinite(input.quantity) || input.quantity <= 0) return undefined
+  return {
+    ...parsed,
+    originalText: `${input.quantity} ${input.unit} ${input.name.trim()}`,
+    quantity: input.quantity,
+    unit: input.unit,
+  }
 }
 
 export function formatPantryQuantity(item: Pick<NormalizedIngredient, 'quantity' | 'unit'>) {

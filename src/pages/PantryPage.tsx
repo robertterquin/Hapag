@@ -1,14 +1,14 @@
-import { IngredientPrompt } from '../components/IngredientPrompt.tsx'
+import { IngredientAddForm } from '../components/IngredientAddForm.tsx'
 import { PantryItemEditor } from '../components/PantryItemEditor.tsx'
 import { StatePanel } from '../components/StatePanel.tsx'
-import type { NormalizedIngredient, PantryUnit } from '../types/domain.ts'
+import type { IngredientDraft, NormalizedIngredient, PantryUnit } from '../types/domain.ts'
 
 export interface PantryPageProps {
   isAuthenticated: boolean
   status: string
   error: string | null
   pantryItems: NormalizedIngredient[]
-  onAdd: (value: string) => Promise<void>
+  onAdd: (input: IngredientDraft) => Promise<void>
   onUpdate: (input: { id: string; name: string; quantity: number; unit: PantryUnit }) => Promise<void>
   onRemove: (id: string) => Promise<void>
   onUseInUlam: () => void
@@ -27,13 +27,7 @@ export function PantryPage({ isAuthenticated, status, error, pantryItems, onAdd,
       {!isAuthenticated ? <div className="session-note">Sign in to sync your pantry across devices. You can still try it locally.</div> : null}
       {error ? <div className="error-banner" role="alert"><strong>Pantry could not update.</strong> {error} <button className="text-button" type="button" onClick={onRetry}>Try again</button></div> : null}
 
-      <IngredientPrompt
-        compact
-        label="Add ingredients to your pantry"
-        placeholder="Hal. 2 lata sardinas, 10 itlog, 2 bell peppers..."
-        submitLabel="Add to pantry"
-        onSubmit={onAdd}
-      />
+      <IngredientAddForm idPrefix="pantry-add" label="Add an ingredient to your pantry" helper="Add one item at a time. You can edit it below anytime." submitLabel="Add to pantry" placeholder="e.g. sardines" onSubmit={onAdd} />
 
       <section className="pantry-panel" aria-labelledby="pantry-heading">
         <div className="section-heading-row">

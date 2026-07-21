@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import { test } from 'node:test'
-import { normalizeIngredientInput } from '../src/lib/ingredientParser.ts'
+import { normalizeIngredientDraft, normalizeIngredientInput } from '../src/lib/ingredientParser.ts'
 
 const read = (path: string) => readFile(path, 'utf8')
 
@@ -22,6 +22,13 @@ test('pantry parser defaults missing quantities and marks them for review', () =
   assert.equal(rice.confidence, 'low')
 })
 
+test('structured pantry drafts treat known ingredients as explicit entries', () => {
+  const sardines = normalizeIngredientDraft({ name: 'sardines', quantity: 2, unit: 'can' }, 'pantry')
+  assert.equal(sardines?.quantity, 2)
+  assert.equal(sardines?.unit, 'can')
+  assert.equal(sardines?.confidence, 'high')
+})
+
 test('pantry persistence and Pantry-to-Ulam wiring include structured inventory', async () => {
   const service = await read('src/services/persistenceService.ts')
   const hook = await read('src/hooks/usePantry.ts')
@@ -30,10 +37,32 @@ test('pantry persistence and Pantry-to-Ulam wiring include structured inventory'
   const migration = await read('supabase/migrations/0003_pantry_quantities.sql')
   assert.match(service, /quantity,unit/)
   assert.match(service, /updatePantryItem/)
-  assert.match(hook, /addPantryItems/)
+  assert.match(hook, /addPantryItem/)
   assert.match(hook, /existing\.quantity \+ addition\.quantity/)
-  assert.match(app, /startFromPantry\(pantry\.pantryItems\)/)
+  assert.match(app, /setPantryPickerExpanded\(true\)/)
   assert.match(ulam, /onAddIngredients/)
   assert.match(migration, /pantry_items_quantity_positive/)
   assert.match(migration, /pantry_items_unit_allowed/)
+})
+
+test('pantry uses one-item structured entry and auto-saves row edits', async () => {
+  const addForm = await read('src/components/IngredientAddForm.tsx')
+  const editor = await read('src/components/PantryItemEditor.tsx')
+  const page = await read('src/pages/PantryPage.tsx')
+  assert.match(page, /IngredientAddForm/)
+  assert.match(addForm, /name.*quantity.*unit/s)
+  assert.match(editor, /onBlur=/)
+  assert.match(editor, /onChange=.*commit\(nextUnit\)/s)
+  assert.doesNotMatch(editor, /<button[^>]*>Save<\/button>/)
+})
+
+test('ulam pantry picker limits temporary selection to available stock', async () => {
+  const picker = await read('src/components/PantryPicker.tsx')
+  const discovery = await read('src/hooks/useDiscovery.ts')
+  assert.match(picker, /type="checkbox"/)
+  assert.match(picker, /max=\{item\.quantity\}/)
+  assert.match(picker, /step="any"/)
+  assert.match(picker, /onBlur=\{\(\) => commitQuantity\(item\)\}/)
+  assert.match(discovery, /replacePantryIngredients/)
+  assert.match(discovery, /source === 'manual'/)
 })

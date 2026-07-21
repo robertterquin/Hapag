@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
+import { normalizeIngredientDraft } from '../lib/ingredientParser.ts'
 import { recipeService } from '../services/recipeService.ts'
 import { persistenceService } from '../services/persistenceService.ts'
-import type { NormalizedIngredient, PantryUnit } from '../types/domain.ts'
+import type { IngredientDraft, NormalizedIngredient, PantryUnit } from '../types/domain.ts'
 import { getErrorMessage } from '../lib/errors.ts'
 
 export interface PantryItemUpdate {
@@ -39,28 +40,29 @@ export function usePantry(session: Session | null) {
     return () => { mounted = false }
   }, [session, reloadKey])
 
-  const addPantryItems = async (value: string) => {
-    const additions = recipeService.normalizeIngredients(value, 'pantry')
-    if (additions.length === 0) return
-
+  const addPantryItem = async (input: IngredientDraft) => {
+    const addition = normalizeIngredientDraft(input, 'pantry')
+    if (!addition) {
+      const validationError = new Error('Enter an ingredient name and a quantity greater than zero.')
+      setError(validationError.message)
+      throw validationError
+    }
     try {
       const workingItems = [...pantryItems]
       const operations: Array<{ type: 'insert' | 'update'; item: NormalizedIngredient }> = []
-      for (const addition of additions) {
-        const existingIndex = workingItems.findIndex((item) => item.canonicalName === addition.canonicalName)
-        if (existingIndex >= 0) {
-          const existing = workingItems[existingIndex]
-          if (existing.unit !== addition.unit) {
-            throw new Error(`${existing.name} is already measured in ${existing.unit}. Edit the existing row instead of mixing units.`)
-          }
-          const merged = withPantrySource({ ...existing, quantity: existing.quantity + addition.quantity, originalText: `${existing.originalText}, ${addition.originalText}` })
-          workingItems[existingIndex] = merged
-          operations.push({ type: 'update', item: merged })
-        } else {
-          const additionForPantry = withPantrySource(addition)
-          workingItems.push(additionForPantry)
-          operations.push({ type: 'insert', item: additionForPantry })
+      const existingIndex = workingItems.findIndex((item) => item.canonicalName === addition.canonicalName)
+      if (existingIndex >= 0) {
+        const existing = workingItems[existingIndex]
+        if (existing.unit !== addition.unit) {
+          throw new Error(`${existing.name} is already measured in ${existing.unit}. Edit the existing row instead of mixing units.`)
         }
+        const merged = withPantrySource({ ...existing, quantity: existing.quantity + addition.quantity, originalText: `${existing.originalText}, ${addition.originalText}` })
+        workingItems[existingIndex] = merged
+        operations.push({ type: 'update', item: merged })
+      } else {
+        const additionForPantry = withPantrySource(addition)
+        workingItems.push(additionForPantry)
+        operations.push({ type: 'insert', item: additionForPantry })
       }
       if (session) {
         const savedItems: NormalizedIngredient[] = []
@@ -75,23 +77,27 @@ export function usePantry(session: Session | null) {
       setError(null)
     } catch (reason: unknown) {
       setError(getErrorMessage(reason, 'Unable to save pantry items.'))
+      throw reason
     }
   }
 
   const updatePantryItem = async ({ id, name, quantity, unit }: PantryItemUpdate) => {
     if (!Number.isFinite(quantity) || quantity <= 0) {
-      setError('Quantity must be greater than zero.')
-      return
+      const validationError = new Error('Quantity must be greater than zero.')
+      setError(validationError.message)
+      throw validationError
     }
     const parsed = recipeService.normalizeIngredients(name, 'pantry')[0]
     const existing = pantryItems.find((item) => item.id === id)
     if (!parsed || !existing) {
-      setError('Enter a valid ingredient name.')
-      return
+      const validationError = new Error('Enter a valid ingredient name.')
+      setError(validationError.message)
+      throw validationError
     }
     if (pantryItems.some((item) => item.id !== id && item.canonicalName === parsed.canonicalName)) {
-      setError(`${parsed.name} is already in your pantry. Edit the existing row instead.`)
-      return
+      const validationError = new Error(`${parsed.name} is already in your pantry. Edit the existing row instead.`)
+      setError(validationError.message)
+      throw validationError
     }
     const updated = withPantrySource({ ...existing, ...parsed, id, name: parsed.name, originalText: name.trim(), quantity, unit })
     try {
@@ -100,6 +106,7 @@ export function usePantry(session: Session | null) {
       setError(null)
     } catch (reason: unknown) {
       setError(getErrorMessage(reason, 'Unable to update this pantry item.'))
+      throw reason
     }
   }
 
@@ -118,7 +125,7 @@ export function usePantry(session: Session | null) {
     status,
     error,
     reload: () => setReloadKey((key) => key + 1),
-    addPantryItems,
+    addPantryItem,
     updatePantryItem,
     removePantryItem,
   }

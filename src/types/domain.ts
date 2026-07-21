@@ -28,6 +28,12 @@ export type PantryUnit =
 
 export type IngredientSource = 'pantry' | 'manual'
 
+export interface IngredientDraft {
+  name: string
+  quantity: number
+  unit: PantryUnit
+}
+
 export interface NormalizedIngredient {
   id: string
   name: string
