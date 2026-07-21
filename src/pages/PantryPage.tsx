@@ -3,25 +3,8 @@ import { IngredientPrompt } from '../components/IngredientPrompt.tsx'
 import { StatePanel } from '../components/StatePanel.tsx'
 import type { NormalizedIngredient } from '../types/domain.ts'
 
-export interface PantryPageProps {
-  pantryItems: NormalizedIngredient[]
-  onAdd: (value: string) => void
-  onRemove: (id: string) => void
-  onGenerate: () => void
-}
+export interface PantryPageProps { isAuthenticated: boolean; status: string; error: string | null; pantryItems: NormalizedIngredient[]; onAdd: (value: string) => Promise<void>; onRemove: (id: string) => Promise<void>; onGenerate: () => void; onSignIn: () => void }
 
-export function PantryPage({ pantryItems, onAdd, onRemove, onGenerate }: PantryPageProps) {
-  return (
-    <div className="page-shell narrow-page">
-      <span className="eyebrow">Pantry · static preview</span>
-      <h1>Your ingredients, ready for the next idea.</h1>
-      <p className="page-intro">Add a few ingredients and Hapag can turn your pantry into a new cooking starting point.</p>
-      <IngredientPrompt compact onSubmit={onAdd} />
-      <section className="pantry-panel" aria-labelledby="pantry-heading">
-        <div className="section-heading-row"><div><span className="section-kicker">Available ingredients</span><h2 id="pantry-heading">{pantryItems.length} in your pantry</h2></div></div>
-        {pantryItems.length > 0 ? <IngredientChips ingredients={pantryItems} onRemove={onRemove} /> : <StatePanel title="Wala pang laman ang Pantry" description="Magdagdag ng ingredients para makabuo ng pantry-based recipe ideas." />}
-        <button className="button button-primary full-width" type="button" disabled={pantryItems.length === 0} onClick={onGenerate}>Generate from Pantry</button>
-      </section>
-    </div>
-  )
+export function PantryPage({ isAuthenticated, status, error, pantryItems, onAdd, onRemove, onGenerate, onSignIn }: PantryPageProps) {
+  return <div className="page-shell narrow-page"><span className="eyebrow">Pantry · {isAuthenticated ? 'synced' : 'local preview'}</span><h1>Your ingredients, ready for the next idea.</h1><p className="page-intro">Add a few ingredients and Hapag can turn your pantry into a new cooking starting point.</p>{!isAuthenticated ? <div className="session-note">Sign in to sync your pantry across devices. You can still try it locally.</div> : null}{error ? <div className="error-banner" role="alert">{error}</div> : null}<IngredientPrompt compact onSubmit={(value) => void onAdd(value)} /><section className="pantry-panel" aria-labelledby="pantry-heading"><div className="section-heading-row"><div><span className="section-kicker">Available ingredients</span><h2 id="pantry-heading">{pantryItems.length} in your pantry</h2></div></div>{status !== 'ready' ? <p className="muted-copy">Loading your pantry…</p> : pantryItems.length > 0 ? <IngredientChips ingredients={pantryItems} onRemove={(id) => void onRemove(id)} /> : <StatePanel title="Wala pang laman ang Pantry" description="Magdagdag ng ingredients para makabuo ng pantry-based recipe ideas." actionLabel={!isAuthenticated ? 'Sign in to sync' : undefined} onAction={!isAuthenticated ? onSignIn : undefined} />}<button className="button button-primary full-width" type="button" disabled={pantryItems.length === 0 || status !== 'ready'} onClick={onGenerate}>Generate from Pantry</button></section></div>
 }

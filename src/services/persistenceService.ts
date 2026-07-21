@@ -2,6 +2,7 @@ import type { Session, User } from '@supabase/supabase-js'
 import { adaptRecipePayload } from '../schemas/recipeAdapter.ts'
 import { cacheRecipe } from './recipeService.ts'
 import type { Recipe } from '../types/domain.ts'
+import type { NormalizedIngredient } from '../types/domain.ts'
 import { supabase } from '../lib/supabase.ts'
 
 export interface UserPreferences {
@@ -15,6 +16,14 @@ export interface UserPreferences {
 export interface PersistedRecipeState {
   saved: Recipe[]
   cooked: Recipe[]
+}
+
+export interface PantryRow {
+  id: string
+  ingredient_name: string
+  canonical_name: string
+  confidence: 'high' | 'medium' | 'low'
+  available: boolean
 }
 
 const requireClient = () => {
@@ -99,6 +108,24 @@ export const persistenceService = {
 
   async savePreferences(userId: string, preferences: UserPreferences) {
     const { error } = await requireClient().from('user_preferences').upsert({ user_id: userId, ...preferences }, { onConflict: 'user_id' })
+    if (error) throw error
+  },
+
+  async loadPantryItems(userId: string): Promise<NormalizedIngredient[]> {
+    const { data, error } = await requireClient().from('pantry_items').select('id,ingredient_name,canonical_name,confidence,available').eq('user_id', userId).order('created_at', { ascending: true })
+    if (error) throw error
+    return ((data ?? []) as PantryRow[]).map((row) => ({ id: row.id, name: row.ingredient_name, originalText: row.ingredient_name, confidence: row.confidence, available: row.available }))
+  },
+
+  async savePantryItem(userId: string, item: NormalizedIngredient) {
+    const { data, error } = await requireClient().from('pantry_items').upsert({ user_id: userId, ingredient_name: item.name, canonical_name: item.name.trim().toLowerCase(), confidence: item.confidence, available: item.available }, { onConflict: 'user_id,canonical_name' }).select('id,ingredient_name,canonical_name,confidence,available').single()
+    if (error) throw error
+    const row = data as PantryRow
+    return { id: row.id, name: row.ingredient_name, originalText: row.ingredient_name, confidence: row.confidence, available: row.available } satisfies NormalizedIngredient
+  },
+
+  async removePantryItem(userId: string, itemId: string) {
+    const { error } = await requireClient().from('pantry_items').delete().eq('user_id', userId).eq('id', itemId)
     if (error) throw error
   },
 }

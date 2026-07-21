@@ -24,7 +24,7 @@ function App() {
   const discovery = useDiscovery()
   const savedRecipes = useSavedRecipes(auth.session)
   const preferences = usePreferences(auth.session)
-  const pantry = usePantry()
+  const pantry = usePantry(auth.session)
 
   const startDiscovery = (value: string) => {
     discovery.startDiscovery(value)
@@ -62,7 +62,7 @@ function App() {
       case 'recipe-detail': return <RecipeDetailPage key={route.recipeId} recipeId={route.recipeId} saved={savedRecipes.savedIds.includes(route.recipeId)} onToggleSave={() => toggleSaved(route.recipeId)} onStartCooking={() => navigate(`/recipes/${route.recipeId}/cook`)} onBack={() => navigate('/results')} />
       case 'cooking': return <CookingPage key={route.recipeId} recipeId={route.recipeId} onFinish={finishCooking} onBack={() => navigate(`/recipes/${route.recipeId}`)} />
       case 'saved': return <SavedPage isAuthenticated={Boolean(auth.session)} status={savedRecipes.status} error={savedRecipes.error} savedIds={savedRecipes.savedIds} savedRecipes={savedRecipes.savedRecipes} cookedRecipes={savedRecipes.cookedRecipes} onOpen={(id) => navigate(`/recipes/${id}`)} onUnsave={(id) => savedRecipes.toggleSaved(id)} onStart={() => navigate('/ulam')} onSignIn={requireAuth} />
-      case 'pantry': return <PantryPage pantryItems={pantry.pantryItems} onAdd={pantry.addPantryItem} onRemove={pantry.removePantryItem} onGenerate={generateFromPantry} />
+      case 'pantry': return <PantryPage isAuthenticated={Boolean(auth.session)} status={pantry.status} error={pantry.error} pantryItems={pantry.pantryItems} onAdd={pantry.addPantryItem} onRemove={pantry.removePantryItem} onGenerate={generateFromPantry} onSignIn={requireAuth} />
       case 'profile': return <ProfilePage key={`${auth.session?.user.id ?? 'signed-out'}-${preferences.preferences.language}-${preferences.preferences.default_servings}-${preferences.preferences.dietary_preference}`} session={auth.session} preferences={preferences.preferences} status={preferences.status} error={preferences.error} onSave={preferences.save} onSignIn={requireAuth} onSignOut={auth.signOut} />
       case 'auth': return <AuthPage session={auth.session} status={auth.status} error={auth.error} onSignIn={auth.signIn} onSignOut={auth.signOut} onContinue={() => navigate('/')} />
       case 'not-found': return <NotFoundPage onBack={() => navigate('/')} />

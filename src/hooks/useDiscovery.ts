@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { recipeService } from '../services/recipeService.ts'
 import type { DiscoverySession, GenerationConstraints, NormalizedIngredient, Recipe } from '../types/domain.ts'
+import { normalizeConstraints } from '../lib/recipeControls.ts'
 
 export type GenerationStatus = 'idle' | 'loading' | 'success' | 'error'
 
@@ -31,7 +32,7 @@ export function useDiscovery() {
   }
 
   const updateConstraints = (patch: Partial<GenerationConstraints>) => {
-    setSession((current) => ({ ...current, constraints: { ...current.constraints, ...patch } }))
+    setSession((current) => ({ ...current, constraints: normalizeConstraints({ ...current.constraints, ...patch }) }))
   }
 
   const removeIngredient = (id: string) => {

@@ -43,6 +43,7 @@ export function ResultsPage({ session, status, suggestions, error, savedIds, onO
         <span className="filter-pill">{session.constraints.servings} servings</span>
         {session.constraints.budgetLimit ? <span className="filter-pill">Under ₱{session.constraints.budgetLimit}</span> : null}
         {session.constraints.dietaryPreference && session.constraints.dietaryPreference !== 'none' ? <span className="filter-pill">{session.constraints.dietaryPreference}</span> : null}
+        <span className="filter-pill">{session.constraints.spiceLevel} spice</span>
       </div>
       <div className="results-grid">
         {suggestions.map((recipe) => <RecipeCard key={recipe.id} recipe={recipe} saved={savedIds.includes(recipe.id)} onOpen={() => onOpen(recipe.id)} onToggleSave={() => onToggleSave(recipe.id)} />)}
