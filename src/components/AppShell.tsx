@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { Icon } from '@iconify/react'
 import type { AppRoute } from '../app/router.ts'
 import { BrandMark } from './BrandMark.tsx'
 
@@ -9,18 +10,18 @@ interface AppShellProps {
 }
 
 const navigation = [
-  { label: 'Home', path: '/', route: 'home' as const, icon: '⌂' },
-  { label: 'Ulam AI', path: '/ulam', route: 'ulam' as const, icon: '✦' },
-  { label: 'Saved', path: '/saved', route: 'saved' as const, icon: '♡' },
-  { label: 'Pantry', path: '/pantry', route: 'pantry' as const, icon: '▦' },
+  { label: 'Home', path: '/', route: 'home' as const, icon: 'lucide:house' },
+  { label: 'Ulam AI', path: '/ulam', route: 'ulam' as const, icon: 'lucide:sparkles' },
+  { label: 'Saved', path: '/saved', route: 'saved' as const, icon: 'lucide:heart' },
+  { label: 'Pantry', path: '/pantry', route: 'pantry' as const, icon: 'lucide:package' },
 ]
 
 export function AppShell({ routeName, onNavigate, children }: AppShellProps) {
-  const isActive = (route: AppRoute['name']) => routeName === route || (route === 'ulam' && routeName === 'results')
+  const isActive = (route: AppRoute['name']) => routeName === route || (route === 'ulam' && (routeName === 'results' || routeName === 'recipe-detail' || routeName === 'cooking'))
 
   return (
     <div className="app-shell">
-      <aside className="app-sidebar" aria-label="Main navigation">
+      <header className="app-topbar">
         <button className="brand-lockup" type="button" onClick={() => onNavigate('/')}>
           <BrandMark className="brand-mark" />
           <span>
@@ -29,7 +30,7 @@ export function AppShell({ routeName, onNavigate, children }: AppShellProps) {
           </span>
         </button>
 
-        <nav className="sidebar-nav">
+        <nav className="topbar-nav" aria-label="Main navigation">
           {navigation.map((item) => (
             <button
               className={`nav-item ${isActive(item.route) ? 'nav-item-active' : ''}`}
@@ -38,22 +39,20 @@ export function AppShell({ routeName, onNavigate, children }: AppShellProps) {
               onClick={() => onNavigate(item.path)}
               aria-current={isActive(item.route) ? 'page' : undefined}
             >
-              <span className="nav-icon" aria-hidden="true">{item.icon}</span>
+              <Icon className="nav-icon" icon={item.icon} width={20} height={20} aria-hidden="true" />
               {item.label}
             </button>
           ))}
         </nav>
 
-        <div className="sidebar-footer">
-          <button className="profile-link" type="button" onClick={() => onNavigate('/profile')}>
-            <span className="avatar" aria-hidden="true">U</span>
-            <span>
-              <strong>Profile</strong>
-              <small>Preferences</small>
-            </span>
-          </button>
-        </div>
-      </aside>
+        <button className="profile-link" type="button" onClick={() => onNavigate('/profile')}>
+          <span className="avatar" aria-hidden="true">U</span>
+          <span className="profile-copy">
+            <strong>Profile</strong>
+            <small>Preferences</small>
+          </span>
+        </button>
+      </header>
 
       <div className="app-content-wrap">
         <header className="mobile-header">
@@ -77,7 +76,7 @@ export function AppShell({ routeName, onNavigate, children }: AppShellProps) {
               onClick={() => onNavigate(item.path)}
               aria-current={isActive(item.route) ? 'page' : undefined}
             >
-              <span aria-hidden="true">{item.icon}</span>
+              <Icon icon={item.icon} width={20} height={20} aria-hidden="true" />
               <small>{item.label}</small>
             </button>
           ))}
