@@ -29,14 +29,14 @@ export function useDiscovery() {
   }
 
   const startFromPantry = (ingredients: NormalizedIngredient[]) => {
-    const pantryIngredients = ingredients.map((ingredient) => ({ ...ingredient, source: 'pantry' as const }))
+    const pantryIngredients = ingredients.map((ingredient) => ({ ...ingredient, quantity: 1, unit: 'piece' as const, source: 'pantry' as const }))
     startFromIngredients(formatPantryInput(pantryIngredients), pantryIngredients)
   }
 
   const replacePantryIngredients = (items: NormalizedIngredient[]) => {
     setSession((current) => {
       const manualIngredients = current.ingredients.filter((ingredient) => ingredient.source !== 'pantry')
-      const pantryIngredients = items.map((item) => ({ ...item, source: 'pantry' as const }))
+      const pantryIngredients = items.map((item) => ({ ...item, quantity: 1, unit: 'piece' as const, source: 'pantry' as const }))
       const ingredients = [...pantryIngredients, ...manualIngredients]
       return { ...current, rawInput: formatPantryInput(ingredients), ingredients }
     })

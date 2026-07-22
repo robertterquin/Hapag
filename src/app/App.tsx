@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import '../App.css'
 import { AppShell } from '../components/AppShell.tsx'
 import { useDiscovery } from '../hooks/useDiscovery.ts'
@@ -26,6 +26,19 @@ function App() {
   const preferences = usePreferences(auth.session)
   const pantry = usePantry(auth.session)
   const [pantryPickerExpanded, setPantryPickerExpanded] = useState(false)
+  const initializedUlamFromIngredients = useRef(false)
+
+  useEffect(() => {
+    if (route.name !== 'ulam') {
+      initializedUlamFromIngredients.current = false
+      return
+    }
+    if (pantry.status === 'ready' && pantry.pantryItems.length > 0 && discovery.session.ingredients.length === 0 && !initializedUlamFromIngredients.current) {
+      initializedUlamFromIngredients.current = true
+      discovery.startFromPantry(pantry.pantryItems)
+      setPantryPickerExpanded(true)
+    }
+  }, [route.name, pantry.status, pantry.pantryItems, discovery])
 
   const startDiscovery = (value: string) => {
     discovery.startDiscovery(value)
@@ -40,12 +53,18 @@ function App() {
   }
 
   const usePantryInUlam = () => {
+    discovery.startFromPantry(pantry.pantryItems)
     setPantryPickerExpanded(true)
     navigate('/ulam')
   }
 
   const navigateFromShell = (path: string) => {
-    setPantryPickerExpanded(false)
+    if (path === '/ulam' && pantry.pantryItems.length > 0 && discovery.session.ingredients.length === 0) {
+      discovery.startFromPantry(pantry.pantryItems)
+      setPantryPickerExpanded(true)
+    } else {
+      setPantryPickerExpanded(false)
+    }
     navigate(path)
   }
 

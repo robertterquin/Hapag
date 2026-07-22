@@ -1,20 +1,14 @@
 import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { normalizeIngredientDraft } from '../lib/ingredientParser.ts'
-import { recipeService } from '../services/recipeService.ts'
 import { persistenceService } from '../services/persistenceService.ts'
-import type { IngredientDraft, NormalizedIngredient, PantryUnit } from '../types/domain.ts'
+import type { IngredientDraft, NormalizedIngredient } from '../types/domain.ts'
 import { getErrorMessage } from '../lib/errors.ts'
 
-export interface PantryItemUpdate {
-  id: string
-  name: string
-  quantity: number
-  unit: PantryUnit
-}
+export interface PantryItemUpdate { id: string; name: string }
 
 function withPantrySource(item: NormalizedIngredient): NormalizedIngredient {
-  return { ...item, source: 'pantry' }
+  return { ...item, quantity: 1, unit: 'piece', source: 'pantry' }
 }
 
 export function usePantry(session: Session | null) {
@@ -43,7 +37,7 @@ export function usePantry(session: Session | null) {
   const addPantryItem = async (input: IngredientDraft) => {
     const addition = normalizeIngredientDraft(input, 'pantry')
     if (!addition) {
-      const validationError = new Error('Enter an ingredient name and a quantity greater than zero.')
+      const validationError = new Error('Enter an ingredient name.')
       setError(validationError.message)
       throw validationError
     }
@@ -52,13 +46,7 @@ export function usePantry(session: Session | null) {
       const operations: Array<{ type: 'insert' | 'update'; item: NormalizedIngredient }> = []
       const existingIndex = workingItems.findIndex((item) => item.canonicalName === addition.canonicalName)
       if (existingIndex >= 0) {
-        const existing = workingItems[existingIndex]
-        if (existing.unit !== addition.unit) {
-          throw new Error(`${existing.name} is already measured in ${existing.unit}. Edit the existing row instead of mixing units.`)
-        }
-        const merged = withPantrySource({ ...existing, quantity: existing.quantity + addition.quantity, originalText: `${existing.originalText}, ${addition.originalText}` })
-        workingItems[existingIndex] = merged
-        operations.push({ type: 'update', item: merged })
+        throw new Error(`${workingItems[existingIndex].name} is already in My Ingredients.`)
       } else {
         const additionForPantry = withPantrySource(addition)
         workingItems.push(additionForPantry)
@@ -81,13 +69,8 @@ export function usePantry(session: Session | null) {
     }
   }
 
-  const updatePantryItem = async ({ id, name, quantity, unit }: PantryItemUpdate) => {
-    if (!Number.isFinite(quantity) || quantity <= 0) {
-      const validationError = new Error('Quantity must be greater than zero.')
-      setError(validationError.message)
-      throw validationError
-    }
-    const parsed = recipeService.normalizeIngredients(name, 'pantry')[0]
+  const updatePantryItem = async ({ id, name }: PantryItemUpdate) => {
+    const parsed = normalizeIngredientDraft({ name }, 'pantry')
     const existing = pantryItems.find((item) => item.id === id)
     if (!parsed || !existing) {
       const validationError = new Error('Enter a valid ingredient name.')
@@ -99,7 +82,7 @@ export function usePantry(session: Session | null) {
       setError(validationError.message)
       throw validationError
     }
-    const updated = withPantrySource({ ...existing, ...parsed, id, name: parsed.name, originalText: name.trim(), quantity, unit })
+    const updated = withPantrySource({ ...existing, ...parsed, id, name: parsed.name, originalText: name.trim() })
     try {
       const saved = session ? await persistenceService.updatePantryItem(session.user.id, updated) : updated
       setPantryItems((items) => items.map((item) => item.id === id ? saved : item))

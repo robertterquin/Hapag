@@ -142,13 +142,13 @@ export function normalizeIngredientInput(input: string, source: IngredientSource
 }
 
 export function normalizeIngredientDraft(input: IngredientDraft, source: IngredientSource = 'manual'): NormalizedIngredient | undefined {
-  const parsed = normalizeIngredientInput(`${input.quantity} ${input.unit} ${input.name}`, source)[0]
-  if (!parsed || !input.name.trim() || !Number.isFinite(input.quantity) || input.quantity <= 0) return undefined
+  const parsed = normalizeIngredientInput(`1 piece ${input.name}`, source)[0]
+  if (!parsed || !input.name.trim()) return undefined
   return {
     ...parsed,
-    originalText: `${input.quantity} ${input.unit} ${input.name.trim()}`,
-    quantity: input.quantity,
-    unit: input.unit,
+    originalText: input.name.trim(),
+    quantity: 1,
+    unit: 'piece',
   }
 }
 
@@ -157,7 +157,7 @@ export function formatPantryQuantity(item: Pick<NormalizedIngredient, 'quantity'
 }
 
 export function formatPantryInput(items: NormalizedIngredient[]) {
-  return items.map((item) => `${formatPantryQuantity(item)} ${item.name}`).join(', ')
+  return items.map((item) => item.name).join(', ')
 }
 
 export function isPantryUnit(value: string | null | undefined): value is PantryUnit {

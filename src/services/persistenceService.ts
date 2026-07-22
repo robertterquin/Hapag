@@ -1,5 +1,4 @@
 import type { Session, User } from '@supabase/supabase-js'
-import { isPantryUnit } from '../lib/ingredientParser.ts'
 import { adaptRecipePayload } from '../schemas/recipeAdapter.ts'
 import { cacheRecipe } from './recipeService.ts'
 import type { NormalizedIngredient, Recipe } from '../types/domain.ts'
@@ -132,8 +131,8 @@ export const persistenceService = {
       name: row.ingredient_name,
       canonicalName: row.canonical_name,
       originalText: row.ingredient_name,
-      quantity: typeof row.quantity === 'number' && row.quantity > 0 ? row.quantity : Number(row.quantity) > 0 ? Number(row.quantity) : 1,
-      unit: isPantryUnit(row.unit) ? row.unit : 'piece',
+      quantity: 1,
+      unit: 'piece',
       source: 'pantry',
       confidence: row.confidence,
       available: row.available,
@@ -141,7 +140,7 @@ export const persistenceService = {
   },
 
   async savePantryItem(userId: string, item: NormalizedIngredient) {
-    const { data, error } = await requireClient().from('pantry_items').upsert({ user_id: userId, ingredient_name: item.name, canonical_name: item.canonicalName, quantity: item.quantity, unit: item.unit, confidence: item.confidence, available: item.available }, { onConflict: 'user_id,canonical_name' }).select('id,ingredient_name,canonical_name,quantity,unit,confidence,available').single()
+    const { data, error } = await requireClient().from('pantry_items').upsert({ user_id: userId, ingredient_name: item.name, canonical_name: item.canonicalName, quantity: 1, unit: 'piece', confidence: item.confidence, available: true }, { onConflict: 'user_id,canonical_name' }).select('id,ingredient_name,canonical_name,quantity,unit,confidence,available').single()
     if (error) throw error
     const row = data as PantryRow
     return {
@@ -149,8 +148,8 @@ export const persistenceService = {
       name: row.ingredient_name,
       canonicalName: row.canonical_name,
       originalText: row.ingredient_name,
-      quantity: typeof row.quantity === 'number' ? row.quantity : Number(row.quantity ?? 1),
-      unit: isPantryUnit(row.unit) ? row.unit : 'piece',
+      quantity: 1,
+      unit: 'piece',
       source: 'pantry',
       confidence: row.confidence,
       available: row.available,
@@ -158,7 +157,7 @@ export const persistenceService = {
   },
 
   async updatePantryItem(userId: string, item: Pick<NormalizedIngredient, 'id' | 'name' | 'canonicalName' | 'quantity' | 'unit' | 'confidence' | 'available'>) {
-    const { data, error } = await requireClient().from('pantry_items').update({ ingredient_name: item.name, canonical_name: item.canonicalName, quantity: item.quantity, unit: item.unit, confidence: item.confidence, available: item.available }).eq('id', item.id).eq('user_id', userId).select('id,ingredient_name,canonical_name,quantity,unit,confidence,available').single()
+    const { data, error } = await requireClient().from('pantry_items').update({ ingredient_name: item.name, canonical_name: item.canonicalName, quantity: 1, unit: 'piece', confidence: item.confidence, available: true }).eq('id', item.id).eq('user_id', userId).select('id,ingredient_name,canonical_name,quantity,unit,confidence,available').single()
     if (error) throw error
     const row = data as PantryRow
     return {
@@ -166,8 +165,8 @@ export const persistenceService = {
       name: row.ingredient_name,
       canonicalName: row.canonical_name,
       originalText: row.ingredient_name,
-      quantity: typeof row.quantity === 'number' ? row.quantity : Number(row.quantity ?? 1),
-      unit: isPantryUnit(row.unit) ? row.unit : 'piece',
+      quantity: 1,
+      unit: 'piece',
       source: 'pantry',
       confidence: row.confidence,
       available: row.available,

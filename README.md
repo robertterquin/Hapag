@@ -8,7 +8,7 @@ Hapag is a playful Filipino cooking assistant that helps users turn the ingredie
 
 **Enter ingredients -> refine constraints -> get suggestions -> choose a recipe -> cook -> save**
 
-The core release supports English, Tagalog, and Taglish ingredient input, familiar Filipino dishes, estimated costs, substitutions, serving adjustment, dietary filters, cooking mode, and saved recipes. Pantry-aware suggestions are planned after the core ingredient-to-recipe flow is stable.
+The core release supports English, Tagalog, and Taglish ingredient input, familiar Filipino dishes, estimated costs, substitutions, serving adjustment, dietary filters, cooking mode, saved recipes, and My Ingredients-aware suggestions.
 
 ## Tech stack
 

@@ -1,17 +1,21 @@
-# Pantry quantities and Pantry-to-Ulam flow
+# My Ingredients and Ulam flow
 
-The Pantry flow now accepts natural-language inventory entries such as `2 cans sardines, 10 eggs, 2 bell peppers`.
+My Ingredients stores reusable ingredient names such as `sardines`, `eggs`, or `bell pepper`.
 
 ## Behavior
 
-- Entries are parsed into ingredient name, canonical name, quantity, unit, confidence, and source.
-- Missing quantities default to `1 piece` and are marked for review.
-- Pantry rows can be edited, saved, and removed.
-- Matching ingredients with the same unit add their quantities together.
-- Different units are not automatically converted.
-- Pantry data uses the existing `pantry_items` table and authenticated-user RLS.
-- Migration `0003_pantry_quantities.sql` backfills legacy null quantity/unit values and adds validation.
+- Users add one ingredient name at a time.
+- Names are normalized to prevent duplicate canonical ingredients.
+- Ingredient rows can be edited on blur or removed.
+- Signed-in data uses the existing `pantry_items` table and authenticated-user RLS.
+- Signed-out users can use a local preview and are prompted to sign in for syncing.
+- No quantity tracking, unit selection, stock limits, or inventory deduction is exposed.
 
 ## Ulam AI handoff
 
-`Use pantry in Ulam AI` seeds the Ulam review with pantry ingredients and their quantities. The Ulam input then adds temporary ingredients without saving them back to the Pantry. All ingredient quantity and unit context is included in the normal recipe-generation request.
+- Opening Ulam AI with saved ingredients selects all My Ingredients entries by default.
+- Users can deselect ingredients before applying the selection.
+- Selected My Ingredients are included in the final ingredient review.
+- Manual Ulam additions remain temporary and are not written back to My Ingredients.
+- Internally, saved names use `quantity: 1` and `unit: 'piece'` only to satisfy the shared recipe-generation contract.
+- The AI is instructed to treat My Ingredients as available food names, not measured inventory.

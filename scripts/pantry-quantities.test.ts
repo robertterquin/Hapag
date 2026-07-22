@@ -5,64 +5,53 @@ import { normalizeIngredientDraft, normalizeIngredientInput } from '../src/lib/i
 
 const read = (path: string) => readFile(path, 'utf8')
 
-test('pantry parser reads quantities and curated units', () => {
-  const [sardines, eggs, peppers] = normalizeIngredientInput('2 cans sardines, 10 eggs, 2 bell peppers', 'pantry')
-  assert.deepEqual(
-    { quantity: sardines.quantity, unit: sardines.unit, canonicalName: sardines.canonicalName, source: sardines.source },
-    { quantity: 2, unit: 'can', canonicalName: 'canned sardines', source: 'pantry' },
-  )
-  assert.deepEqual({ quantity: eggs.quantity, unit: eggs.unit, canonicalName: eggs.canonicalName }, { quantity: 10, unit: 'piece', canonicalName: 'egg' })
-  assert.deepEqual({ quantity: peppers.quantity, unit: peppers.unit, canonicalName: peppers.canonicalName }, { quantity: 2, unit: 'piece', canonicalName: 'bell pepper' })
+test('name-only ingredient drafts use one compatibility piece', () => {
+  const sardines = normalizeIngredientDraft({ name: 'sardines' }, 'pantry')
+  assert.equal(sardines?.quantity, 1)
+  assert.equal(sardines?.unit, 'piece')
+  assert.equal(sardines?.canonicalName, 'canned sardines')
+  assert.equal(sardines?.source, 'pantry')
 })
 
-test('pantry parser defaults missing quantities and marks them for review', () => {
-  const [rice] = normalizeIngredientInput('rice', 'pantry')
-  assert.equal(rice.quantity, 1)
-  assert.equal(rice.unit, 'piece')
-  assert.equal(rice.confidence, 'low')
+test('unknown ingredient names remain reviewable', () => {
+  const [unknown] = normalizeIngredientInput('something new', 'pantry')
+  assert.equal(unknown.confidence, 'low')
 })
 
-test('structured pantry drafts treat known ingredients as explicit entries', () => {
-  const sardines = normalizeIngredientDraft({ name: 'sardines', quantity: 2, unit: 'can' }, 'pantry')
-  assert.equal(sardines?.quantity, 2)
-  assert.equal(sardines?.unit, 'can')
-  assert.equal(sardines?.confidence, 'high')
-})
-
-test('pantry persistence and Pantry-to-Ulam wiring include structured inventory', async () => {
+test('my ingredients persistence keeps compatibility columns without exposing quantities', async () => {
   const service = await read('src/services/persistenceService.ts')
   const hook = await read('src/hooks/usePantry.ts')
   const app = await read('src/app/App.tsx')
-  const ulam = await read('src/pages/UlamPage.tsx')
+  const page = await read('src/pages/PantryPage.tsx')
   const migration = await read('supabase/migrations/0003_pantry_quantities.sql')
   assert.match(service, /quantity,unit/)
-  assert.match(service, /updatePantryItem/)
-  assert.match(hook, /addPantryItem/)
-  assert.match(hook, /existing\.quantity \+ addition\.quantity/)
-  assert.match(app, /setPantryPickerExpanded\(true\)/)
-  assert.match(ulam, /onAddIngredients/)
+  assert.match(service, /quantity: 1/)
+  assert.match(service, /unit: 'piece'/)
+  assert.match(hook, /already in My Ingredients/)
+  assert.match(app, /startFromPantry\(pantry\.pantryItems\)/)
+  assert.match(page, /My Ingredients/)
   assert.match(migration, /pantry_items_quantity_positive/)
-  assert.match(migration, /pantry_items_unit_allowed/)
 })
 
-test('pantry uses one-item structured entry and auto-saves row edits', async () => {
+test('my ingredients uses a name-only form and auto-save editor', async () => {
   const addForm = await read('src/components/IngredientAddForm.tsx')
   const editor = await read('src/components/PantryItemEditor.tsx')
   const page = await read('src/pages/PantryPage.tsx')
-  assert.match(page, /IngredientAddForm/)
-  assert.match(addForm, /name.*quantity.*unit/s)
+  assert.match(page, /Add an ingredient/)
+  assert.match(addForm, /onSubmit\(\{ name: name\.trim\(\) \}\)/)
+  assert.doesNotMatch(addForm, /Quantity|Unit|type="number"/)
   assert.match(editor, /onBlur=/)
-  assert.match(editor, /onChange=.*commit\(nextUnit\)/s)
-  assert.doesNotMatch(editor, /<button[^>]*>Save<\/button>/)
+  assert.doesNotMatch(editor, /pantry-quantity|pantry-unit|<button[^>]*>Save<\/button>/)
 })
 
-test('ulam pantry picker limits temporary selection to available stock', async () => {
+test('ulam picker selects names and preserves manual ingredients', async () => {
   const picker = await read('src/components/PantryPicker.tsx')
   const discovery = await read('src/hooks/useDiscovery.ts')
+  const ulam = await read('src/pages/UlamPage.tsx')
   assert.match(picker, /type="checkbox"/)
-  assert.match(picker, /max=\{item\.quantity\}/)
-  assert.match(picker, /step="any"/)
-  assert.match(picker, /onBlur=\{\(\) => commitQuantity\(item\)\}/)
+  assert.match(picker, /Use selected ingredients/)
+  assert.doesNotMatch(picker, /quantityDrafts|type="number"|Available:/)
   assert.match(discovery, /replacePantryIngredients/)
   assert.match(discovery, /source === 'manual'/)
+  assert.match(ulam, /initialSelectedIds=\{selectedPantryIds\}/)
 })
