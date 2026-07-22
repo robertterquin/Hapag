@@ -60,6 +60,7 @@ const substitutionSchema = z.object({
 export const recipeSchema = z.object({
   id: z.string().min(1),
   title: z.string().min(3),
+  imageUrl: z.string().url().optional(),
   localTitle: z.string().min(1).optional(),
   description: z.string().min(12),
   matchReason: z.string().min(12),

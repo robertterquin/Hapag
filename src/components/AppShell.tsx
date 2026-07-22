@@ -1,10 +1,12 @@
 import type { ReactNode } from 'react'
 import { Icon } from '@iconify/react'
+import { AnimatePresence, motion } from 'motion/react'
 import type { AppRoute } from '../app/router.ts'
 import { BrandMark } from './BrandMark.tsx'
 
 interface AppShellProps {
   routeName: AppRoute['name']
+  contentKey: string
   onNavigate: (path: string) => void
   children: ReactNode
 }
@@ -15,7 +17,7 @@ const navigation = [
   { label: 'Saved', path: '/saved', route: 'saved' as const, icon: 'lucide:heart' },
 ]
 
-export function AppShell({ routeName, onNavigate, children }: AppShellProps) {
+export function AppShell({ routeName, contentKey, onNavigate, children }: AppShellProps) {
   const isActive = (route: AppRoute['name']) => routeName === route || (route === 'ulam' && (routeName === 'results' || routeName === 'recipe-detail' || routeName === 'cooking'))
 
   return (
@@ -64,7 +66,20 @@ export function AppShell({ routeName, onNavigate, children }: AppShellProps) {
           </button>
         </header>
 
-        <main className="app-content">{children}</main>
+        <main className="app-content">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              className="page-transition"
+              key={contentKey}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+            >
+              {children}
+            </motion.div>
+          </AnimatePresence>
+        </main>
 
         <nav className="mobile-nav" aria-label="Mobile navigation">
           {navigation.map((item) => (

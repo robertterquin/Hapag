@@ -63,7 +63,8 @@ function App() {
     }
   })()
 
-  return <AppShell routeName={route.name} onNavigate={navigateFromShell}>{page}</AppShell>
+  const contentKey = route.name === 'recipe-detail' || route.name === 'cooking' ? `${route.name}:${route.recipeId}` : route.name
+  return <AppShell routeName={route.name} contentKey={contentKey} onNavigate={navigateFromShell}>{page}</AppShell>
 }
 
 export default App

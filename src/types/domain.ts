@@ -86,6 +86,7 @@ export interface CostLine {
 export interface Recipe {
   id: string
   title: string
+  imageUrl?: string
   localTitle?: string
   description: string
   matchReason: string

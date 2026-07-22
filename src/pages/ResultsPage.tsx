@@ -48,7 +48,7 @@ export function ResultsPage({ session, status, suggestions, error, savedError, s
         <span className="filter-pill">{session.constraints.spiceLevel} spice</span>
       </div>
       <div className="results-grid">
-        {suggestions.map((recipe) => <RecipeCard key={recipe.id} recipe={recipe} saved={savedIds.includes(recipe.id)} onOpen={() => onOpen(recipe.id)} onToggleSave={() => onToggleSave(recipe.id)} />)}
+        {suggestions.map((recipe, index) => <RecipeCard key={recipe.id} recipe={recipe} animationIndex={index} saved={savedIds.includes(recipe.id)} onOpen={() => onOpen(recipe.id)} onToggleSave={() => onToggleSave(recipe.id)} />)}
       </div>
       <div className="results-footer-actions">
         <button className="button button-secondary" type="button" onClick={onRetry}>Subukan ulit</button>

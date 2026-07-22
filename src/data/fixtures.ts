@@ -24,6 +24,7 @@ const rawRecipeFixtures = [
   {
     id: 'sardines-egg-pechay',
     title: 'Sardines with egg and pechay',
+    imageUrl: 'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1200&q=82',
     localTitle: 'Sardinas na may itlog at pechay',
     description: 'Isang mabilis at sulit na ulam gamit ang mga sangkap na meron ka.',
     matchReason: 'Ginagamit nito ang sardinas, itlog, at pechay na meron ka na.',
@@ -61,6 +62,7 @@ const rawRecipeFixtures = [
   {
     id: 'ginisang-pechay-egg',
     title: 'Ginisang pechay with egg',
+    imageUrl: 'https://images.unsplash.com/photo-1512621776951-a57141f2e2f8?auto=format&fit=crop&w=1200&q=82',
     localTitle: 'Ginisang pechay na may itlog',
     description: 'Simple, mabilis, at nakasentro sa gulay na ulam.',
     matchReason: 'Pechay, kamatis, at itlog ang bida; kaunti lang ang kailangang idagdag.',
@@ -98,6 +100,7 @@ const rawRecipeFixtures = [
   {
     id: 'sardine-omelet-tomato',
     title: 'Sardine omelet with tomato',
+    imageUrl: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=1200&q=82',
     localTitle: 'Tortang sardinas na may kamatis',
     description: 'Malinamnam na omelet na puwedeng pang-ulam o pang-baon.',
     matchReason: 'Pinagsasama nito ang itlog, sardinas, at kamatis sa isang mabilis na ulam.',

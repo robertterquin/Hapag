@@ -1,3 +1,4 @@
+import { motion } from 'motion/react'
 import type { Recipe } from '../types/domain.ts'
 import { formatCost } from '../lib/format.ts'
 
@@ -6,19 +7,22 @@ interface RecipeCardProps {
   saved: boolean
   onOpen: () => void
   onToggleSave: () => void
+  animationIndex?: number
 }
 
-export function RecipeCard({ recipe, saved, onOpen, onToggleSave }: RecipeCardProps) {
+export function RecipeCard({ recipe, saved, onOpen, onToggleSave, animationIndex = 0 }: RecipeCardProps) {
   const available = recipe.ingredients.filter((ingredient) => ingredient.available)
   const missing = recipe.ingredients.filter((ingredient) => !ingredient.available)
+  const delay = Math.min(animationIndex, 5) * 0.045
 
   return (
-    <article className="recipe-card">
+    <motion.article className="recipe-card" layout initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} whileHover={{ y: -3 }} transition={{ duration: 0.26, delay, ease: 'easeOut' }}>
+      {recipe.imageUrl ? <img className="recipe-card-image" src={recipe.imageUrl} alt="" loading="lazy" /> : <div className="recipe-card-image recipe-card-image-placeholder" aria-hidden="true">🍲</div>}
       <div className="recipe-card-topline">
         <span className="recipe-badge">{recipe.tags[0]}</span>
-        <button className={`save-button ${saved ? 'save-button-saved' : ''}`} type="button" onClick={onToggleSave} aria-label={saved ? `Unsave ${recipe.title}` : `Save ${recipe.title}`} aria-pressed={saved}>
-          {saved ? '♥' : '♡'}
-        </button>
+        <motion.button className={`save-button ${saved ? 'save-button-saved' : ''}`} type="button" onClick={onToggleSave} aria-label={saved ? `Unsave ${recipe.title}` : `Save ${recipe.title}`} aria-pressed={saved} whileTap={{ scale: 0.9 }} transition={{ duration: 0.12 }}>
+          <motion.span key={saved ? 'saved' : 'unsaved'} initial={{ scale: 0.7, opacity: 0.5 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.16 }}>{saved ? '♥' : '♡'}</motion.span>
+        </motion.button>
       </div>
       <button className="recipe-card-main" type="button" onClick={onOpen}>
         <h2>{recipe.title}</h2>
@@ -35,6 +39,6 @@ export function RecipeCard({ recipe, saved, onOpen, onToggleSave }: RecipeCardPr
         </div>
         <span className="card-action">Tingnan ang recipe <span aria-hidden="true">→</span></span>
       </button>
-    </article>
+    </motion.article>
   )
 }
