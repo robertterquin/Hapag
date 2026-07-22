@@ -20,7 +20,9 @@ export function useDiscovery() {
 
   const startDiscovery = (value: string) => {
     setSession((current) => ({ ...current, rawInput: value, ingredients: value ? recipeService.normalizeIngredients(value, 'manual') : [] }))
+    setSuggestions([])
     setGenerationStatus('idle')
+    setGenerationError(null)
   }
 
   const resetDiscovery = () => {
@@ -54,6 +56,9 @@ export function useDiscovery() {
       }
       return { ...current, rawInput: formatIngredientInput(ingredients), ingredients }
     })
+    setSuggestions([])
+    setGenerationStatus('idle')
+    setGenerationError(null)
   }
 
   const updateConstraints = (patch: Partial<GenerationConstraints>) => {
@@ -61,7 +66,13 @@ export function useDiscovery() {
   }
 
   const removeIngredient = (id: string) => {
-    setSession((current) => ({ ...current, ingredients: current.ingredients.filter((ingredient) => ingredient.id !== id) }))
+    setSession((current) => {
+      const ingredients = current.ingredients.filter((ingredient) => ingredient.id !== id)
+      return { ...current, rawInput: formatIngredientInput(ingredients), ingredients }
+    })
+    setSuggestions([])
+    setGenerationStatus('idle')
+    setGenerationError(null)
   }
 
   const generateSuggestions = async () => {

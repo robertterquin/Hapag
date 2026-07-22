@@ -26,6 +26,8 @@ test('Ulam AI keeps ingredient review and manual additions', async () => {
   assert.match(ulam, /Add ingredients/)
   assert.match(discovery, /addIngredients/)
   assert.match(discovery, /resetDiscovery/)
+  assert.match(discovery, /rawInput: formatIngredientInput\(ingredients\)/)
+  assert.match(discovery, /setSuggestions\(\[\]\)/)
   assert.doesNotMatch(ulam, /PantryPicker|My Ingredients/)
   assert.doesNotMatch(discovery, /startFromPantry|replacePantryIngredients/)
 })
