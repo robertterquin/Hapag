@@ -1,8 +1,9 @@
+import { CookingLoadingState } from '../components/CookingLoadingState.tsx'
 import { RecipeCard } from '../components/RecipeCard.tsx'
 import { ResultsSkeleton } from '../components/Skeletons.tsx'
 import { StatePanel } from '../components/StatePanel.tsx'
-import type { DiscoverySession, Recipe } from '../types/domain.ts'
 import type { GenerationStatus } from '../hooks/useDiscovery.ts'
+import type { DiscoverySession, Recipe } from '../types/domain.ts'
 
 export interface ResultsPageProps {
   session: DiscoverySession
@@ -19,7 +20,7 @@ export interface ResultsPageProps {
 
 export function ResultsPage({ session, status, suggestions, error, savedError, savedIds, onOpen, onToggleSave, onRetry, onEdit }: ResultsPageProps) {
   if (status === 'loading') {
-    return <div className="page-shell"><span className="eyebrow">Recipe results</span><h1>Naghahanap ng ulam…</h1><p className="page-intro">Tinitingnan namin kung ano ang puwedeng lutuin gamit ang mga sangkap mo.</p><ResultsSkeleton /></div>
+    return <div className="page-shell"><span className="eyebrow">Mga resulta ng recipe</span><h1>Naghahanap ng ulam…</h1><p className="page-intro">Tinitingnan namin kung ano ang puwedeng lutuin gamit ang mga sangkap mo.</p><CookingLoadingState /><ResultsSkeleton /></div>
   }
 
   if (status === 'error') {
@@ -34,7 +35,7 @@ export function ResultsPage({ session, status, suggestions, error, savedError, s
     <div className="page-shell">
       <div className="results-header">
         <div>
-          <span className="eyebrow">Recipe results</span>
+          <span className="eyebrow">Mga resulta ng recipe</span>
           <h1>Mga puwedeng lutuin</h1>
           <p className="page-intro">Tatlong ideya mula sa: <strong>{session.rawInput || 'mga sangkap mo'}</strong></p>
         </div>
@@ -43,7 +44,7 @@ export function ResultsPage({ session, status, suggestions, error, savedError, s
       {savedError ? <div className="error-banner" role="alert">{savedError}</div> : null}
       <div className="active-filter-row" aria-label="Applied constraints">
         <span className="filter-pill">{session.constraints.servings} servings</span>
-        {session.constraints.budgetLimit ? <span className="filter-pill">Under ₱{session.constraints.budgetLimit}</span> : null}
+        {session.constraints.budgetLimit ? <span className="filter-pill">Mas mababa sa ₱{session.constraints.budgetLimit}</span> : null}
         {session.constraints.dietaryPreference && session.constraints.dietaryPreference !== 'none' ? <span className="filter-pill">{session.constraints.dietaryPreference}</span> : null}
         <span className="filter-pill">{session.constraints.spiceLevel} spice</span>
       </div>
@@ -53,7 +54,7 @@ export function ResultsPage({ session, status, suggestions, error, savedError, s
       <div className="results-footer-actions">
         <button className="button button-secondary" type="button" onClick={onRetry}>Subukan ulit</button>
       </div>
-      <p className="trust-note trust-note-block">AI-generated suggestions. Prices are estimates. Check ingredients and labels before cooking.</p>
+      <p className="trust-note trust-note-block">AI-generated suggestions. Tantiya lamang ang presyo. Suriin ang mga sangkap at labels bago magluto.</p>
     </div>
   )
 }

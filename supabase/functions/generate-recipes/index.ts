@@ -1,3 +1,5 @@
+import { consumeRateLimit, getRateLimitConfig } from './rateLimit.ts'
+
 const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -128,8 +130,55 @@ function isGenerationRequest(value: unknown): value is JsonRecord {
   return typeof value.rawInput === 'string' && Array.isArray(value.ingredients) && isRecord(value.constraints)
 }
 
-function responseJson(body: JsonRecord, status = 200) {
-  return new Response(JSON.stringify(body), { status, headers: corsHeaders })
+function responseJson(body: JsonRecord, status = 200, extraHeaders: Record<string, string> = {}) {
+  return new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, ...extraHeaders } })
+}
+
+function getClientIp(request: Request) {
+  return request.headers.get('cf-connecting-ip')
+    ?? request.headers.get('x-real-ip')
+    ?? request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+    ?? 'unknown'
+}
+
+async function hashValue(value: string) {
+  const bytes = new TextEncoder().encode(value)
+  const digest = await crypto.subtle.digest('SHA-256', bytes)
+  return Array.from(new Uint8Array(digest)).map((byte) => byte.toString(16).padStart(2, '0')).join('')
+}
+
+async function identifyUser(request: Request) {
+  const authorization = request.headers.get('Authorization')
+  const supabaseUrl = Deno.env.get('SUPABASE_URL')
+  const anonKey = Deno.env.get('SUPABASE_ANON_KEY')
+  if (!authorization || !supabaseUrl || !anonKey) return undefined
+
+  try {
+    const response = await fetch(`${supabaseUrl}/auth/v1/user`, {
+      headers: { apikey: anonKey, Authorization: authorization },
+    })
+    if (!response.ok) return undefined
+    const user = await response.json() as { id?: unknown }
+    return typeof user.id === 'string' ? user.id : undefined
+  } catch {
+    return undefined
+  }
+}
+
+function isValidConstraints(value: JsonRecord) {
+  const servings = value.servings
+  const allergies = value.allergies
+  const spiceLevel = value.spiceLevel
+  const budgetLimit = value.budgetLimit
+  return Number.isInteger(servings) && servings >= 1 && servings <= 20
+    && Array.isArray(allergies) && allergies.every((item) => typeof item === 'string')
+    && (spiceLevel === 'mild' || spiceLevel === 'medium' || spiceLevel === 'hot')
+    && (budgetLimit === undefined || (typeof budgetLimit === 'number' && Number.isFinite(budgetLimit) && budgetLimit >= 0))
+}
+
+function positiveInteger(value: string | undefined, fallback: number) {
+  const parsed = Number(value)
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback
 }
 
 function extractOutputText(response: unknown) {
@@ -183,15 +232,40 @@ async function handler(request: Request) {
   const apiKey = Deno.env.get('OPENAI_API_KEY')
   if (!apiKey) return responseJson({ error: 'AI generation is not configured.' }, 503)
 
+  const maxInputLength = positiveInteger(Deno.env.get('AI_MAX_INPUT_LENGTH'), 2000)
+  const maxIngredients = positiveInteger(Deno.env.get('AI_MAX_INGREDIENTS'), 20)
+  const maxBodyLength = 32_000
   let payload: unknown
   try {
-    payload = await request.json()
+    const rawBody = await request.text()
+    if (rawBody.length > maxBodyLength) return responseJson({ error: 'Request payload is too large.' }, 413)
+    payload = JSON.parse(rawBody)
   } catch {
     return responseJson({ error: 'Request body must be valid JSON.' }, 400)
   }
 
   if (!isGenerationRequest(payload) || !Array.isArray(payload.ingredients) || payload.ingredients.length === 0) {
     return responseJson({ error: 'At least one ingredient is required.' }, 400)
+  }
+
+  const rawInput = typeof payload.rawInput === 'string' ? payload.rawInput : ''
+  const constraints = isRecord(payload.constraints) ? payload.constraints : undefined
+  if (payload.ingredients.length > maxIngredients) return responseJson({ error: `A maximum of ${maxIngredients} ingredients is allowed.` }, 413)
+  if (rawInput.length > maxInputLength) return responseJson({ error: `Ingredient input must be ${maxInputLength} characters or fewer.` }, 413)
+  if (!constraints || !isValidConstraints(constraints)) return responseJson({ error: 'Generation constraints are invalid.' }, 400)
+
+  const rateLimitConfig = getRateLimitConfig((name) => Deno.env.get(name))
+  const userId = await identifyUser(request)
+  const identity = userId ? `user:${userId}` : `ip:${await hashValue(getClientIp(request))}`
+  const currentWindow = Math.floor(Date.now() / 1000 / rateLimitConfig.windowSeconds)
+  const limit = userId ? rateLimitConfig.authenticatedLimit : rateLimitConfig.anonymousLimit
+
+  try {
+    const rateLimit = await consumeRateLimit(`hapag:ai:${identity}:${currentWindow}`, limit, rateLimitConfig.windowSeconds, (name) => Deno.env.get(name))
+    if (!rateLimit.allowed) return responseJson({ error: 'AI generation rate limit exceeded.' }, 429, { 'Retry-After': String(rateLimit.retryAfterSeconds) })
+  } catch (error) {
+    console.error('AI rate limiting failed', error instanceof Error ? error.message : 'unknown')
+    return responseJson({ error: 'AI generation is temporarily unavailable.' }, 503)
   }
 
   const model = Deno.env.get('OPENAI_MODEL')

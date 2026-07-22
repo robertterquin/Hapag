@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import type { IngredientDraft } from '../types/domain.ts'
+import { IngredientSuggestions } from './IngredientSuggestions.tsx'
 
 interface IngredientAddFormProps {
   idPrefix: string
@@ -8,9 +9,11 @@ interface IngredientAddFormProps {
   submitLabel: string
   placeholder?: string
   onSubmit: (input: IngredientDraft) => Promise<void>
+  suggestions?: readonly string[]
+  onSuggestionSelect?: (ingredient: string) => void
 }
 
-export function IngredientAddForm({ idPrefix, label, helper = 'Add ingredients one at a time.', submitLabel, placeholder = 'e.g. sardines', onSubmit }: IngredientAddFormProps) {
+export function IngredientAddForm({ idPrefix, label, helper = 'Add ingredients one at a time.', submitLabel, placeholder = 'e.g. sardines', onSubmit, suggestions, onSuggestionSelect }: IngredientAddFormProps) {
   const [name, setName] = useState('')
   const [busy, setBusy] = useState(false)
 
@@ -37,6 +40,7 @@ export function IngredientAddForm({ idPrefix, label, helper = 'Add ingredients o
         <span className="prompt-helper">{helper}</span>
         <button className="button button-primary" type="submit" disabled={busy}>{busy ? 'Idinadagdag…' : submitLabel}</button>
       </div>
+      {suggestions ? <IngredientSuggestions items={suggestions} onSelect={(ingredient) => onSuggestionSelect ? onSuggestionSelect(ingredient) : setName(ingredient.toLowerCase())} /> : null}
     </form>
   )
 }

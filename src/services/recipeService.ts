@@ -31,18 +31,28 @@ export const mockRecipeService: RecipeService = {
   },
 }
 
-async function generateWithOpenAI(request: GenerationRequest) {
+export class RecipeGenerationError extends Error {
+  readonly status?: number
+
+  constructor(message: string, status?: number) {
+    super(message)
+    this.status = status
+    this.name = 'RecipeGenerationError'
+  }
+}
+
+async function generateWithOpenAI(request: GenerationRequest, accessToken?: string) {
   const response = await fetch(`${appConfig.supabaseFunctionUrl}/generate-recipes`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       apikey: appConfig.supabaseAnonKey,
-      Authorization: `Bearer ${appConfig.supabaseAnonKey}`,
+      Authorization: `Bearer ${accessToken || appConfig.supabaseAnonKey}`,
     },
     body: JSON.stringify(request),
   })
 
-  if (!response.ok) throw new Error(`Recipe generation failed with status ${response.status}.`)
+  if (!response.ok) throw new RecipeGenerationError(`Recipe generation failed with status ${response.status}.`, response.status)
 
   const payload: unknown = await response.json()
   if (!payload || typeof payload !== 'object' || !('recipes' in payload)) throw new Error('Recipe generation returned an invalid payload.')
@@ -57,11 +67,11 @@ export const recipeService: RecipeService = {
     return normalizeIngredientInput(input, source)
   },
 
-  async generateSuggestions(request) {
+  async generateSuggestions(request, accessToken) {
     if (!hasRecipeGenerationConfig) return mockRecipeService.generateSuggestions(request)
 
     try {
-      return await generateWithOpenAI(request)
+      return await generateWithOpenAI(request, accessToken)
     } catch (error) {
       console.warn('AI generation unavailable; using curated Hapag fixtures.', error)
       return mockRecipeService.generateSuggestions(request)

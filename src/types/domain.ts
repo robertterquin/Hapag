@@ -128,6 +128,6 @@ export interface DiscoverySession {
 
 export interface RecipeService {
   normalizeIngredients(input: string, source?: IngredientSource): NormalizedIngredient[]
-  generateSuggestions(request: GenerationRequest): Promise<Recipe[]>
+  generateSuggestions(request: GenerationRequest, accessToken?: string): Promise<Recipe[]>
   getRecipe(recipeId: string): Promise<Recipe | undefined>
 }

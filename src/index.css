@@ -65,11 +65,11 @@
 
 body { margin: 0; min-width: 320px; min-height: 100vh; }
 
-button, textarea { font: inherit; }
+button, input, select, textarea { font: inherit; }
 
 button { cursor: pointer; }
 
-button:focus-visible, textarea:focus-visible {
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
   outline: 3px solid var(--color-focus);
   outline-offset: 3px;
 }

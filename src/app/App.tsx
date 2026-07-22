@@ -30,7 +30,7 @@ function App() {
   const generateSuggestions = () => {
     if (discovery.session.ingredients.length === 0) return
     navigate('/results')
-    void discovery.generateSuggestions()
+    void discovery.generateSuggestions(auth.session?.access_token)
   }
 
   const navigateFromShell = (path: string) => {

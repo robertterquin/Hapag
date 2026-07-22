@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { IngredientSuggestions } from './IngredientSuggestions.tsx'
 
 interface IngredientPromptProps {
   initialValue?: string
@@ -6,10 +7,11 @@ interface IngredientPromptProps {
   placeholder?: string
   submitLabel?: string
   onSubmit: (value: string) => void | Promise<void>
+  suggestions?: readonly string[]
   compact?: boolean
 }
 
-export function IngredientPrompt({ initialValue = '', label = 'Anong sangkap ang meron ka?', placeholder = 'Halimbawa: itlog, kamatis, sardinas…', submitLabel = 'Lutuin natin!', onSubmit, compact = false }: IngredientPromptProps) {
+export function IngredientPrompt({ initialValue = '', label = 'Anong sangkap ang meron ka?', placeholder = 'Halimbawa: itlog, kamatis, sardinas…', submitLabel = 'Lutuin natin!', onSubmit, suggestions, compact = false }: IngredientPromptProps) {
   const [value, setValue] = useState(initialValue)
   const isValid = value.trim().length > 0
 
@@ -29,6 +31,7 @@ export function IngredientPrompt({ initialValue = '', label = 'Anong sangkap ang
         placeholder={placeholder}
         rows={compact ? 2 : 3}
       />
+      {suggestions ? <IngredientSuggestions items={suggestions} onSelect={(ingredient) => setValue((current) => current.trim() ? `${current.trim()}, ${ingredient.toLowerCase()}` : ingredient.toLowerCase())} /> : null}
       <div className="prompt-footer">
         <span className="prompt-helper">Okay lang ang English, Tagalog, o Taglish.</span>
         <button className="button button-primary" type="submit" disabled={!isValid}>

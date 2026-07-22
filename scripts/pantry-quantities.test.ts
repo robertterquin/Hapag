@@ -22,8 +22,8 @@ test('Ulam ingredient input keeps every comma-separated item', () => {
 test('Ulam AI keeps ingredient review and manual additions', async () => {
   const ulam = await read('src/pages/UlamPage.tsx')
   const discovery = await read('src/hooks/useDiscovery.ts')
-  assert.match(ulam, /Ingredient review/)
-  assert.match(ulam, /Add ingredients/)
+  assert.match(ulam, /Pagsusuri ng sangkap/)
+  assert.match(ulam, /Magdagdag ng sangkap/)
   assert.match(discovery, /addIngredients/)
   assert.match(discovery, /resetDiscovery/)
   assert.match(discovery, /rawInput: formatIngredientInput\(ingredients\)/)

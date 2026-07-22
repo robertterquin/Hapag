@@ -148,6 +148,8 @@ The intended request flow is:
 
 The OpenAI API key must remain inside a Supabase Edge Function or another secure server-side boundary. It must never be exposed in the browser.
 
+Recipe generation is rate-limited by the `generate-recipes` Edge Function. Authenticated users receive 10 AI generations per hour, while anonymous users receive 3 per hour per IP. The function also limits requests to 20 ingredients and 2,000 characters of raw ingredient input. Production rate limiting requires `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` configured as Supabase Edge Function secrets.
+
 ## User Data and Security
 
 - Supabase Auth manages signed-in user access.

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { formatIngredientInput } from '../lib/ingredientParser.ts'
-import { recipeService } from '../services/recipeService.ts'
+import { recipeService, RecipeGenerationError } from '../services/recipeService.ts'
 import type { DiscoverySession, GenerationConstraints, IngredientDraft, NormalizedIngredient, Recipe } from '../types/domain.ts'
 import { normalizeConstraints } from '../lib/recipeControls.ts'
 
@@ -12,6 +12,19 @@ const defaultConstraints: GenerationConstraints = {
   spiceLevel: 'mild',
 }
 
+function dedupeIngredients(ingredients: NormalizedIngredient[]) {
+  const merged: NormalizedIngredient[] = []
+  for (const ingredient of ingredients) {
+    const existing = merged.find((item) => item.canonicalName === ingredient.canonicalName && item.unit === ingredient.unit)
+    if (existing) {
+      existing.quantity += ingredient.quantity
+    } else {
+      merged.push(ingredient)
+    }
+  }
+  return merged.map((ingredient, index) => ({ ...ingredient, id: `${ingredient.source}-${ingredient.canonicalName}-${index}` }))
+}
+
 export function useDiscovery() {
   const [session, setSession] = useState<DiscoverySession>({ rawInput: '', ingredients: [], constraints: defaultConstraints })
   const [suggestions, setSuggestions] = useState<Recipe[]>([])
@@ -19,7 +32,7 @@ export function useDiscovery() {
   const [generationError, setGenerationError] = useState<string | null>(null)
 
   const startDiscovery = (value: string) => {
-    setSession((current) => ({ ...current, rawInput: value, ingredients: value ? recipeService.normalizeIngredients(value, 'manual') : [] }))
+    setSession((current) => ({ ...current, rawInput: value, ingredients: value ? dedupeIngredients(recipeService.normalizeIngredients(value, 'manual')) : [] }))
     setSuggestions([])
     setGenerationStatus('idle')
     setGenerationError(null)
@@ -38,7 +51,7 @@ export function useDiscovery() {
   }
 
   const updateIngredients = (value: string) => {
-    setSession((current) => ({ ...current, rawInput: value, ingredients: recipeService.normalizeIngredients(value, 'manual') }))
+    setSession((current) => ({ ...current, rawInput: value, ingredients: dedupeIngredients(recipeService.normalizeIngredients(value, 'manual')) }))
   }
 
   const addIngredients = (input: IngredientDraft) => {
@@ -75,16 +88,16 @@ export function useDiscovery() {
     setGenerationError(null)
   }
 
-  const generateSuggestions = async () => {
+  const generateSuggestions = async (accessToken?: string) => {
     if (session.ingredients.length === 0) return
     setGenerationStatus('loading')
     setGenerationError(null)
     try {
-      const result = await recipeService.generateSuggestions({ rawInput: session.rawInput, ingredients: session.ingredients, constraints: session.constraints })
+      const result = await recipeService.generateSuggestions({ rawInput: session.rawInput, ingredients: session.ingredients, constraints: session.constraints }, accessToken)
       setSuggestions(result)
       setGenerationStatus('success')
-    } catch {
-      setGenerationError('Nandito pa rin ang mga sangkap mo. Puwede kang mag-retry o bumalik para mag-edit.')
+    } catch (error) {
+      setGenerationError(error instanceof RecipeGenerationError && error.status === 429 ? 'Naabot na ang limit ng AI generation. Subukan ulit pagkalipas ng ilang minuto.' : 'Nandito pa rin ang mga sangkap mo. Puwede kang mag-retry o bumalik para mag-edit.')
       setGenerationStatus('error')
     }
   }
