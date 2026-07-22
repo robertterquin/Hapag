@@ -31,6 +31,8 @@
   --color-shadow-subtle: var(--slate-a3);
   --color-shadow-soft: var(--slate-a4);
   --color-shadow: var(--slate-a5);
+  --color-shadow-hover: var(--slate-a6);
+  --color-card-focus: var(--teal-a5);
   --color-focus-ring: var(--teal-a4);
   --color-surface-translucent: var(--white-a10);
   --color-success-border: var(--green-a7);

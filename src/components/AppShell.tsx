@@ -22,6 +22,28 @@ export function AppShell({ routeName, contentKey, onNavigate, children }: AppShe
 
   return (
     <div className="app-shell">
+      <div className="app-background" aria-hidden="true">
+        <svg className="background-flow" viewBox="0 0 1280 900" preserveAspectRatio="none" fill="none">
+          <path className="background-flow-line" d="M-40 180C170 55 270 310 470 205C655 108 725 35 900 145C1065 250 1090 420 1340 310" />
+          <path className="background-flow-line background-flow-line-secondary" d="M-80 720C175 610 250 815 470 690C675 575 790 760 1000 650C1135 580 1220 630 1360 560" />
+          <circle className="background-orb background-orb-green" cx="122" cy="170" r="11" />
+          <circle className="background-orb background-orb-mango" cx="495" cy="196" r="8" />
+          <circle className="background-orb background-orb-tomato" cx="910" cy="143" r="10" />
+          <circle className="background-orb background-orb-green" cx="1110" cy="654" r="12" />
+          <g className="background-doodle background-doodle-bowl">
+            <ellipse cx="1125" cy="222" rx="50" ry="22" />
+            <ellipse cx="1125" cy="222" rx="34" ry="13" />
+            <path d="M1105 199C1095 185 1105 176 1105 165M1145 199C1135 185 1145 176 1145 165" />
+          </g>
+          <g className="background-doodle background-doodle-leaf">
+            <path d="M180 680C203 643 238 637 261 658C237 684 207 694 180 680Z" />
+            <path d="M185 678C211 674 231 664 254 652" />
+          </g>
+          <g className="background-doodle background-doodle-spark">
+            <path d="M1010 745V790M988 768H1032M995 753L1025 783M1025 753L995 783" />
+          </g>
+        </svg>
+      </div>
       <header className="app-topbar">
         <button className="brand-lockup" type="button" onClick={() => onNavigate('/')}>
           <BrandMark className="brand-mark" />

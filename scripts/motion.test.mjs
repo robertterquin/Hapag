@@ -22,9 +22,21 @@ test('shared recipe and cooking interactions use restrained Motion transitions',
   const chips = await read('src/components/IngredientChips.tsx')
   const cooking = await read('src/pages/CookingPage.tsx')
 
-  assert.match(card, /whileHover=\{\{ y: -3 \}\}/)
+  assert.match(card, /whileHover=\{\{ y: -6, scale: 1\.012 \}\}/)
   assert.match(card, /whileTap=\{\{ scale: 0\.9 \}\}/)
   assert.match(chips, /AnimatePresence/)
   assert.match(cooking, /AnimatePresence/)
   assert.match(cooking, /animate=\{\{ width:/)
+})
+
+test('card elevation uses Radix shadow tokens and reduced-motion-safe hover styling', async () => {
+  const css = await read('src/App.css')
+  const tokens = await read('src/index.css')
+
+  assert.match(tokens, /--color-shadow-hover: var\(--slate-a6\)/)
+  assert.match(tokens, /--color-card-focus: var\(--teal-a5\)/)
+  assert.match(css, /\.recipe-card:hover, \.recipe-card:focus-within/)
+  assert.match(css, /\.recipe-card:hover \.recipe-card-image/)
+  assert.match(css, /prefers-reduced-motion/)
+  assert.match(css, /\.info-card:hover, \.info-card:focus-within/)
 })

@@ -16,7 +16,7 @@ export function RecipeCard({ recipe, saved, onOpen, onToggleSave, animationIndex
   const delay = Math.min(animationIndex, 5) * 0.045
 
   return (
-    <motion.article className="recipe-card" layout initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} whileHover={{ y: -3 }} transition={{ duration: 0.26, delay, ease: 'easeOut' }}>
+    <motion.article className="recipe-card" layout initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} whileHover={{ y: -6, scale: 1.012 }} transition={{ duration: 0.26, delay, ease: 'easeOut' }}>
       {recipe.imageUrl ? <img className="recipe-card-image" src={recipe.imageUrl} alt="" loading="lazy" /> : <div className="recipe-card-image recipe-card-image-placeholder" aria-hidden="true">🍲</div>}
       <div className="recipe-card-topline">
         <span className="recipe-badge">{recipe.tags[0]}</span>
