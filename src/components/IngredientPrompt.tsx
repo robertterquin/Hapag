@@ -9,7 +9,7 @@ interface IngredientPromptProps {
   compact?: boolean
 }
 
-export function IngredientPrompt({ initialValue = '', label = 'Anong ingredients meron ka?', placeholder = 'Hal. itlog, kamatis, sardinas...', submitLabel = 'Lutuin natin!', onSubmit, compact = false }: IngredientPromptProps) {
+export function IngredientPrompt({ initialValue = '', label = 'Anong sangkap ang meron ka?', placeholder = 'Halimbawa: itlog, kamatis, sardinas…', submitLabel = 'Lutuin natin!', onSubmit, compact = false }: IngredientPromptProps) {
   const [value, setValue] = useState(initialValue)
   const isValid = value.trim().length > 0
 
@@ -30,7 +30,7 @@ export function IngredientPrompt({ initialValue = '', label = 'Anong ingredients
         rows={compact ? 2 : 3}
       />
       <div className="prompt-footer">
-        <span className="prompt-helper">English, Tagalog, or Taglish okay.</span>
+        <span className="prompt-helper">Okay lang ang English, Tagalog, o Taglish.</span>
         <button className="button button-primary" type="submit" disabled={!isValid}>
           {submitLabel}
         </button>

@@ -25,7 +25,7 @@ const rawRecipeFixtures = [
     id: 'sardines-egg-pechay',
     title: 'Sardines with egg and pechay',
     localTitle: 'Sardinas na may itlog at pechay',
-    description: 'Isang mabilis na ulam na sulit sa pantry ingredients.',
+    description: 'Isang mabilis at sulit na ulam gamit ang mga sangkap na meron ka.',
     matchReason: 'Ginagamit nito ang sardinas, itlog, at pechay na meron ka na.',
     ingredients: [
       available('sardines', 'Sardines', 'canned sardines', 1, 'can'),
@@ -50,7 +50,7 @@ const rawRecipeFixtures = [
       { ingredient: 'Pantry staples', estimatedCost: 10, available: false },
     ],
     substitutions: [
-      { id: 'pechay-kangkong', original: 'Pechay', substitute: 'Kangkong', tradeoff: 'Mas leafy at mas mabilis lumambot ang texture.' },
+      { id: 'pechay-kangkong', original: 'Pechay', substitute: 'Kangkong', tradeoff: 'Mas madahon at mas mabilis lumambot.' },
     ],
     tags: ['budget meal', 'quick', 'baon'],
     dietaryNotes: ['Contains fish and egg.'],
@@ -62,7 +62,7 @@ const rawRecipeFixtures = [
     id: 'ginisang-pechay-egg',
     title: 'Ginisang pechay with egg',
     localTitle: 'Ginisang pechay na may itlog',
-    description: 'Simple, mabilis, at gulay-forward na ulam.',
+    description: 'Simple, mabilis, at nakasentro sa gulay na ulam.',
     matchReason: 'Pechay, kamatis, at itlog ang bida; kaunti lang ang kailangang idagdag.',
     ingredients: [
       available('pechay', 'Pechay', 'pechay', 1, 'bundle'),
@@ -87,7 +87,7 @@ const rawRecipeFixtures = [
       { ingredient: 'Sibuyas at mantika', estimatedCost: 10, available: false },
     ],
     substitutions: [
-      { id: 'pechay-kangkong-2', original: 'Pechay', substitute: 'Kangkong', tradeoff: 'Mas chewy ang dahon; idagdag nang mas maaga kung makapal ang stems.' },
+      { id: 'pechay-kangkong-2', original: 'Pechay', substitute: 'Kangkong', tradeoff: 'Mas chewy ang dahon; idagdag nang mas maaga kung makapal ang tangkay.' },
     ],
     tags: ['vegetable', 'quick', 'budget meal'],
     dietaryNotes: ['Vegetarian if cooked without fish sauce.'],
@@ -110,8 +110,8 @@ const rawRecipeFixtures = [
     ],
     steps: [
       { id: 'omelet-step-1', order: 1, action: 'Batihin ang itlog at ihalo ang sardinas, kamatis, at paminta.', durationMinutes: 3, heat: 'none' },
-      { id: 'omelet-step-2', order: 2, action: 'Painitin ang mantika at ibuhos ang mixture sa kawali.', durationMinutes: 2, heat: 'medium' },
-      { id: 'omelet-step-3', order: 3, action: 'Lutuin ang magkabilang panig hanggang set ang itlog.', durationMinutes: 6, heat: 'low' },
+      { id: 'omelet-step-2', order: 2, action: 'Painitin ang mantika at ibuhos ang halo sa kawali.', durationMinutes: 2, heat: 'medium' },
+      { id: 'omelet-step-3', order: 3, action: 'Lutuin ang magkabilang panig hanggang maluto at mabuo ang itlog.', durationMinutes: 6, heat: 'low' },
     ],
     servings: 3,
     timeMinutes: 18,
@@ -124,7 +124,7 @@ const rawRecipeFixtures = [
       { ingredient: 'Mantika at paminta', estimatedCost: 8, available: false },
     ],
     substitutions: [
-      { id: 'sardines-tofu', original: 'Sardinas', substitute: 'Tofu', tradeoff: 'Vegetarian variant, pero magbabago ang lasa at texture.' },
+      { id: 'sardines-tofu', original: 'Sardinas', substitute: 'Tofu', tradeoff: 'Vegetarian na bersyon, pero magbabago ang lasa at texture.' },
     ],
     tags: ['quick', 'baon', 'budget meal'],
     dietaryNotes: ['Contains fish and egg.'],

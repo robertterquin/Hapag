@@ -30,10 +30,10 @@ export function RecipeCard({ recipe, saved, onOpen, onToggleSave }: RecipeCardPr
           <span>{recipe.servings} serv.</span>
         </div>
         <div className="ingredient-summary">
-          <div><strong>Meron ka</strong>{available.map((ingredient) => <span key={ingredient.id}>{ingredient.name}</span>)}</div>
+          <div><strong>Meron ka na</strong>{available.map((ingredient) => <span key={ingredient.id}>{ingredient.name}</span>)}</div>
           <div><strong>Kulang pa</strong>{missing.length > 0 ? missing.map((ingredient) => <span key={ingredient.id}>{ingredient.name}</span>) : <span>Wala</span>}</div>
         </div>
-        <span className="card-action">View recipe <span aria-hidden="true">→</span></span>
+        <span className="card-action">Tingnan ang recipe <span aria-hidden="true">→</span></span>
       </button>
     </article>
   )

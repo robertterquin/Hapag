@@ -8,16 +8,16 @@ interface IngredientChipsProps {
 
 export function IngredientChips({ ingredients, onRemove }: IngredientChipsProps) {
   if (ingredients.length === 0) {
-    return <p className="muted-copy">Wala pang ingredients. Magdagdag kahit isa para makapagsimula.</p>
+    return <p className="muted-copy">Wala pang sangkap. Magdagdag ng kahit isa para makapagsimula.</p>
   }
 
   return (
-    <ul className="ingredient-chips" aria-label="Recognized ingredients">
+    <ul className="ingredient-chips" aria-label="Mga nakilalang sangkap">
       {ingredients.map((ingredient) => (
         <li className={`ingredient-chip ${ingredient.confidence === 'low' ? 'ingredient-chip-uncertain' : ''}`} key={ingredient.id}>
           <span>{ingredient.quantity === 1 && ingredient.unit === 'piece' ? ingredient.name : `${formatIngredientQuantity(ingredient)} ${ingredient.name}`}</span>
-          {ingredient.confidence === 'low' ? <span className="chip-warning" title="Needs review">?</span> : null}
-          <button type="button" onClick={() => onRemove(ingredient.id)} aria-label={`Remove ${ingredient.name}`}>×</button>
+          {ingredient.confidence === 'low' ? <span className="chip-warning" title="Kailangang suriin">?</span> : null}
+          <button type="button" onClick={() => onRemove(ingredient.id)} aria-label={`Alisin ang ${ingredient.name}`}>×</button>
         </li>
       ))}
     </ul>

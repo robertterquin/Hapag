@@ -10,7 +10,7 @@ interface IngredientAddFormProps {
   onSubmit: (input: IngredientDraft) => Promise<void>
 }
 
-export function IngredientAddForm({ idPrefix, label, helper = 'Add one ingredient at a time.', submitLabel, placeholder = 'e.g. sardines', onSubmit }: IngredientAddFormProps) {
+export function IngredientAddForm({ idPrefix, label, helper = 'Add ingredients one at a time.', submitLabel, placeholder = 'e.g. sardines', onSubmit }: IngredientAddFormProps) {
   const [name, setName] = useState('')
   const [busy, setBusy] = useState(false)
 
@@ -35,7 +35,7 @@ export function IngredientAddForm({ idPrefix, label, helper = 'Add one ingredien
       </label>
       <div className="ingredient-add-footer">
         <span className="prompt-helper">{helper}</span>
-        <button className="button button-primary" type="submit" disabled={busy}>{busy ? 'Adding…' : submitLabel}</button>
+        <button className="button button-primary" type="submit" disabled={busy}>{busy ? 'Idinadagdag…' : submitLabel}</button>
       </div>
     </form>
   )

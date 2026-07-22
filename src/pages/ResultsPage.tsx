@@ -19,15 +19,15 @@ export interface ResultsPageProps {
 
 export function ResultsPage({ session, status, suggestions, error, savedError, savedIds, onOpen, onToggleSave, onRetry, onEdit }: ResultsPageProps) {
   if (status === 'loading') {
-    return <div className="page-shell"><span className="eyebrow">Recipe results</span><h1>Naghahanap ng ulam...</h1><p className="page-intro">Tinitingnan namin kung ano ang puwedeng gawin sa meron mo.</p><ResultsSkeleton /></div>
+    return <div className="page-shell"><span className="eyebrow">Recipe results</span><h1>Naghahanap ng ulam…</h1><p className="page-intro">Tinitingnan namin kung ano ang puwedeng lutuin gamit ang mga sangkap mo.</p><ResultsSkeleton /></div>
   }
 
   if (status === 'error') {
-    return <StatePanel tone="error" icon="!" title="Hindi muna ako nakahanap ng ulam." description={error ?? 'May nangyaring hindi inaasahan. Nandito pa rin ang ingredients mo.'} actionLabel="Subukan ulit" onAction={onRetry} secondaryLabel="Ayusin ang ingredients" onSecondary={onEdit} />
+    return <StatePanel tone="error" icon="!" title="Wala muna akong nakitang angkop na ulam." description={error ?? 'May nangyaring hindi inaasahan. Nandito pa rin ang mga sangkap mo.'} actionLabel="Subukan ulit" onAction={onRetry} secondaryLabel="Ayusin ang mga sangkap" onSecondary={onEdit} />
   }
 
   if (status === 'success' && suggestions.length === 0) {
-    return <StatePanel tone="empty" title="Wala akong makitang magandang match." description="Bawasan ang filters o magdagdag ng ingredient para mas marami tayong mapagpilian." actionLabel="Ayusin ang ingredients" onAction={onEdit} secondaryLabel="Subukan ulit" onSecondary={onRetry} />
+    return <StatePanel tone="empty" title="Wala akong nakitang angkop na ulam." description="Bawasan ang mga filter o magdagdag ng sangkap para mas marami tayong mapagpilian." actionLabel="Ayusin ang mga sangkap" onAction={onEdit} secondaryLabel="Subukan ulit" onSecondary={onRetry} />
   }
 
   return (
@@ -36,9 +36,9 @@ export function ResultsPage({ session, status, suggestions, error, savedError, s
         <div>
           <span className="eyebrow">Recipe results</span>
           <h1>Mga puwedeng lutuin</h1>
-          <p className="page-intro">Tatlong idea mula sa: <strong>{session.rawInput || 'ingredients mo'}</strong></p>
+          <p className="page-intro">Tatlong ideya mula sa: <strong>{session.rawInput || 'mga sangkap mo'}</strong></p>
         </div>
-        <button className="button button-secondary" type="button" onClick={onEdit}>Ayusin ang ingredients</button>
+        <button className="button button-secondary" type="button" onClick={onEdit}>Ayusin ang mga sangkap</button>
       </div>
       {savedError ? <div className="error-banner" role="alert">{savedError}</div> : null}
       <div className="active-filter-row" aria-label="Applied constraints">

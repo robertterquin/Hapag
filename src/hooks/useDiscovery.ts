@@ -23,6 +23,13 @@ export function useDiscovery() {
     setGenerationStatus('idle')
   }
 
+  const resetDiscovery = () => {
+    setSession({ rawInput: '', ingredients: [], constraints: defaultConstraints })
+    setSuggestions([])
+    setGenerationStatus('idle')
+    setGenerationError(null)
+  }
+
   const startFromIngredients = (rawInput: string, ingredients: NormalizedIngredient[]) => {
     setSession((current) => ({ ...current, rawInput, ingredients }))
     setGenerationStatus('idle')
@@ -66,7 +73,7 @@ export function useDiscovery() {
       setSuggestions(result)
       setGenerationStatus('success')
     } catch {
-      setGenerationError('Nandito pa rin ang ingredients mo. Puwede kang mag-retry o bumalik at mag-edit.')
+      setGenerationError('Nandito pa rin ang mga sangkap mo. Puwede kang mag-retry o bumalik para mag-edit.')
       setGenerationStatus('error')
     }
   }
@@ -77,6 +84,7 @@ export function useDiscovery() {
     generationStatus,
     generationError,
     startDiscovery,
+    resetDiscovery,
     startFromIngredients,
     updateIngredients,
     addIngredients,
