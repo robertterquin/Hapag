@@ -13,7 +13,6 @@ const navigation = [
   { label: 'Home', path: '/', route: 'home' as const, icon: 'lucide:house' },
   { label: 'Ulam AI', path: '/ulam', route: 'ulam' as const, icon: 'lucide:sparkles' },
   { label: 'Saved', path: '/saved', route: 'saved' as const, icon: 'lucide:heart' },
-  { label: 'My Ingredients', path: '/pantry', route: 'pantry' as const, icon: 'lucide:list-checks' },
 ]
 
 export function AppShell({ routeName, onNavigate, children }: AppShellProps) {

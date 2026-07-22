@@ -1,5 +1,5 @@
 import type { NormalizedIngredient } from '../types/domain.ts'
-import { formatPantryQuantity } from '../lib/ingredientParser.ts'
+import { formatIngredientQuantity } from '../lib/ingredientParser.ts'
 
 interface IngredientChipsProps {
   ingredients: NormalizedIngredient[]
@@ -15,7 +15,7 @@ export function IngredientChips({ ingredients, onRemove }: IngredientChipsProps)
     <ul className="ingredient-chips" aria-label="Recognized ingredients">
       {ingredients.map((ingredient) => (
         <li className={`ingredient-chip ${ingredient.confidence === 'low' ? 'ingredient-chip-uncertain' : ''}`} key={ingredient.id}>
-          <span>{ingredient.quantity === 1 && ingredient.unit === 'piece' ? ingredient.name : `${formatPantryQuantity(ingredient)} ${ingredient.name}`}</span>
+          <span>{ingredient.quantity === 1 && ingredient.unit === 'piece' ? ingredient.name : `${formatIngredientQuantity(ingredient)} ${ingredient.name}`}</span>
           {ingredient.confidence === 'low' ? <span className="chip-warning" title="Needs review">?</span> : null}
           <button type="button" onClick={() => onRemove(ingredient.id)} aria-label={`Remove ${ingredient.name}`}>×</button>
         </li>

@@ -10,7 +10,6 @@
 
 ## Secondary journeys
 - Browse recipes by meal, budget, dietary need, or region.
-- Add ingredients to Pantry and generate recipes from them.
 - Save a recipe and return to it later.
 - Convert leftovers into another meal.
 

@@ -14,7 +14,7 @@ export type IngredientUnit =
   | 'block'
   | 'to-taste'
 
-export type PantryUnit =
+export type IngredientInputUnit =
   | 'piece'
   | 'can'
   | 'pack'
@@ -38,7 +38,7 @@ export interface NormalizedIngredient {
   canonicalName: string
   originalText: string
   quantity: number
-  unit: PantryUnit
+  unit: IngredientInputUnit
   source: IngredientSource
   confidence: 'high' | 'medium' | 'low'
   available: boolean

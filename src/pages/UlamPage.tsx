@@ -1,32 +1,23 @@
 import { IngredientAddForm } from '../components/IngredientAddForm.tsx'
 import { IngredientChips } from '../components/IngredientChips.tsx'
-import { PantryPicker } from '../components/PantryPicker.tsx'
 import { ServingStepper } from '../components/ServingStepper.tsx'
-import type { DiscoverySession, GenerationConstraints, IngredientDraft, NormalizedIngredient } from '../types/domain.ts'
+import type { DiscoverySession, GenerationConstraints, IngredientDraft } from '../types/domain.ts'
 
 export interface UlamPageProps {
   session: DiscoverySession
-  pantryItems: NormalizedIngredient[]
-  pantryPickerExpanded: boolean
-  onTogglePantryPicker: () => void
-  onApplyPantrySelection: (items: NormalizedIngredient[]) => void
   onAddIngredients: (input: IngredientDraft) => void
   onUpdateConstraints: (patch: Partial<GenerationConstraints>) => void
   onGenerate: () => void
   onRemove: (id: string) => void
 }
 
-export function UlamPage({ session, pantryItems, pantryPickerExpanded, onTogglePantryPicker, onApplyPantrySelection, onAddIngredients, onUpdateConstraints, onGenerate, onRemove }: UlamPageProps) {
-  const selectedPantryItems = session.ingredients.filter((ingredient) => ingredient.source === 'pantry')
-  const selectedPantryIds = selectedPantryItems.map((ingredient) => ingredient.id)
-
+export function UlamPage({ session, onAddIngredients, onUpdateConstraints, onGenerate, onRemove }: UlamPageProps) {
   return (
     <div className="page-shell narrow-page">
       <span className="eyebrow">Ulam AI</span>
       <h1>Start with what you have.</h1>
-      <p className="page-intro">Choose from My Ingredients, add anything else you have, then tell Hapag what to cook.</p>
-      {pantryItems.length > 0 ? <PantryPicker key={selectedPantryItems.map((item) => item.id).join('|')} items={pantryItems} initialSelectedIds={selectedPantryIds} expanded={pantryPickerExpanded} onToggleExpanded={onTogglePantryPicker} onApply={onApplyPantrySelection} /> : null}
-      <IngredientAddForm idPrefix="ulam-add" label="Add an ingredient" helper="This is for this recipe only and will not change My Ingredients." submitLabel="Add ingredient" placeholder="e.g. eggs" onSubmit={async (input) => { onAddIngredients(input) }} />
+      <p className="page-intro">Tell Hapag what ingredients you have, then choose what to cook.</p>
+      <IngredientAddForm idPrefix="ulam-add" label="Add an ingredient" helper="Add ingredients one at a time for this recipe." submitLabel="Add ingredient" placeholder="e.g. eggs" onSubmit={async (input) => { onAddIngredients(input) }} />
       <section className="review-panel" aria-labelledby="review-heading">
         <div className="section-heading-row"><div><span className="section-kicker">Ingredient review</span><h2 id="review-heading">Ito ang nakita ko:</h2></div><span className="count-badge">{session.ingredients.length}</span></div>
         <IngredientChips ingredients={session.ingredients} onRemove={onRemove} />

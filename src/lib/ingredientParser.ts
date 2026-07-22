@@ -1,10 +1,10 @@
-import type { IngredientDraft, IngredientSource, NormalizedIngredient, PantryUnit } from '../types/domain.ts'
+import type { IngredientDraft, IngredientInputUnit, IngredientSource, NormalizedIngredient } from '../types/domain.ts'
 
-export const pantryUnits: readonly PantryUnit[] = [
+export const ingredientInputUnits: readonly IngredientInputUnit[] = [
   'piece', 'can', 'pack', 'bottle', 'bundle', 'clove', 'cup', 'gram', 'kilogram', 'block',
 ]
 
-export const pantryUnitLabels: Record<PantryUnit, string> = {
+export const ingredientInputUnitLabels: Record<IngredientInputUnit, string> = {
   piece: 'piece',
   can: 'can',
   pack: 'pack',
@@ -73,7 +73,7 @@ const displayNames: Record<string, string> = {
   'bell pepper': 'bell pepper',
 }
 
-const unitAliases: Array<[PantryUnit, string[]]> = [
+const unitAliases: Array<[IngredientInputUnit, string[]]> = [
   ['kilogram', ['kilograms', 'kilogram', 'kilos', 'kilo', 'kg']],
   ['bundle', ['bundles', 'bundle', 'tali']],
   ['bottle', ['bottles', 'bottle', 'bote']],
@@ -102,7 +102,7 @@ function splitInput(input: string) {
     .filter(Boolean)
 }
 
-function parseUnit(value: string): { unit: PantryUnit; name: string } {
+function parseUnit(value: string): { unit: IngredientInputUnit; name: string } {
   for (const [unit, aliasesForUnit] of unitAliases) {
     const alias = aliasesForUnit.find((candidate) => new RegExp(`^${candidate.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:\\s|$)`, 'i').test(value))
     if (alias) {
@@ -152,14 +152,14 @@ export function normalizeIngredientDraft(input: IngredientDraft, source: Ingredi
   }
 }
 
-export function formatPantryQuantity(item: Pick<NormalizedIngredient, 'quantity' | 'unit'>) {
-  return `${item.quantity} ${pantryUnitLabels[item.unit]}`
+export function formatIngredientQuantity(item: Pick<NormalizedIngredient, 'quantity' | 'unit'>) {
+  return `${item.quantity} ${ingredientInputUnitLabels[item.unit]}`
 }
 
-export function formatPantryInput(items: NormalizedIngredient[]) {
+export function formatIngredientInput(items: NormalizedIngredient[]) {
   return items.map((item) => item.name).join(', ')
 }
 
-export function isPantryUnit(value: string | null | undefined): value is PantryUnit {
-  return Boolean(value && pantryUnits.includes(value as PantryUnit))
+export function isIngredientInputUnit(value: string | null | undefined): value is IngredientInputUnit {
+  return Boolean(value && ingredientInputUnits.includes(value as IngredientInputUnit))
 }

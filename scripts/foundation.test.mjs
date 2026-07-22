@@ -35,8 +35,8 @@ test('public environment boundary does not contain secret API key names', async 
 
 test('pages and feature hooks remain separated from app orchestration', async () => {
   const appSource = await readSource('src/app/App.tsx')
-  const pageFiles = ['HomePage.tsx', 'UlamPage.tsx', 'ResultsPage.tsx', 'RecipeDetailPage.tsx', 'CookingPage.tsx', 'SavedPage.tsx', 'PantryPage.tsx', 'ProfilePage.tsx', 'AuthPage.tsx', 'NotFoundPage.tsx']
-  const hookFiles = ['useDiscovery.ts', 'useSavedRecipes.ts', 'usePantry.ts', 'useRecipe.ts']
+  const pageFiles = ['HomePage.tsx', 'UlamPage.tsx', 'ResultsPage.tsx', 'RecipeDetailPage.tsx', 'CookingPage.tsx', 'SavedPage.tsx', 'ProfilePage.tsx', 'AuthPage.tsx', 'NotFoundPage.tsx']
+  const hookFiles = ['useDiscovery.ts', 'useSavedRecipes.ts', 'useRecipe.ts']
 
   for (const file of pageFiles) assert.ok(await readSource(`src/pages/${file}`))
   for (const file of hookFiles) assert.ok(await readSource(`src/hooks/${file}`))

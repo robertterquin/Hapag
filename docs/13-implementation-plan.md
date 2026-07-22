@@ -18,7 +18,6 @@ This is a deliberate, quality-first roadmap for building Hapag from zero to a po
 | 10. AI generation service | Safe server-side recipe generation | Invalid or unavailable AI falls back cleanly |
 | 11. Supabase persistence | Auth, favorites, and private user data | Second user cannot access first user's data |
 | 12. Recipe controls | Serving adjustment, substitutions, filters, and costs | Controls update the visible recipe correctly |
-| 13. Pantry and leftover flow | Ingredient inventory becomes a repeatable use case | Pantry flow handles add, remove, and generate |
 | 14. Photo and voice input | Additional input modes without weakening text flow | Uncertain extraction is reviewable before generation |
 | 15. Safety, accessibility, and performance | Responsible, usable, resilient product | No critical issues remain |
 | 16. Deployment and portfolio proof | Live, tested, documented project | Fresh reviewer completes the core flow |

@@ -1,7 +1,7 @@
 # Hapag Navigation and App Shell
 
 ## Mobile navigation
-Bottom navigation: **Home**, **Ulam AI**, **Saved**, **Pantry**.
+Bottom navigation: **Home**, **Ulam AI**, **Saved**.
 
 ## Desktop navigation
 Left sidebar with the same destinations; profile and preferences at the bottom.

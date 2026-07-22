@@ -9,7 +9,6 @@
 - **Profile/preferences** — language, servings default, dietary and allergy settings.
 
 ## Post-core screens
-- **Pantry** — ingredient list, add/remove controls, and generate recipe action. This follows the core ingredient-to-recipe flow and is planned for Phase 13.
 
 ## Global states
 Loading, empty, error, offline, authentication required, rate limited, and successful save.

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { formatPantryInput, normalizeIngredientDraft } from '../lib/ingredientParser.ts'
+import { formatIngredientInput, normalizeIngredientDraft } from '../lib/ingredientParser.ts'
 import { recipeService } from '../services/recipeService.ts'
 import type { DiscoverySession, GenerationConstraints, IngredientDraft, NormalizedIngredient, Recipe } from '../types/domain.ts'
 import { normalizeConstraints } from '../lib/recipeControls.ts'
@@ -28,21 +28,6 @@ export function useDiscovery() {
     setGenerationStatus('idle')
   }
 
-  const startFromPantry = (ingredients: NormalizedIngredient[]) => {
-    const pantryIngredients = ingredients.map((ingredient) => ({ ...ingredient, quantity: 1, unit: 'piece' as const, source: 'pantry' as const }))
-    startFromIngredients(formatPantryInput(pantryIngredients), pantryIngredients)
-  }
-
-  const replacePantryIngredients = (items: NormalizedIngredient[]) => {
-    setSession((current) => {
-      const manualIngredients = current.ingredients.filter((ingredient) => ingredient.source !== 'pantry')
-      const pantryIngredients = items.map((item) => ({ ...item, quantity: 1, unit: 'piece' as const, source: 'pantry' as const }))
-      const ingredients = [...pantryIngredients, ...manualIngredients]
-      return { ...current, rawInput: formatPantryInput(ingredients), ingredients }
-    })
-    setGenerationStatus('idle')
-  }
-
   const updateIngredients = (value: string) => {
     setSession((current) => ({ ...current, rawInput: value, ingredients: recipeService.normalizeIngredients(value, 'manual') }))
   }
@@ -58,7 +43,7 @@ export function useDiscovery() {
       } else {
         ingredients.push(addition)
       }
-      return { ...current, rawInput: formatPantryInput(ingredients), ingredients }
+      return { ...current, rawInput: formatIngredientInput(ingredients), ingredients }
     })
   }
 
@@ -91,8 +76,6 @@ export function useDiscovery() {
     generationError,
     startDiscovery,
     startFromIngredients,
-    startFromPantry,
-    replacePantryIngredients,
     updateIngredients,
     addIngredients,
     updateConstraints,
