@@ -17,7 +17,7 @@ export function UlamPage({ session, onAddIngredients, onUpdateConstraints, onGen
       <span className="eyebrow">Ulam AI</span>
       <h1>Start with what you have.</h1>
       <p className="page-intro">Tell Hapag what ingredients you have, then choose what to cook.</p>
-      <IngredientAddForm idPrefix="ulam-add" label="Add an ingredient" helper="Add ingredients one at a time for this recipe." submitLabel="Add ingredient" placeholder="e.g. eggs" onSubmit={async (input) => { onAddIngredients(input) }} />
+      <IngredientAddForm idPrefix="ulam-add" label="Add ingredients" helper="Separate ingredients with commas, new lines, or ‘and’." submitLabel="Add ingredients" placeholder="e.g. garlic, shrimp, butter" onSubmit={async (input) => { onAddIngredients(input) }} />
       <section className="review-panel" aria-labelledby="review-heading">
         <div className="section-heading-row"><div><span className="section-kicker">Ingredient review</span><h2 id="review-heading">Ito ang nakita ko:</h2></div><span className="count-badge">{session.ingredients.length}</span></div>
         <IngredientChips ingredients={session.ingredients} onRemove={onRemove} />

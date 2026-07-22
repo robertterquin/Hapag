@@ -13,11 +13,17 @@ test('manual ingredient input remains the single discovery source', () => {
   assert.equal(sardines.source, 'manual')
 })
 
+test('Ulam ingredient input keeps every comma-separated item', () => {
+  const ingredients = normalizeIngredientInput('garlic, shrimp, butter', 'manual')
+  assert.deepEqual(ingredients.map((ingredient) => ingredient.name), ['bawang', 'shrimp', 'butter'])
+  assert.equal(ingredients.length, 3)
+})
+
 test('Ulam AI keeps ingredient review and manual additions', async () => {
   const ulam = await read('src/pages/UlamPage.tsx')
   const discovery = await read('src/hooks/useDiscovery.ts')
   assert.match(ulam, /Ingredient review/)
-  assert.match(ulam, /Add an ingredient/)
+  assert.match(ulam, /Add ingredients/)
   assert.match(discovery, /addIngredients/)
   assert.doesNotMatch(ulam, /PantryPicker|My Ingredients/)
   assert.doesNotMatch(discovery, /startFromPantry|replacePantryIngredients/)

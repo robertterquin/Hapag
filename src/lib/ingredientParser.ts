@@ -116,7 +116,6 @@ function normalizeItem(originalText: string, index: number, source: IngredientSo
   const cleanedText = originalText.trim().replace(/\s+/g, ' ')
   const quantityMatch = cleanedText.match(/^(\d+(?:[.,]\d+)?)\s*/)
   const quantity = quantityMatch ? Number(quantityMatch[1].replace(',', '.')) : 1
-  const hasExplicitQuantity = Boolean(quantityMatch)
   const withoutQuantity = (quantityMatch ? cleanedText.slice(quantityMatch[0].length) : cleanedText).replace(/^(?:of|ng|na)\s+/i, '')
   const { unit, name: parsedName } = parseUnit(withoutQuantity)
   const normalizedName = normalizeKey(parsedName)
@@ -132,7 +131,7 @@ function normalizeItem(originalText: string, index: number, source: IngredientSo
     quantity: Number.isFinite(quantity) && quantity > 0 ? quantity : 1,
     unit,
     source,
-    confidence: isKnown && hasExplicitQuantity ? 'high' : 'low',
+    confidence: isKnown ? 'high' : 'low',
     available: true,
   }
 }
@@ -157,7 +156,7 @@ export function formatIngredientQuantity(item: Pick<NormalizedIngredient, 'quant
 }
 
 export function formatIngredientInput(items: NormalizedIngredient[]) {
-  return items.map((item) => item.name).join(', ')
+  return items.map((item) => item.quantity === 1 && item.unit === 'piece' ? item.name : `${item.quantity} ${item.unit} ${item.name}`).join(', ')
 }
 
 export function isIngredientInputUnit(value: string | null | undefined): value is IngredientInputUnit {
