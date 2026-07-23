@@ -68,6 +68,9 @@ const aliases: Record<string, string> = {
   vinegar: 'vinegar',
   toyo: 'soy sauce',
   'soy sauce': 'soy sauce',
+  'peanut butter': 'peanut butter',
+  peanut: 'peanut',
+  mani: 'peanut',
   kanin: 'cooked rice',
   'leftover rice': 'cooked rice',
   bigas: 'uncooked rice',
@@ -102,6 +105,8 @@ const displayNames: Record<string, string> = {
   ginger: 'luya',
   vinegar: 'suka',
   'soy sauce': 'toyo',
+  'peanut butter': 'peanut butter',
+  peanut: 'mani',
 }
 
 const unitAliases: Array<[IngredientInputUnit, string[]]> = [

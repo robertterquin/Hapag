@@ -27,7 +27,7 @@ function getMatchKind(score: number): RecipeMatchKind {
   return 'adaptation-candidate'
 }
 
-function scoreDish(dish: FilipinoRecipeCatalogEntry, available: Set<string>): RecipeMatch {
+function scoreDish(dish: FilipinoRecipeCatalogEntry, available: Set<string>, ingredientFrequency: Map<string, number>): RecipeMatch {
   const required = unique(dish.requiredIngredients)
   const optional = unique(dish.optionalIngredients)
   const availableRequired = required.filter((ingredient) => available.has(ingredient))
@@ -37,7 +37,8 @@ function scoreDish(dish: FilipinoRecipeCatalogEntry, available: Set<string>): Re
   // Required ingredients drive the score; optional ingredients provide a small tie-breaker.
   const requiredScore = required.length === 0 ? 0 : (availableRequired.length / required.length) * 80
   const optionalScore = optional.length === 0 ? 0 : (availableOptional.length / optional.length) * 20
-  const score = Math.round(requiredScore + optionalScore)
+  const distinctiveBonus = availableRequired.some((ingredient) => (ingredientFrequency.get(ingredient) ?? 0) <= 2) ? 15 : 0
+  const score = Math.min(100, Math.round(requiredScore + optionalScore + distinctiveBonus))
 
   return {
     dish,
@@ -56,10 +57,15 @@ export function matchRecipeCatalog(
 ) {
   if (ingredients.length === 0 || limit <= 0) return []
   const available = getCanonicalIngredients(ingredients)
+  const ingredientFrequency = new Map<string, number>()
+  for (const dish of catalog) {
+    for (const ingredient of unique(dish.requiredIngredients)) {
+      ingredientFrequency.set(ingredient, (ingredientFrequency.get(ingredient) ?? 0) + 1)
+    }
+  }
 
   return catalog
-    .map((dish) => scoreDish(dish, available))
+    .map((dish) => scoreDish(dish, available, ingredientFrequency))
     .sort((left, right) => right.score - left.score || left.missingIngredients.length - right.missingIngredients.length || left.dish.name.localeCompare(right.dish.name))
     .slice(0, limit)
 }
-

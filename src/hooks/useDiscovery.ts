@@ -107,7 +107,13 @@ export function useDiscovery() {
       setSuggestions(result)
       setGenerationStatus('success')
     } catch (error) {
-      setGenerationError(error instanceof RecipeGenerationError && error.status === 429 ? 'Naabot na ang limit ng AI generation. Subukan ulit pagkalipas ng ilang minuto.' : 'Nandito pa rin ang mga sangkap mo. Puwede kang mag-retry o bumalik para mag-edit.')
+      if (error instanceof RecipeGenerationError && error.status === 429) {
+        setGenerationError('Naabot na ang limit ng AI generation. Subukan ulit pagkalipas ng ilang minuto.')
+      } else if (error instanceof RecipeGenerationError && error.status === 503) {
+        setGenerationError('Hindi available ang AI service ngayon. Suriin ang OpenAI at Upstash secrets sa Supabase Edge Function, pagkatapos ay subukan ulit.')
+      } else {
+        setGenerationError('Hindi nabuo ang mga recipe. Puwede kang mag-retry o bumalik para mag-edit.')
+      }
       setGenerationStatus('error')
     }
   }

@@ -18,6 +18,7 @@ test('Tagalog and English aliases share catalog-aligned canonical names', () => 
     ['sitaw', 'long beans'],
     ['gata', 'coconut milk'],
     ['toyo', 'soy sauce'],
+    ['peanut butter', 'peanut butter'],
   ] as const
 
   for (const [input, expected] of cases) assert.equal(normalizeIngredientName(input), expected)

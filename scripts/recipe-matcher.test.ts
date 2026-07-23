@@ -29,8 +29,17 @@ test('matcher uses normalized Tagalog and English aliases', () => {
   const [match] = matchRecipeCatalog(ingredients)
 
   assert.equal(match.dish.id, 'sardines-with-egg')
-  assert.equal(match.kind, 'partial-match')
+  assert.equal(match.kind, 'strong-match')
   assert.deepEqual(match.availableIngredients, ['sardines', 'egg', 'garlic'])
+})
+
+test('distinctive ingredients prioritize the relevant Filipino dish', () => {
+  const ingredients = normalizeIngredientInput('peanut butter, pork')
+  const [match] = matchRecipeCatalog(ingredients)
+
+  assert.equal(match.dish.id, 'kare-kare')
+  assert.ok(match.score > 20)
+  assert.ok(match.availableIngredients.includes('peanut butter'))
 })
 
 test('matcher returns adaptation candidates for weak matches', () => {

@@ -12,9 +12,14 @@ export function cacheRecipe(recipe: ReturnType<typeof adaptRecipePayload>) {
   recipeCache.set(recipe.id, recipe)
 }
 
-async function generateWithFixtures() {
+async function generateWithFixtures(request: GenerationRequest) {
   await wait(350)
-  return adaptRecipeListPayload(recipeFixtures)
+  const requestedIngredients = new Set(request.ingredients.map((ingredient) => ingredient.canonicalName))
+  const relevantFixtures = recipeFixtures.filter((recipe) => recipe.ingredients.some((ingredient) => {
+    const canonicalName = normalizeIngredientInput(ingredient.name)[0]?.canonicalName ?? ingredient.canonicalName
+    return requestedIngredients.has(canonicalName)
+  }))
+  return adaptRecipeListPayload(relevantFixtures)
 }
 
 export const mockRecipeService: RecipeService = {
@@ -52,7 +57,13 @@ async function generateWithOpenAI(request: GenerationRequest, accessToken?: stri
     body: JSON.stringify(request),
   })
 
-  if (!response.ok) throw new RecipeGenerationError(`Recipe generation failed with status ${response.status}.`, response.status)
+  if (!response.ok) {
+    const errorPayload: unknown = await response.json().catch(() => undefined)
+    const serverMessage = errorPayload && typeof errorPayload === 'object' && 'error' in errorPayload && typeof errorPayload.error === 'string'
+      ? errorPayload.error
+      : `Recipe generation failed with status ${response.status}.`
+    throw new RecipeGenerationError(serverMessage, response.status)
+  }
 
   const payload: unknown = await response.json()
   if (!payload || typeof payload !== 'object' || !('recipes' in payload)) throw new Error('Recipe generation returned an invalid payload.')
@@ -68,14 +79,10 @@ export const recipeService: RecipeService = {
   },
 
   async generateSuggestions(request, accessToken) {
+    // When AI configuration is absent, use relevant fixtures; this keeps the existing using curated Hapag fixtures fallback for local development without unrelated recipes.
     if (!hasRecipeGenerationConfig) return mockRecipeService.generateSuggestions(request)
 
-    try {
-      return await generateWithOpenAI(request, accessToken)
-    } catch (error) {
-      console.warn('AI generation unavailable; using curated Hapag fixtures.', error)
-      return mockRecipeService.generateSuggestions(request)
-    }
+    return generateWithOpenAI(request, accessToken)
   },
 
   async getRecipe(recipeId: string) {
