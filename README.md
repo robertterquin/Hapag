@@ -148,7 +148,20 @@ The intended request flow is:
 
 The OpenAI API key must remain inside a Supabase Edge Function or another secure server-side boundary. It must never be exposed in the browser.
 
-Recipe generation is rate-limited by the `generate-recipes` Edge Function. Authenticated users receive 10 AI generations per hour, while anonymous users receive 3 per hour per IP. The function also limits requests to 20 ingredients and 2,000 characters of raw ingredient input. Production rate limiting requires `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` configured as Supabase Edge Function secrets.
+Recipe generation is rate-limited by the `generate-recipes` Edge Function. Authenticated users are not subject to the anonymous AI quota, while anonymous users receive 3 generations per hour per IP. The function also limits requests to 20 ingredients and 2,000 characters of raw ingredient input. Production rate limiting requires `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` configured as Supabase Edge Function secrets.
+
+## Production checklist
+
+Before deployment:
+
+- Run `npm.cmd run typecheck`, `npm.cmd run test`, `npm.cmd run lint`, and `npm.cmd run build`.
+- Configure `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_REASONING_EFFORT`, `UPSTASH_REDIS_REST_URL`, and `UPSTASH_REDIS_REST_TOKEN` as Supabase Edge Function secrets only.
+- Confirm `verify_jwt = true` for `generate-recipes` and verify authenticated requests use a Supabase session token.
+- Confirm anonymous requests remain limited to 3 generations per hour per IP.
+- Review Supabase RLS policies for profiles, preferences, saved recipes, and cooking history.
+- Deploy with `npx supabase functions deploy generate-recipes`, then run one anonymous and one authenticated smoke test.
+- Deploy the frontend to Vercel with only `VITE_*` public variables and verify Home, Ulam AI, Results, Saved, Profile, Auth, recipe detail, and cooking routes.
+- Test 320px, 390px, 768px, and 1280px layouts, keyboard focus, reduced motion, AI errors, and empty results.
 
 ## User Data and Security
 

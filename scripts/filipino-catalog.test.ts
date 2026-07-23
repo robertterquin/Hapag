@@ -13,6 +13,10 @@ test('catalog entries contain matching metadata and valid substitutions', () => 
   for (const dish of filipinoRecipeCatalog) {
     assert.ok(dish.requiredIngredients.length > 0)
     assert.ok(dish.description)
+    assert.ok(dish.essentialIngredients.length > 0)
+    assert.ok(dish.essentialIngredients.every((ingredient) => dish.requiredIngredients.includes(ingredient)))
+    assert.ok(['Luzon', 'Visayas', 'Mindanao', 'National'].includes(dish.region))
+    assert.equal(dish.verificationStatus, 'reviewed')
     assert.ok(['classic', 'home-style'].includes(dish.authenticity))
     assert.ok(!['sauce', 'condiment', 'drink', 'dessert', 'snack', 'pickle'].some((term) => dish.category.toLowerCase().includes(term)))
     assert.ok(dish.commonSubstitutions.every((item) => item.ingredient && item.substitute && item.note))

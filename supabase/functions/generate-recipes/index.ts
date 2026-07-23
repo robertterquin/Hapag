@@ -295,8 +295,8 @@ function getIngredientNames(value: unknown) {
   })
 }
 
-function validateRecipeGrounding(recipes: JsonRecord[], payload: JsonRecord) {
-  const providedIngredients = new Set(
+function getProvidedIngredientSet(payload: JsonRecord) {
+  return new Set(
     Array.isArray(payload.ingredients)
       ? payload.ingredients.flatMap((ingredient) => {
         if (!isRecord(ingredient)) return []
@@ -306,6 +306,21 @@ function validateRecipeGrounding(recipes: JsonRecord[], payload: JsonRecord) {
       })
       : [],
   )
+}
+
+function validateCandidateGrounding(candidateDishes: unknown, providedIngredients: Set<string>) {
+  if (!Array.isArray(candidateDishes) || candidateDishes.length === 0 || providedIngredients.size === 0) return false
+  return candidateDishes.every((candidate) => {
+    if (!isRecord(candidate) || !Array.isArray(candidate.availableIngredients)) return false
+    return candidate.availableIngredients.every((ingredient) => {
+      const canonical = canonicalizeGeneratedIngredient(ingredient)
+      return canonical !== undefined && providedIngredients.has(canonical)
+    })
+  })
+}
+
+function validateRecipeGrounding(recipes: JsonRecord[], payload: JsonRecord) {
+  const providedIngredients = getProvidedIngredientSet(payload)
   if (providedIngredients.size === 0) return false
 
   const candidates = Array.isArray(payload.candidateDishes) ? payload.candidateDishes : []
@@ -316,7 +331,7 @@ function validateRecipeGrounding(recipes: JsonRecord[], payload: JsonRecord) {
       return canonical ? [canonical] : []
     }))
     : providedIngredients
-  const requiredIngredients = groundedIngredients.size > 0 ? groundedIngredients : providedIngredients
+  const requiredIngredients = new Set([...providedIngredients, ...groundedIngredients])
 
   return recipes.every((recipe) => {
     const recipeIngredients = getIngredientNames(recipe.ingredients)
@@ -356,19 +371,24 @@ async function handler(request: Request) {
   if (rawInput.length > maxInputLength) return responseJson({ error: `Ingredient input must be ${maxInputLength} characters or fewer.` }, 413)
   if (!constraints || !isValidConstraints(constraints)) return responseJson({ error: 'Generation constraints are invalid.' }, 400)
   if (!isValidCandidateDishes(payload.candidateDishes)) return responseJson({ error: 'Recipe candidates are invalid.' }, 400)
+  if (Array.isArray(payload.candidateDishes) && payload.candidateDishes.length > 0
+    && !validateCandidateGrounding(payload.candidateDishes, getProvidedIngredientSet(payload))) {
+    return responseJson({ error: 'Recipe candidates are not grounded in the provided ingredients.' }, 400)
+  }
 
   const rateLimitConfig = getRateLimitConfig((name) => Deno.env.get(name))
   const userId = await identifyUser(request)
-  const identity = userId ? `user:${userId}` : `ip:${await hashValue(getClientIp(request))}`
-  const currentWindow = Math.floor(Date.now() / 1000 / rateLimitConfig.windowSeconds)
-  const limit = userId ? rateLimitConfig.authenticatedLimit : rateLimitConfig.anonymousLimit
+  if (!userId) {
+    const identity = `ip:${await hashValue(getClientIp(request))}`
+    const currentWindow = Math.floor(Date.now() / 1000 / rateLimitConfig.windowSeconds)
 
-  try {
-    const rateLimit = await consumeRateLimit(`hapag:ai:${identity}:${currentWindow}`, limit, rateLimitConfig.windowSeconds, (name) => Deno.env.get(name))
-    if (!rateLimit.allowed) return responseJson({ error: 'AI generation rate limit exceeded.' }, 429, { 'Retry-After': String(rateLimit.retryAfterSeconds) })
-  } catch (error) {
-    console.error('AI rate limiting failed', error instanceof Error ? error.message : 'unknown')
-    return responseJson({ error: 'AI generation is temporarily unavailable.' }, 503)
+    try {
+      const rateLimit = await consumeRateLimit(`hapag:ai:${identity}:${currentWindow}`, rateLimitConfig.anonymousLimit, rateLimitConfig.windowSeconds, (name) => Deno.env.get(name))
+      if (!rateLimit.allowed) return responseJson({ error: 'AI generation rate limit exceeded.' }, 429, { 'Retry-After': String(rateLimit.retryAfterSeconds) })
+    } catch (error) {
+      console.error('AI rate limiting failed', error instanceof Error ? error.message : 'unknown')
+      return responseJson({ error: 'AI generation is temporarily unavailable.' }, 503)
+    }
   }
 
   const model = Deno.env.get('OPENAI_MODEL')
@@ -384,6 +404,13 @@ async function handler(request: Request) {
         content: [{
           type: 'input_text',
           text: 'You are Hapag, a careful Filipino cooking assistant. Generate exactly three practical recipe choices using the ingredients provided for this cooking session first. Prefer the highest-overlap supplied Filipino candidate dishes, especially the first candidate and its availableIngredients. Candidate substitutions are explicitly marked and are acceptable alternatives, but do not describe a substitute as an exact ingredient match. Every suggestion MUST use every ingredient listed in the first candidate availableIngredients; do not return a suggestion that omits a distinctive user ingredient such as peanut butter. If the strongest candidate has a distinctive ingredient, keep that ingredient in all three suggestions even when adapting the dish. Do not replace a strong candidate with an unrelated dish. Preserve known Filipino dish identity. Set authenticity to classic only for a supplied classic dish, home-style for a familiar variation, or hapag-adaptation for a custom idea. Return at most one hapag-adaptation in the three results. If at least two supplied catalog candidates have a score of 60 or higher, return no hapag-adaptation and use grounded classic or home-style choices instead. Never use an adaptation as filler when a supplied catalog dish is available. Set matchScore to the candidate match score or a realistic 0–100 estimate. Clearly identify ingredients that are still needed. If adapting a candidate or creating a custom idea, describe it as a Hapag adaptation in matchReason; never present an invented recipe as a classic dish. Use Filipino, English, or Taglish naturally. Estimated PHP costs are approximate only. Respect allergies, dietary preference, servings, budget, and spice level. Do not make medical claims. Every step must be safe, clear, and ordered from 1. Return only the requested JSON structure.',
+        }],
+      },
+      {
+        role: 'developer',
+        content: [{
+          type: 'input_text',
+          text: 'Grounding review: every provided ingredient must appear in every recipe ingredient list. Do not silently omit user ingredients. Use supplied candidateDishes as Filipino dish identity evidence when they are present. If candidateDishes is empty, generate one clearly labelled Hapag adaptation based only on the provided ingredients; do not present it as a classic dish. If a recipe cannot satisfy these rules, do not invent unrelated ingredients or omit the user ingredients.',
         }],
       },
       { role: 'user', content: [{ type: 'input_text', text: JSON.stringify(payload) }] },
@@ -421,6 +448,9 @@ async function handler(request: Request) {
     }
 
     const recipes = generatedPayload.recipes.filter(isRecord)
+    if (recipes.length !== 3) {
+      return responseJson({ error: 'AI must return exactly three grounded recipes.' }, 502)
+    }
     if (!validateResultComposition(recipes, payload.candidateDishes)) {
       return responseJson({ error: 'AI returned too many custom adaptations for the available Filipino dishes.' }, 502)
     }

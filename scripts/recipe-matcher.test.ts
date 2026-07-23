@@ -61,7 +61,7 @@ test('matcher prioritizes essential and distinctive ingredients', () => {
 
 test('matcher handles empty input and custom limits', () => {
   assert.deepEqual(matchRecipeCatalog([]), [])
-  const matches = matchRecipeCatalog(normalizeIngredientInput('egg, tomato'), undefined, 2)
+  const matches = matchRecipeCatalog(normalizeIngredientInput('manok, bawang'), undefined, 2)
   assert.equal(matches.length, 2)
 })
 
@@ -75,6 +75,45 @@ test('expanded catalog matches common Filipino meal combinations', () => {
   assert.equal(matchRecipeCatalog(normalizeIngredientInput('shrimp, garlic, butter'))[0].dish.id, 'garlic-butter-shrimp')
   assert.ok(pancitMatches.every((match) => match.score >= 20))
   assert.ok(sinigangMatches.every((match) => match.score >= 20))
+})
+
+test('explicit essential ingredients protect dish identity', () => {
+  assert.equal(matchRecipeCatalog(normalizeIngredientInput('cabbage, canton noodles'))[0].dish.id, 'pancit-canton')
+  assert.deepEqual(matchRecipeCatalog(normalizeIngredientInput('garlic, butter')), [])
+  assert.deepEqual(matchRecipeCatalog(normalizeIngredientInput('tomato, onion')), [])
+})
+
+test('dish identity rules require defining ingredient groups', () => {
+  const porkSinigangMatches = matchRecipeCatalog(normalizeIngredientInput('pork, tomato, onion'))
+  assert.ok(porkSinigangMatches.every((match) => match.dish.id !== 'sinigang-na-baboy'))
+  assert.deepEqual(matchRecipeCatalog(normalizeIngredientInput('shrimp, garlic, butter'))[0].dish.id, 'garlic-butter-shrimp')
+  assert.equal(matchRecipeCatalog(normalizeIngredientInput('rice noodles, cabbage, chicken'))[0].dish.id, 'pancit-bihon')
+  assert.equal(matchRecipeCatalog(normalizeIngredientInput('flour noodles, cabbage, pork'))[0].dish.id, 'pancit-habhab')
+})
+
+test('expanded dish rules protect adobo, tinola, menudo, and paksiw identities', () => {
+  assert.ok(matchRecipeCatalog(normalizeIngredientInput('chicken, garlic, vinegar')).some((match) => match.dish.id === 'chicken-adobo'))
+  assert.ok(!matchRecipeCatalog(normalizeIngredientInput('chicken, garlic, ginger')).some((match) => match.dish.id === 'chicken-adobo'))
+  assert.ok(matchRecipeCatalog(normalizeIngredientInput('chicken, ginger, onion')).some((match) => match.dish.id === 'tinolang-manok'))
+  assert.ok(!matchRecipeCatalog(normalizeIngredientInput('pork, potato, carrot')).some((match) => match.dish.id === 'menudo'))
+  assert.ok(matchRecipeCatalog(normalizeIngredientInput('pork, vinegar, garlic')).some((match) => match.dish.id === 'paksiw-na-baboy'))
+})
+
+test('expanded vegetable and rice meal rules require defining ingredients', () => {
+  assert.ok(matchRecipeCatalog(normalizeIngredientInput('taro leaves, coconut milk')).some((match) => match.dish.id === 'laing'))
+  assert.ok(!matchRecipeCatalog(normalizeIngredientInput('taro leaves, coconut milk')).some((match) => match.dish.id === 'pinakbet'))
+  assert.ok(matchRecipeCatalog(normalizeIngredientInput('bitter melon, eggplant, shrimp paste')).some((match) => match.dish.id === 'pinakbet'))
+  assert.ok(matchRecipeCatalog(normalizeIngredientInput('cooked rice, chicken, ginger')).some((match) => match.dish.id === 'arroz-caldo'))
+})
+
+test('pancit identity rules distinguish noodle families', () => {
+  const riceNoodleMatches = matchRecipeCatalog(normalizeIngredientInput('rice noodles, shrimp, shrimp paste, egg'))
+  assert.ok(riceNoodleMatches.some((match) => match.dish.id === 'pancit-palabok'))
+  assert.ok(!riceNoodleMatches.some((match) => match.dish.id === 'pancit-canton'))
+
+  const eggNoodleMatches = matchRecipeCatalog(normalizeIngredientInput('egg noodles, chicken, cabbage, soy sauce'))
+  assert.ok(eggNoodleMatches.some((match) => match.dish.id === 'pancit-miki'))
+  assert.ok(!eggNoodleMatches.some((match) => match.dish.id === 'pancit-bihon'))
 })
 
 test('matcher rejects a distinctive ingredient paired with an unrelated ingredient', () => {

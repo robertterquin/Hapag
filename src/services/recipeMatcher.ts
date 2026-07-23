@@ -3,6 +3,7 @@ import { filipinoRecipeCatalog } from '../data/filipinoRecipeCatalog.ts'
 import type { FilipinoRecipeCatalogEntry } from '../data/filipinoRecipeCatalog.ts'
 import { normalizeIngredientName } from '../lib/ingredientParser.ts'
 import { ingredientSubstitutionRules } from '../data/ingredientGroups.ts'
+import { dishMatchingRules } from '../data/dishMatchingRules.ts'
 
 export type RecipeMatchKind = 'strong-match' | 'partial-match' | 'adaptation-candidate'
 
@@ -37,19 +38,6 @@ function getCanonicalIngredients(ingredients: NormalizedIngredient[]) {
   return new Set(ingredients.map((ingredient) => ingredient.canonicalName))
 }
 
-function getEssentialIngredients(required: string[], ingredientFrequency: Map<string, number>) {
-  if (required.length === 0) return new Set<string>()
-
-  // The first required ingredient is the dish's primary identity (protein,
-  // noodle, or vegetable base). Rare required ingredients are also treated as
-  // essential because they distinguish one Filipino dish from another.
-  const essential = new Set([required[0]])
-  for (const ingredient of required) {
-    if ((ingredientFrequency.get(ingredient) ?? 0) <= 3) essential.add(ingredient)
-  }
-  return essential
-}
-
 function getMatchKind(score: number, matchedRequiredCount: number): RecipeMatchKind {
   if (score >= 75) return 'strong-match'
   if (score >= 40 && matchedRequiredCount >= 2) return 'partial-match'
@@ -66,10 +54,25 @@ function getSubstitution(requiredIngredient: string, available: Set<string>, dis
   return rules.find((rule) => rule.ingredient === requiredIngredient && available.has(rule.substitute))
 }
 
+function canonicalizeRuleValues(values: string[] = []) {
+  return values.map((value) => normalizeIngredientName(value))
+}
+
+function passesIdentityRules(dish: FilipinoRecipeCatalogEntry, available: Set<string>) {
+  const rule = dishMatchingRules[dish.id]
+  if (!rule) return true
+
+  const excluded = new Set(canonicalizeRuleValues(rule.excludedIfPresent))
+  if ([...excluded].some((ingredient) => available.has(ingredient))) return false
+
+  return (rule.requiredAny ?? []).every((group) => group.some((ingredient) => available.has(normalizeIngredientName(ingredient))))
+}
+
 function scoreDish(dish: FilipinoRecipeCatalogEntry, available: Set<string>, ingredientFrequency: Map<string, number>): RecipeMatch & { weightedScore: number } {
   const required = canonicalizeCatalogIngredients(dish.requiredIngredients)
   const optional = canonicalizeCatalogIngredients(dish.optionalIngredients)
-  const essential = getEssentialIngredients(required, ingredientFrequency)
+  const essential = new Set(canonicalizeCatalogIngredients(dish.essentialIngredients))
+  const identityRule = dishMatchingRules[dish.id]
   const availableRequired = required.filter((ingredient) => available.has(ingredient))
   const substitutedIngredients = required.flatMap((ingredient) => {
     if (available.has(ingredient)) return []
@@ -87,17 +90,24 @@ function scoreDish(dish: FilipinoRecipeCatalogEntry, available: Set<string>, ing
   const hasDistinctiveRequired = availableRequired.some((ingredient) => (ingredientFrequency.get(ingredient) ?? 0) <= 2)
   const evidenceCount = availableRequired.length + substitutedIngredients.length
   const hasMinimumEvidence = evidenceCount >= 2
+  const primaryEssential = [...essential][0]
+  const hasPrimaryEssentialEvidence = primaryEssential
+    ? available.has(primaryEssential) || substitutedRequired.has(primaryEssential)
+    : false
   // Required ingredients drive the score; optional ingredients provide a small tie-breaker.
-  const requiredScore = !hasMinimumEvidence || required.length === 0 ? 0 : ((availableRequired.length + substitutedIngredients.length * 0.15) / required.length) * 80
-  const optionalScore = !hasMinimumEvidence || optional.length === 0 ? 0 : (availableOptional.length / optional.length) * 20
-  const distinctiveBonus = hasMinimumEvidence && hasDistinctiveRequired ? 15 : 0
-  const score = Math.min(100, Math.round(requiredScore + optionalScore + distinctiveBonus))
+  const passesRules = passesIdentityRules(dish, available)
+  const requiredScore = !hasMinimumEvidence || !hasPrimaryEssentialEvidence || !passesRules || required.length === 0 ? 0 : ((availableRequired.length + substitutedIngredients.length * 0.15) / required.length) * 80
+  const optionalScore = !hasMinimumEvidence || !hasPrimaryEssentialEvidence || !passesRules || optional.length === 0 ? 0 : (availableOptional.length / optional.length) * 20
+  const distinctiveBonus = hasMinimumEvidence && hasPrimaryEssentialEvidence && passesRules && hasDistinctiveRequired ? 15 : 0
   const exactEssentialCount = availableRequired.filter((ingredient) => essential.has(ingredient)).length
   const substitutedEssentialCount = substitutedIngredients.filter((item) => essential.has(item.requiredIngredient)).length
   const essentialCoverage = essential.size === 0
     ? 0
     : (exactEssentialCount + substitutedEssentialCount * 0.15) / essential.size
-  const weightedScore = Math.round(score * 0.6 + essentialCoverage * 40)
+  const essentialPenalty = essential.size === 0 ? 0 : 0.7 + Math.min(1, essentialCoverage) * 0.3
+  const score = Math.min(100, Math.round((requiredScore + optionalScore + distinctiveBonus) * essentialPenalty))
+  const preferredMatches = canonicalizeRuleValues(identityRule?.preferredIngredients).filter((ingredient) => available.has(ingredient)).length
+  const weightedScore = Math.round(score * 0.6 + essentialCoverage * 40 + preferredMatches * 2)
 
   return {
     dish,

@@ -17,7 +17,23 @@ export interface FilipinoRecipeCatalogEntry {
   commonSubstitutions: FilipinoRecipeSubstitution[]
   cookingMethod: string
   description: string
+  mealType: CatalogMealType
+  region: CatalogRegion
+  verificationStatus: CatalogVerificationStatus
+  essentialIngredients: string[]
 }
+
+export type CatalogMealType =
+  | 'main-dish'
+  | 'soup'
+  | 'stew'
+  | 'noodle-dish'
+  | 'rice-meal'
+  | 'vegetable-dish'
+  | 'breakfast'
+
+export type CatalogRegion = 'Luzon' | 'Visayas' | 'Mindanao' | 'National'
+export type CatalogVerificationStatus = 'reviewed' | 'needs-review'
 
 const substitute = (ingredient: string, replacement: string, note: string): FilipinoRecipeSubstitution => ({
   ingredient,
@@ -35,7 +51,7 @@ const dish = (
   optionalIngredients: string[] = [],
   commonSubstitutions: FilipinoRecipeSubstitution[] = [],
   localName?: string,
-): FilipinoRecipeCatalogEntry => ({
+): Omit<FilipinoRecipeCatalogEntry, 'mealType' | 'region' | 'verificationStatus' | 'essentialIngredients'> => ({
   id,
   name,
   ...(localName ? { localName } : {}),
@@ -48,7 +64,7 @@ const dish = (
   description,
 })
 
-export const filipinoRecipeCatalog: FilipinoRecipeCatalogEntry[] = [
+const rawFilipinoRecipeCatalog = [
   dish('chicken-adobo', 'Chicken Adobo', 'simmered', ['chicken', 'garlic', 'soy sauce', 'vinegar'], 'simmer', 'Chicken braised in a savory soy-vinegar sauce.', ['bay leaf', 'black pepper', 'onion'], [substitute('chicken', 'pork', 'Use pork for a richer adobo.')], 'Adobong Manok'),
   dish('pork-adobo', 'Pork Adobo', 'simmered', ['pork', 'garlic', 'soy sauce', 'vinegar'], 'simmer', 'Pork slowly simmered in the classic adobo sauce.', ['bay leaf', 'black pepper', 'onion'], [substitute('pork', 'chicken', 'Chicken creates a lighter version.')], 'Adobong Baboy'),
   dish('adobong-kangkong', 'Adobong Kangkong', 'vegetable', ['water spinach', 'garlic', 'soy sauce', 'vinegar'], 'sauté and simmer', 'Water spinach cooked in a tangy adobo-style sauce.', ['onion', 'chili'], [], 'Adobong Kangkong'),
@@ -201,6 +217,44 @@ export const filipinoRecipeCatalog: FilipinoRecipeCatalogEntry[] = [
   dish('ginisang-talong', 'Ginisang Talong', 'vegetable', ['eggplant', 'garlic', 'onion', 'tomato'], 'sauté', 'Sautéed eggplant with tomato and Filipino aromatics.', ['egg', 'ground pork', 'shrimp'], [substitute('eggplant', 'bitter melon', 'Bitter melon creates another savory vegetable sauté.')]),
 ]
 
+const mealTypeByCategory: Record<string, CatalogMealType> = {
+  breakfast: 'breakfast',
+  'rice meal': 'rice-meal',
+  'sweet rice': 'rice-meal',
+  'rice soup': 'soup',
+  noodle: 'noodle-dish',
+  'noodle soup': 'soup',
+  vegetable: 'vegetable-dish',
+  soup: 'soup',
+  stew: 'stew',
+}
+
+const regionalDishIds: Record<string, CatalogRegion> = {
+  'chicken-inasal': 'Visayas',
+  'chicken-binakol': 'Visayas',
+  'halang-halang-na-manok': 'Visayas',
+  laswa: 'Visayas',
+  sinuglaw: 'Visayas',
+  'pancit-habhab': 'Luzon',
+  'pancit-bato': 'Luzon',
+  'pancit-chami': 'Luzon',
+  dinakdakan: 'Luzon',
+  pinapaitan: 'Luzon',
+  dinengdeng: 'Luzon',
+  inabraw: 'Luzon',
+  kansi: 'Visayas',
+  'beef-pares': 'Luzon',
+  'batchoy-tagalog': 'Luzon',
+}
+
+export const filipinoRecipeCatalog: FilipinoRecipeCatalogEntry[] = rawFilipinoRecipeCatalog.map((entry) => ({
+  ...entry,
+  mealType: mealTypeByCategory[entry.category] ?? (entry.category === 'quick meal' || entry.category === 'fried' || entry.category === 'grilled' || entry.category === 'braised' || entry.category === 'simmered' || entry.category === 'roasted' || entry.category === 'steamed' || entry.category === 'stuffed' || entry.category === 'egg' || entry.category === 'sautÃ©ed' || entry.category === 'pasta' || entry.category === 'pie' || entry.category === 'seafood' || entry.category === 'salad' || entry.category === 'appetizer' ? 'main-dish' : 'main-dish'),
+  region: regionalDishIds[entry.id] ?? 'National',
+  verificationStatus: 'reviewed',
+  essentialIngredients: entry.requiredIngredients.slice(0, Math.min(2, entry.requiredIngredients.length)),
+}))
+
 export function validateFilipinoRecipeCatalog(entries: FilipinoRecipeCatalogEntry[] = filipinoRecipeCatalog) {
   if (entries.length !== 150) throw new Error(`Expected 150 catalog entries, received ${entries.length}.`)
 
@@ -212,12 +266,14 @@ export function validateFilipinoRecipeCatalog(entries: FilipinoRecipeCatalogEntr
     if (!entry.id || ids.has(entry.id)) throw new Error(`Catalog entry IDs must be unique: ${entry.id}`)
     if (!entry.name || names.has(entry.name.toLowerCase())) throw new Error(`Catalog dish names must be unique: ${entry.name}`)
     if (entry.requiredIngredients.length === 0) throw new Error(`Catalog entry has no required ingredients: ${entry.id}`)
+    if (!entry.mealType || !entry.region || !entry.verificationStatus) throw new Error(`Catalog entry metadata is incomplete: ${entry.id}`)
     if (!['classic', 'home-style'].includes(entry.authenticity)) throw new Error(`Catalog entries must be classic or home-style: ${entry.id}`)
     if (['sauce', 'condiment', 'drink', 'dessert', 'snack', 'pickle'].some((term) => entry.category.toLowerCase().includes(term))) {
       throw new Error(`Catalog entry is not a prepared meal: ${entry.id}`)
     }
     const allIngredients = [...entry.requiredIngredients, ...entry.optionalIngredients]
     if (allIngredients.some((ingredient) => !ingredient.trim())) throw new Error(`Catalog entry has an empty ingredient: ${entry.id}`)
+    if (entry.essentialIngredients.length === 0 || entry.essentialIngredients.some((ingredient) => !entry.requiredIngredients.includes(ingredient))) throw new Error(`Catalog entry has invalid essential ingredients: ${entry.id}`)
     for (const replacement of entry.commonSubstitutions) {
       if (!ingredients.has(replacement.ingredient) || !replacement.substitute.trim()) {
         throw new Error(`Invalid substitution in catalog entry: ${entry.id}`)

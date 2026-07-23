@@ -11,7 +11,6 @@ function positiveInteger(value: string | undefined, fallback: number) {
 
 export function getRateLimitConfig(env: (name: string) => string | undefined) {
   return {
-    authenticatedLimit: positiveInteger(env('AI_AUTHENTICATED_LIMIT'), 10),
     anonymousLimit: positiveInteger(env('AI_ANONYMOUS_LIMIT'), 3),
     windowSeconds: positiveInteger(env('AI_RATE_WINDOW_SECONDS'), 3600),
   }
