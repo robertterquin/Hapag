@@ -26,13 +26,13 @@ const aliases: Record<string, string> = {
   kamatises: 'tomato',
   tomatoes: 'tomato',
   tomato: 'tomato',
-  sardinas: 'canned sardines',
-  sardine: 'canned sardines',
-  sardines: 'canned sardines',
-  'canned sardine': 'canned sardines',
-  'canned sardines': 'canned sardines',
-  pechay: 'pechay',
-  'bok choy': 'pechay',
+  sardinas: 'sardines',
+  sardine: 'sardines',
+  sardines: 'sardines',
+  'canned sardine': 'sardines',
+  'canned sardines': 'sardines',
+  pechay: 'bok choy',
+  'bok choy': 'bok choy',
   bawang: 'garlic',
   garlic: 'garlic',
   sibuyas: 'onion',
@@ -47,6 +47,27 @@ const aliases: Record<string, string> = {
   chicken: 'chicken',
   baboy: 'pork',
   pork: 'pork',
+  hipon: 'shrimp',
+  shrimp: 'shrimp',
+  isda: 'fish',
+  fish: 'fish',
+  bangus: 'milkfish',
+  milkfish: 'milkfish',
+  sitaw: 'long beans',
+  'long bean': 'long beans',
+  'long beans': 'long beans',
+  kalabasa: 'squash',
+  squash: 'squash',
+  ampalaya: 'bitter melon',
+  'bitter melon': 'bitter melon',
+  gata: 'coconut milk',
+  'coconut milk': 'coconut milk',
+  luya: 'ginger',
+  ginger: 'ginger',
+  suka: 'vinegar',
+  vinegar: 'vinegar',
+  toyo: 'soy sauce',
+  'soy sauce': 'soy sauce',
   kanin: 'cooked rice',
   'leftover rice': 'cooked rice',
   bigas: 'uncooked rice',
@@ -60,8 +81,8 @@ const aliases: Record<string, string> = {
 const displayNames: Record<string, string> = {
   egg: 'itlog',
   tomato: 'kamatis',
-  'canned sardines': 'sardinas',
-  pechay: 'pechay',
+  sardines: 'sardinas',
+  'bok choy': 'pechay',
   garlic: 'bawang',
   onion: 'sibuyas',
   eggplant: 'talong',
@@ -71,6 +92,16 @@ const displayNames: Record<string, string> = {
   'cooked rice': 'kanin',
   'uncooked rice': 'bigas',
   'bell pepper': 'bell pepper',
+  shrimp: 'hipon',
+  fish: 'isda',
+  milkfish: 'bangus',
+  'long beans': 'sitaw',
+  squash: 'kalabasa',
+  'bitter melon': 'ampalaya',
+  'coconut milk': 'gata',
+  ginger: 'luya',
+  vinegar: 'suka',
+  'soy sauce': 'toyo',
 }
 
 const unitAliases: Array<[IngredientInputUnit, string[]]> = [
@@ -88,6 +119,11 @@ const unitAliases: Array<[IngredientInputUnit, string[]]> = [
 
 function normalizeKey(value: string) {
   return value.trim().toLowerCase().replace(/\s+/g, ' ')
+}
+
+export function normalizeIngredientName(value: string) {
+  const normalized = normalizeKey(value).replace(/^[,.;:]+|[,.;:]+$/g, '')
+  return aliases[normalized] ?? normalized
 }
 
 function slugify(value: string) {
@@ -119,8 +155,8 @@ function normalizeItem(originalText: string, index: number, source: IngredientSo
   const withoutQuantity = (quantityMatch ? cleanedText.slice(quantityMatch[0].length) : cleanedText).replace(/^(?:of|ng|na)\s+/i, '')
   const { unit, name: parsedName } = parseUnit(withoutQuantity)
   const normalizedName = normalizeKey(parsedName)
-  const canonicalName = aliases[normalizedName] ?? normalizedName
-  const isKnown = Boolean(aliases[normalizedName])
+  const canonicalName = normalizeIngredientName(normalizedName)
+  const isKnown = canonicalName !== normalizedName || Boolean(aliases[normalizedName])
   const displayName = displayNames[canonicalName] ?? parsedName.trim()
 
   return {

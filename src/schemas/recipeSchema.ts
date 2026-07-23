@@ -64,6 +64,8 @@ export const recipeSchema = z.object({
   localTitle: z.string().min(1).optional(),
   description: z.string().min(12),
   matchReason: z.string().min(12),
+  authenticity: z.enum(['classic', 'home-style', 'hapag-adaptation']).optional(),
+  matchScore: z.number().int().min(0).max(100).optional(),
   ingredients: z.array(ingredientLineSchema).min(1),
   steps: z.array(recipeStepSchema).min(1),
   servings: z.number().int().positive(),

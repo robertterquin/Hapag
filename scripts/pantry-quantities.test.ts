@@ -7,7 +7,7 @@ const read = (path: string) => readFile(path, 'utf8')
 
 test('manual ingredient input remains the single discovery source', () => {
   const [sardines] = normalizeIngredientInput('2 cans sardines', 'manual')
-  assert.equal(sardines.canonicalName, 'canned sardines')
+  assert.equal(sardines.canonicalName, 'sardines')
   assert.equal(sardines.quantity, 2)
   assert.equal(sardines.unit, 'can')
   assert.equal(sardines.source, 'manual')
@@ -15,7 +15,7 @@ test('manual ingredient input remains the single discovery source', () => {
 
 test('Ulam ingredient input keeps every comma-separated item', () => {
   const ingredients = normalizeIngredientInput('garlic, shrimp, butter', 'manual')
-  assert.deepEqual(ingredients.map((ingredient) => ingredient.name), ['bawang', 'shrimp', 'butter'])
+  assert.deepEqual(ingredients.map((ingredient) => ingredient.name), ['bawang', 'hipon', 'butter'])
   assert.equal(ingredients.length, 3)
 })
 

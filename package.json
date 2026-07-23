@@ -8,7 +8,7 @@
     "typecheck": "tsc -b",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "test": "node --experimental-strip-types --test scripts/foundation.test.mjs scripts/recipe-schema.test.ts scripts/phase-10.test.mjs scripts/phase-11.test.mjs scripts/phase-12.test.ts scripts/phase-13.test.mjs scripts/pantry-quantities.test.ts scripts/auth-registration.test.ts scripts/motion.test.mjs scripts/colors.test.mjs scripts/ui-enhancement.test.mjs scripts/rate-limit.test.mjs",
+    "test": "node --experimental-strip-types --test scripts/foundation.test.mjs scripts/recipe-schema.test.ts scripts/phase-10.test.mjs scripts/phase-11.test.mjs scripts/phase-12.test.ts scripts/phase-13.test.mjs scripts/pantry-quantities.test.ts scripts/auth-registration.test.ts scripts/motion.test.mjs scripts/colors.test.mjs scripts/ui-enhancement.test.mjs scripts/rate-limit.test.mjs scripts/filipino-catalog.test.ts scripts/ingredient-normalization.test.ts scripts/recipe-matcher.test.ts scripts/grounded-ai.test.mjs scripts/recipe-transparency.test.ts",
     "preview": "vite preview"
   },
   "dependencies": {

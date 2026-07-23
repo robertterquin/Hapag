@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { formatIngredientInput } from '../lib/ingredientParser.ts'
 import { recipeService, RecipeGenerationError } from '../services/recipeService.ts'
-import type { DiscoverySession, GenerationConstraints, IngredientDraft, NormalizedIngredient, Recipe } from '../types/domain.ts'
+import { matchRecipeCatalog } from '../services/recipeMatcher.ts'
+import type { CatalogRecipeCandidate, DiscoverySession, GenerationConstraints, IngredientDraft, NormalizedIngredient, Recipe } from '../types/domain.ts'
 import { normalizeConstraints } from '../lib/recipeControls.ts'
 
 export type GenerationStatus = 'idle' | 'loading' | 'success' | 'error'
@@ -93,7 +94,16 @@ export function useDiscovery() {
     setGenerationStatus('loading')
     setGenerationError(null)
     try {
-      const result = await recipeService.generateSuggestions({ rawInput: session.rawInput, ingredients: session.ingredients, constraints: session.constraints }, accessToken)
+      const candidateDishes: CatalogRecipeCandidate[] = matchRecipeCatalog(session.ingredients).map(({ dish, score, availableIngredients, missingIngredients }) => ({
+        id: dish.id,
+        name: dish.name,
+        authenticity: dish.authenticity,
+        category: dish.category,
+        score,
+        availableIngredients,
+        missingIngredients,
+      }))
+      const result = await recipeService.generateSuggestions({ rawInput: session.rawInput, ingredients: session.ingredients, constraints: session.constraints, candidateDishes }, accessToken)
       setSuggestions(result)
       setGenerationStatus('success')
     } catch (error) {

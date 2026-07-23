@@ -1,4 +1,5 @@
 export type Difficulty = 'Easy' | 'Medium' | 'Hard'
+export type RecipeAuthenticity = 'classic' | 'home-style' | 'hapag-adaptation'
 
 export type IngredientUnit =
   | 'piece'
@@ -90,6 +91,8 @@ export interface Recipe {
   localTitle?: string
   description: string
   matchReason: string
+  authenticity?: RecipeAuthenticity
+  matchScore?: number
   ingredients: IngredientLine[]
   steps: RecipeStep[]
   servings: number
@@ -114,10 +117,21 @@ export interface GenerationConstraints {
   spiceLevel: 'mild' | 'medium' | 'hot'
 }
 
+export interface CatalogRecipeCandidate {
+  id: string
+  name: string
+  authenticity: 'classic' | 'home-style' | 'hapag-adaptation'
+  category: string
+  score: number
+  availableIngredients: string[]
+  missingIngredients: string[]
+}
+
 export interface GenerationRequest {
   rawInput: string
   ingredients: NormalizedIngredient[]
   constraints: GenerationConstraints
+  candidateDishes?: CatalogRecipeCandidate[]
 }
 
 export interface DiscoverySession {

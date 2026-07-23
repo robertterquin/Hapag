@@ -24,6 +24,8 @@ const recipeJsonSchema = {
           localTitle: { anyOf: [{ type: 'string' }, { type: 'null' }] },
           description: { type: 'string' },
           matchReason: { type: 'string' },
+          authenticity: { enum: ['classic', 'home-style', 'hapag-adaptation'] },
+          matchScore: { type: 'integer', minimum: 0, maximum: 100 },
           ingredients: {
             type: 'array',
             minItems: 1,
@@ -109,7 +111,7 @@ const recipeJsonSchema = {
           schemaVersion: { enum: ['recipe.v1'] },
         },
         required: [
-          'id', 'title', 'localTitle', 'description', 'matchReason', 'ingredients', 'steps',
+          'id', 'title', 'localTitle', 'description', 'matchReason', 'authenticity', 'matchScore', 'ingredients', 'steps',
           'servings', 'timeMinutes', 'difficulty', 'estimatedCost', 'costBreakdown',
           'substitutions', 'tags', 'dietaryNotes', 'region', 'spicyLevel', 'source', 'schemaVersion',
         ],
@@ -174,6 +176,21 @@ function isValidConstraints(value: JsonRecord) {
     && Array.isArray(allergies) && allergies.every((item) => typeof item === 'string')
     && (spiceLevel === 'mild' || spiceLevel === 'medium' || spiceLevel === 'hot')
     && (budgetLimit === undefined || (typeof budgetLimit === 'number' && Number.isFinite(budgetLimit) && budgetLimit >= 0))
+}
+
+function isValidCandidateDishes(value: unknown) {
+  if (value === undefined) return true
+  if (!Array.isArray(value) || value.length > 5) return false
+  return value.every((candidate) => {
+    if (!isRecord(candidate)) return false
+    return typeof candidate.id === 'string'
+      && typeof candidate.name === 'string'
+      && (candidate.authenticity === 'classic' || candidate.authenticity === 'home-style' || candidate.authenticity === 'hapag-adaptation')
+      && typeof candidate.category === 'string'
+      && typeof candidate.score === 'number' && Number.isFinite(candidate.score) && candidate.score >= 0 && candidate.score <= 100
+      && Array.isArray(candidate.availableIngredients) && candidate.availableIngredients.every((item) => typeof item === 'string')
+      && Array.isArray(candidate.missingIngredients) && candidate.missingIngredients.every((item) => typeof item === 'string')
+  })
 }
 
 function positiveInteger(value: string | undefined, fallback: number) {
@@ -253,6 +270,7 @@ async function handler(request: Request) {
   if (payload.ingredients.length > maxIngredients) return responseJson({ error: `A maximum of ${maxIngredients} ingredients is allowed.` }, 413)
   if (rawInput.length > maxInputLength) return responseJson({ error: `Ingredient input must be ${maxInputLength} characters or fewer.` }, 413)
   if (!constraints || !isValidConstraints(constraints)) return responseJson({ error: 'Generation constraints are invalid.' }, 400)
+  if (!isValidCandidateDishes(payload.candidateDishes)) return responseJson({ error: 'Recipe candidates are invalid.' }, 400)
 
   const rateLimitConfig = getRateLimitConfig((name) => Deno.env.get(name))
   const userId = await identifyUser(request)
@@ -280,7 +298,7 @@ async function handler(request: Request) {
         role: 'developer',
         content: [{
           type: 'input_text',
-          text: 'You are Hapag, a careful Filipino cooking assistant. Generate exactly three practical recipe choices using the ingredients provided for this cooking session first. Clearly identify ingredients that are still needed. Use Filipino, English, or Taglish naturally. Estimated PHP costs are approximate only. Respect allergies, dietary preference, servings, budget, and spice level. Do not make medical claims. Every step must be safe, clear, and ordered from 1. Return only the requested JSON structure.',
+          text: 'You are Hapag, a careful Filipino cooking assistant. Generate exactly three practical recipe choices using the ingredients provided for this cooking session first. Prefer the supplied Filipino candidate dishes and preserve their known identity. Set authenticity to classic only for a supplied classic dish, home-style for a familiar variation, or hapag-adaptation for a custom idea. Set matchScore to the candidate match score or a realistic 0–100 estimate. Clearly identify ingredients that are still needed. If adapting a candidate or creating a custom idea, describe it as a Hapag adaptation in matchReason; never present an invented recipe as a classic dish. Use Filipino, English, or Taglish naturally. Estimated PHP costs are approximate only. Respect allergies, dietary preference, servings, budget, and spice level. Do not make medical claims. Every step must be safe, clear, and ordered from 1. Return only the requested JSON structure.',
         }],
       },
       { role: 'user', content: [{ type: 'input_text', text: JSON.stringify(payload) }] },

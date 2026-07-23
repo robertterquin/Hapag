@@ -236,6 +236,7 @@ p { line-height: 1.6; }
 .recipe-card-image-placeholder { display: grid; place-items: center; color: var(--color-ube-dark); background: linear-gradient(135deg, var(--color-lavender), var(--color-warning-bg)); font-size: 52px; }
 .recipe-card-topline { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
 .recipe-badge { display: inline-flex; width: max-content; max-width: 100%; padding: 6px 10px; color: var(--color-ube-dark); background: var(--color-warning-bg); border-radius: var(--radius-pill); font-size: 11px; font-weight: 800; text-transform: capitalize; }
+.recipe-authenticity-badge { display: inline-flex; width: max-content; max-width: 100%; padding: 6px 10px; color: var(--color-calamansi); background: var(--color-success-bg); border-radius: var(--radius-pill); font-size: 10px; font-weight: 800; }
 .save-button { display: grid; width: 38px; height: 38px; place-items: center; color: var(--color-ube); background: var(--color-cream); border: 1px solid var(--color-border); border-radius: 50%; font-size: 21px; }
 .save-button:hover, .save-button-saved { color: var(--color-tomato); background: var(--color-error-bg); }
 .recipe-card-main { display: grid; flex: 1; gap: var(--space-3); padding: var(--space-4) 0 0; color: inherit; text-align: left; background: transparent; border: 0; }
