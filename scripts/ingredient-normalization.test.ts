@@ -19,6 +19,18 @@ test('Tagalog and English aliases share catalog-aligned canonical names', () => 
     ['gata', 'coconut milk'],
     ['toyo', 'soy sauce'],
     ['peanut butter', 'peanut butter'],
+    ['repolyo', 'cabbage'],
+    ['canton noodles', 'flour noodles'],
+    ['bihon', 'rice noodles'],
+    ['sampalok', 'tamarind'],
+    ['bagoong alamang', 'shrimp paste'],
+    ['kangkong', 'water spinach'],
+    ['liempo', 'pork belly'],
+    ['kamote', 'sweet potato'],
+    ['tuyo', 'dried fish'],
+    ['tahong', 'mussels'],
+    ['upo', 'bottle gourd'],
+    ['patola', 'sponge gourd'],
   ] as const
 
   for (const [input, expected] of cases) assert.equal(normalizeIngredientName(input), expected)
@@ -43,4 +55,34 @@ test('unknown ingredients remain editable and low confidence', () => {
 test('Tagalog-English duplicates resolve to one canonical ingredient', () => {
   const ingredients = normalizeIngredientInput('bawang, garlic, sardinas, canned sardines')
   assert.deepEqual([...new Set(ingredients.map((item) => item.canonicalName))], ['garlic', 'sardines'])
+})
+
+test('expanded Filipino catalog terms normalize to matching ingredient names', () => {
+  const cases = [
+    ['repolyo', 'cabbage'],
+    ['cabbages', 'cabbage'],
+    ['canton noodles', 'flour noodles'],
+    ['pancit canton', 'flour noodles'],
+    ['bihon', 'rice noodles'],
+    ['miki', 'egg noodles'],
+    ['sampalok', 'tamarind'],
+    ['sinigang mix', 'tamarind'],
+    ['bagoong alamang', 'shrimp paste'],
+    ['kangkong', 'water spinach'],
+    ['liempo', 'pork belly'],
+    ['giniling', 'ground pork'],
+    ['siling haba', 'green chili'],
+    ['kamote', 'sweet potato'],
+    ['tuyo', 'dried fish'],
+  ] as const
+
+  for (const [input, expected] of cases) assert.equal(normalizeIngredientName(input), expected)
+})
+
+test('expanded aliases preserve quantity and unit parsing', () => {
+  const [ingredient] = normalizeIngredientInput('2 packs canton noodles, 3 piraso ng repolyo')
+  assert.equal(ingredient.canonicalName, 'flour noodles')
+  assert.equal(ingredient.quantity, 2)
+  assert.equal(ingredient.unit, 'pack')
+  assert.equal(normalizeIngredientInput('3 piraso ng repolyo')[0].canonicalName, 'cabbage')
 })

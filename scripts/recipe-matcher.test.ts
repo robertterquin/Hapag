@@ -55,3 +55,15 @@ test('matcher handles empty input and custom limits', () => {
   const matches = matchRecipeCatalog(normalizeIngredientInput('egg, tomato'), undefined, 2)
   assert.equal(matches.length, 2)
 })
+
+test('expanded catalog matches common Filipino meal combinations', () => {
+  assert.equal(matchRecipeCatalog(normalizeIngredientInput('repolyo, canton noodles'))[0].dish.id, 'pancit-canton')
+  assert.equal(matchRecipeCatalog(normalizeIngredientInput('sampalok, hipon'))[0].dish.id, 'sinigang-na-hipon')
+  assert.equal(matchRecipeCatalog(normalizeIngredientInput('liempo, soy sauce, garlic'))[0].dish.id, 'grilled-liempo')
+  assert.equal(matchRecipeCatalog(normalizeIngredientInput('shrimp, garlic, butter'))[0].dish.id, 'garlic-butter-shrimp')
+})
+
+test('removed snack and dessert ingredients do not create a main-meal match', () => {
+  const matches = matchRecipeCatalog(normalizeIngredientInput('kamote, brown sugar'))
+  assert.ok(matches.every((match) => match.score === 0))
+})

@@ -1,6 +1,7 @@
 import type { NormalizedIngredient } from '../types/domain.ts'
 import { filipinoRecipeCatalog } from '../data/filipinoRecipeCatalog.ts'
 import type { FilipinoRecipeCatalogEntry } from '../data/filipinoRecipeCatalog.ts'
+import { normalizeIngredientName } from '../lib/ingredientParser.ts'
 
 export type RecipeMatchKind = 'strong-match' | 'partial-match' | 'adaptation-candidate'
 
@@ -17,33 +18,42 @@ function unique(values: string[]) {
   return [...new Set(values)]
 }
 
+function canonicalizeCatalogIngredients(values: string[]) {
+  return unique(values.map((value) => normalizeIngredientName(value)))
+}
+
 function getCanonicalIngredients(ingredients: NormalizedIngredient[]) {
   return new Set(ingredients.map((ingredient) => ingredient.canonicalName))
 }
 
-function getMatchKind(score: number): RecipeMatchKind {
+function getMatchKind(score: number, matchedRequiredCount: number): RecipeMatchKind {
   if (score >= 75) return 'strong-match'
-  if (score >= 40) return 'partial-match'
+  if (score >= 40 && matchedRequiredCount >= 2) return 'partial-match'
   return 'adaptation-candidate'
 }
 
 function scoreDish(dish: FilipinoRecipeCatalogEntry, available: Set<string>, ingredientFrequency: Map<string, number>): RecipeMatch {
-  const required = unique(dish.requiredIngredients)
-  const optional = unique(dish.optionalIngredients)
+  const required = canonicalizeCatalogIngredients(dish.requiredIngredients)
+  const optional = canonicalizeCatalogIngredients(dish.optionalIngredients)
   const availableRequired = required.filter((ingredient) => available.has(ingredient))
   const missingRequired = required.filter((ingredient) => !available.has(ingredient))
   const availableOptional = optional.filter((ingredient) => available.has(ingredient))
 
+  // A single ingredient is not enough evidence for a catalog match. A distinctive
+  // required ingredient can still support a candidate when the user supplied a
+  // second ingredient, even if that second ingredient is not yet cataloged for it.
+  const hasDistinctiveRequired = availableRequired.some((ingredient) => (ingredientFrequency.get(ingredient) ?? 0) <= 2)
+  const hasMinimumEvidence = availableRequired.length >= 2 || (availableRequired.length === 1 && available.size >= 2 && hasDistinctiveRequired)
   // Required ingredients drive the score; optional ingredients provide a small tie-breaker.
-  const requiredScore = required.length === 0 ? 0 : (availableRequired.length / required.length) * 80
-  const optionalScore = optional.length === 0 ? 0 : (availableOptional.length / optional.length) * 20
-  const distinctiveBonus = availableRequired.some((ingredient) => (ingredientFrequency.get(ingredient) ?? 0) <= 2) ? 15 : 0
+  const requiredScore = !hasMinimumEvidence || required.length === 0 ? 0 : (availableRequired.length / required.length) * 80
+  const optionalScore = !hasMinimumEvidence || optional.length === 0 ? 0 : (availableOptional.length / optional.length) * 20
+  const distinctiveBonus = hasMinimumEvidence && hasDistinctiveRequired ? 15 : 0
   const score = Math.min(100, Math.round(requiredScore + optionalScore + distinctiveBonus))
 
   return {
     dish,
     score,
-    kind: getMatchKind(score),
+    kind: getMatchKind(score, availableRequired.length),
     availableIngredients: availableRequired,
     missingIngredients: missingRequired,
     optionalAvailableIngredients: availableOptional,
