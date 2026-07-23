@@ -16,8 +16,8 @@ export function RecipeCard({ recipe, saved, onOpen, onToggleSave, animationIndex
   const missing = recipe.ingredients.filter((ingredient) => !ingredient.available)
   const delay = Math.min(animationIndex, 5) * 0.045
   const authenticityLabels: Record<RecipeAuthenticity, string> = {
-    classic: 'Classic Filipino dish',
-    'home-style': 'Filipino home-style',
+    classic: 'Klasikong pagkaing Filipino',
+    'home-style': 'Lutong-bahay na Filipino',
     'hapag-adaptation': 'Hapag adaptation',
   }
 
@@ -27,7 +27,7 @@ export function RecipeCard({ recipe, saved, onOpen, onToggleSave, animationIndex
       <div className="recipe-card-topline">
         <span className="recipe-badge">{recipe.tags[0]}</span>
         {recipe.authenticity ? <span className="recipe-authenticity-badge">{authenticityLabels[recipe.authenticity]}</span> : null}
-        <motion.button className={`save-button ${saved ? 'save-button-saved' : ''}`} type="button" onClick={onToggleSave} aria-label={saved ? `Unsave ${recipe.title}` : `Save ${recipe.title}`} aria-pressed={saved} whileTap={{ scale: 0.9 }} transition={{ duration: 0.12 }}>
+        <motion.button className={`save-button ${saved ? 'save-button-saved' : ''}`} type="button" onClick={onToggleSave} aria-label={saved ? `Alisin sa mga naka-save: ${recipe.title}` : `I-save ang ${recipe.title}`} aria-pressed={saved} whileTap={{ scale: 0.9 }} transition={{ duration: 0.12 }}>
           <motion.span key={saved ? 'saved' : 'unsaved'} initial={{ scale: 0.7, opacity: 0.5 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.16 }}>{saved ? '♥' : '♡'}</motion.span>
         </motion.button>
       </div>
@@ -41,9 +41,9 @@ export function RecipeCard({ recipe, saved, onOpen, onToggleSave, animationIndex
           <span>{recipe.servings} serv.</span>
           {typeof recipe.matchScore === 'number' ? <span>{recipe.matchScore}% match</span> : null}
         </div>
-        <div className="ingredient-summary">
-          <div><strong>Meron ka na</strong>{available.map((ingredient) => <span key={ingredient.id}>{ingredient.name}</span>)}</div>
-          <div><strong>Kulang pa</strong>{missing.length > 0 ? missing.map((ingredient) => <span key={ingredient.id}>{ingredient.name}</span>) : <span>Wala</span>}</div>
+        <div className="ingredient-summary" aria-label="Ingredient evidence">
+          <div><strong>Meron ka na ({available.length})</strong>{available.length > 0 ? available.map((ingredient) => <span key={ingredient.id}>{ingredient.name}</span>) : <span>Wala pa</span>}</div>
+          <div><strong>Kulang pa ({missing.length})</strong>{missing.length > 0 ? missing.map((ingredient) => <span key={ingredient.id}>{ingredient.name}</span>) : <span>Wala</span>}</div>
         </div>
         <span className="card-action">Tingnan ang recipe <span aria-hidden="true">→</span></span>
       </button>

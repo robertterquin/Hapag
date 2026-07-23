@@ -55,6 +55,8 @@ test('matcher prioritizes essential and distinctive ingredients', () => {
   assert.equal(match.dish.id, 'kare-kare')
   assert.ok(match.score >= 20)
   assert.ok(match.availableIngredients.includes('peanut butter'))
+  assert.equal(match.substitutedIngredients[0].requiredIngredient, 'oxtail')
+  assert.equal(match.substitutedIngredients[0].providedIngredient, 'pork')
 })
 
 test('matcher handles empty input and custom limits', () => {
@@ -64,10 +66,19 @@ test('matcher handles empty input and custom limits', () => {
 })
 
 test('expanded catalog matches common Filipino meal combinations', () => {
-  assert.equal(matchRecipeCatalog(normalizeIngredientInput('repolyo, canton noodles'))[0].dish.id, 'pancit-canton')
-  assert.equal(matchRecipeCatalog(normalizeIngredientInput('sampalok, hipon'))[0].dish.id, 'sinigang-na-hipon')
+  const pancitMatches = matchRecipeCatalog(normalizeIngredientInput('repolyo, canton noodles'))
+  const sinigangMatches = matchRecipeCatalog(normalizeIngredientInput('sampalok, hipon'))
+
+  assert.equal(pancitMatches[0].dish.id, 'pancit-canton')
+  assert.equal(sinigangMatches[0].dish.id, 'sinigang-na-hipon')
   assert.equal(matchRecipeCatalog(normalizeIngredientInput('liempo, soy sauce, garlic'))[0].dish.id, 'grilled-liempo')
   assert.equal(matchRecipeCatalog(normalizeIngredientInput('shrimp, garlic, butter'))[0].dish.id, 'garlic-butter-shrimp')
+  assert.ok(pancitMatches.every((match) => match.score >= 20))
+  assert.ok(sinigangMatches.every((match) => match.score >= 20))
+})
+
+test('matcher rejects a distinctive ingredient paired with an unrelated ingredient', () => {
+  assert.deepEqual(matchRecipeCatalog(normalizeIngredientInput('peanut butter, tomato')), [])
 })
 
 test('removed snack and dessert ingredients do not create a main-meal match', () => {
@@ -87,5 +98,9 @@ test('ingredient groups and explicit substitutions are conservative', () => {
 
   const [kareKare] = matchRecipeCatalog(normalizeIngredientInput('pork, peanut butter'))
   assert.equal(kareKare.dish.id, 'kare-kare')
-  assert.equal(kareKare.substitutedIngredients.length, 0)
+  assert.deepEqual(kareKare.substitutedIngredients, [{
+    requiredIngredient: 'oxtail',
+    providedIngredient: 'pork',
+    note: 'Pork creates a home-style Kare-Kare variation.',
+  }])
 })

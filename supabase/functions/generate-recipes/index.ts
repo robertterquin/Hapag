@@ -242,6 +242,91 @@ function removeNullableFields(recipes: JsonRecord[]) {
   })
 }
 
+function validateResultComposition(recipes: JsonRecord[], candidateDishes: unknown) {
+  const adaptationCount = recipes.filter((recipe) => recipe.authenticity === 'hapag-adaptation').length
+  const strongCatalogMatches = Array.isArray(candidateDishes)
+    ? candidateDishes.filter((candidate) => isRecord(candidate)
+      && (candidate.authenticity === 'classic' || candidate.authenticity === 'home-style')
+      && typeof candidate.score === 'number'
+      && candidate.score >= 60).length
+    : 0
+
+  // Strong catalog matches should not be replaced by several invented
+  // variations. Allow one clearly labelled adaptation only when fewer than
+  // two strong catalog matches are available.
+  const maximumAdaptations = strongCatalogMatches >= 2 ? 0 : 1
+  return adaptationCount <= maximumAdaptations
+}
+
+const ingredientAliases: Record<string, string> = {
+  bawang: 'garlic',
+  sibuyas: 'onion',
+  itlog: 'egg',
+  eggs: 'egg',
+  kamatis: 'tomato',
+  tomatoes: 'tomato',
+  sardinas: 'sardines',
+  manok: 'chicken',
+  baboy: 'pork',
+  hipon: 'shrimp',
+  repolyo: 'cabbage',
+  pechay: 'bok choy',
+  'bok choy': 'bok choy',
+  sampalok: 'tamarind',
+  gata: 'coconut milk',
+  toyo: 'soy sauce',
+  suka: 'vinegar',
+}
+
+function canonicalizeGeneratedIngredient(value: unknown) {
+  if (typeof value !== 'string') return undefined
+  const cleaned = value.toLowerCase().trim().replace(/[.,!?;:()[\]{}]/g, '').replace(/\s+/g, ' ')
+  if (!cleaned) return undefined
+  return ingredientAliases[cleaned] ?? cleaned.replace(/s$/, '')
+}
+
+function getIngredientNames(value: unknown) {
+  if (!Array.isArray(value)) return []
+  return value.flatMap((ingredient) => {
+    if (!isRecord(ingredient)) return []
+    const canonical = canonicalizeGeneratedIngredient(ingredient.canonicalName)
+      ?? canonicalizeGeneratedIngredient(ingredient.name)
+    return canonical ? [{ canonical, available: ingredient.available === true }] : []
+  })
+}
+
+function validateRecipeGrounding(recipes: JsonRecord[], payload: JsonRecord) {
+  const providedIngredients = new Set(
+    Array.isArray(payload.ingredients)
+      ? payload.ingredients.flatMap((ingredient) => {
+        if (!isRecord(ingredient)) return []
+        const canonical = canonicalizeGeneratedIngredient(ingredient.canonicalName)
+          ?? canonicalizeGeneratedIngredient(ingredient.name)
+        return canonical ? [canonical] : []
+      })
+      : [],
+  )
+  if (providedIngredients.size === 0) return false
+
+  const candidates = Array.isArray(payload.candidateDishes) ? payload.candidateDishes : []
+  const primaryCandidate = candidates.find(isRecord)
+  const groundedIngredients = primaryCandidate && Array.isArray(primaryCandidate.availableIngredients)
+    ? new Set(primaryCandidate.availableIngredients.flatMap((ingredient) => {
+      const canonical = canonicalizeGeneratedIngredient(ingredient)
+      return canonical ? [canonical] : []
+    }))
+    : providedIngredients
+  const requiredIngredients = groundedIngredients.size > 0 ? groundedIngredients : providedIngredients
+
+  return recipes.every((recipe) => {
+    const recipeIngredients = getIngredientNames(recipe.ingredients)
+    const recipeNames = new Set(recipeIngredients.map((ingredient) => ingredient.canonical))
+    const keepsGroundedIngredients = [...requiredIngredients].every((ingredient) => recipeNames.has(ingredient))
+    const doesNotInventAvailability = recipeIngredients.every((ingredient) => !ingredient.available || providedIngredients.has(ingredient.canonical))
+    return keepsGroundedIngredients && doesNotInventAvailability
+  })
+}
+
 async function handler(request: Request) {
   if (request.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
   if (request.method !== 'POST') return responseJson({ error: 'Only POST requests are supported.' }, 405)
@@ -298,7 +383,7 @@ async function handler(request: Request) {
         role: 'developer',
         content: [{
           type: 'input_text',
-          text: 'You are Hapag, a careful Filipino cooking assistant. Generate exactly three practical recipe choices using the ingredients provided for this cooking session first. Prefer the highest-overlap supplied Filipino candidate dishes, especially the first candidate and its availableIngredients. Candidate substitutions are explicitly marked and are acceptable alternatives, but do not describe a substitute as an exact ingredient match. Every suggestion MUST use every ingredient listed in the first candidate availableIngredients; do not return a suggestion that omits a distinctive user ingredient such as peanut butter. If the strongest candidate has a distinctive ingredient, keep that ingredient in all three suggestions even when adapting the dish. Do not replace a strong candidate with an unrelated dish. Preserve known Filipino dish identity. Set authenticity to classic only for a supplied classic dish, home-style for a familiar variation, or hapag-adaptation for a custom idea. Set matchScore to the candidate match score or a realistic 0–100 estimate. Clearly identify ingredients that are still needed. If adapting a candidate or creating a custom idea, describe it as a Hapag adaptation in matchReason; never present an invented recipe as a classic dish. Use Filipino, English, or Taglish naturally. Estimated PHP costs are approximate only. Respect allergies, dietary preference, servings, budget, and spice level. Do not make medical claims. Every step must be safe, clear, and ordered from 1. Return only the requested JSON structure.',
+          text: 'You are Hapag, a careful Filipino cooking assistant. Generate exactly three practical recipe choices using the ingredients provided for this cooking session first. Prefer the highest-overlap supplied Filipino candidate dishes, especially the first candidate and its availableIngredients. Candidate substitutions are explicitly marked and are acceptable alternatives, but do not describe a substitute as an exact ingredient match. Every suggestion MUST use every ingredient listed in the first candidate availableIngredients; do not return a suggestion that omits a distinctive user ingredient such as peanut butter. If the strongest candidate has a distinctive ingredient, keep that ingredient in all three suggestions even when adapting the dish. Do not replace a strong candidate with an unrelated dish. Preserve known Filipino dish identity. Set authenticity to classic only for a supplied classic dish, home-style for a familiar variation, or hapag-adaptation for a custom idea. Return at most one hapag-adaptation in the three results. If at least two supplied catalog candidates have a score of 60 or higher, return no hapag-adaptation and use grounded classic or home-style choices instead. Never use an adaptation as filler when a supplied catalog dish is available. Set matchScore to the candidate match score or a realistic 0–100 estimate. Clearly identify ingredients that are still needed. If adapting a candidate or creating a custom idea, describe it as a Hapag adaptation in matchReason; never present an invented recipe as a classic dish. Use Filipino, English, or Taglish naturally. Estimated PHP costs are approximate only. Respect allergies, dietary preference, servings, budget, and spice level. Do not make medical claims. Every step must be safe, clear, and ordered from 1. Return only the requested JSON structure.',
         }],
       },
       { role: 'user', content: [{ type: 'input_text', text: JSON.stringify(payload) }] },
@@ -335,7 +420,15 @@ async function handler(request: Request) {
       return responseJson({ error: 'AI returned an invalid recipe payload.' }, 502)
     }
 
-    return responseJson({ recipes: removeNullableFields(generatedPayload.recipes.filter(isRecord)) })
+    const recipes = generatedPayload.recipes.filter(isRecord)
+    if (!validateResultComposition(recipes, payload.candidateDishes)) {
+      return responseJson({ error: 'AI returned too many custom adaptations for the available Filipino dishes.' }, 502)
+    }
+    if (!validateRecipeGrounding(recipes, payload)) {
+      return responseJson({ error: 'AI returned a recipe that was not grounded in the provided ingredients.' }, 502)
+    }
+
+    return responseJson({ recipes: removeNullableFields(recipes) })
   } catch (error) {
     console.error('Unexpected recipe generation error', error instanceof Error ? error.message : 'unknown error')
     return responseJson({ error: 'AI generation is temporarily unavailable.' }, 502)
