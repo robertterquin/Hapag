@@ -125,6 +125,11 @@ export interface CatalogRecipeCandidate {
   score: number
   availableIngredients: string[]
   missingIngredients: string[]
+  substitutedIngredients?: Array<{
+    requiredIngredient: string
+    providedIngredient: string
+    note: string
+  }>
 }
 
 export interface GenerationRequest {

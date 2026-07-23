@@ -94,7 +94,7 @@ export function useDiscovery() {
     setGenerationStatus('loading')
     setGenerationError(null)
     try {
-      const candidateDishes: CatalogRecipeCandidate[] = matchRecipeCatalog(session.ingredients).map(({ dish, score, availableIngredients, missingIngredients }) => ({
+      const candidateDishes: CatalogRecipeCandidate[] = matchRecipeCatalog(session.ingredients).map(({ dish, score, availableIngredients, missingIngredients, substitutedIngredients }) => ({
         id: dish.id,
         name: dish.name,
         authenticity: dish.authenticity,
@@ -102,6 +102,7 @@ export function useDiscovery() {
         score,
         availableIngredients,
         missingIngredients,
+        substitutedIngredients,
       }))
       const result = await recipeService.generateSuggestions({ rawInput: session.rawInput, ingredients: session.ingredients, constraints: session.constraints, candidateDishes }, accessToken)
       setSuggestions(result)

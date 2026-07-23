@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { normalizeIngredientInput } from '../src/lib/ingredientParser.ts'
 import { matchRecipeCatalog } from '../src/services/recipeMatcher.ts'
+import { getIngredientGroup } from '../src/data/ingredientGroups.ts'
 
 test('matcher ranks Chicken Adobo for matching chicken ingredients', () => {
   const ingredients = normalizeIngredientInput('manok, bawang, toyo, suka')
@@ -42,12 +43,18 @@ test('distinctive ingredients prioritize the relevant Filipino dish', () => {
   assert.ok(match.availableIngredients.includes('peanut butter'))
 })
 
-test('matcher returns adaptation candidates for weak matches', () => {
+test('matcher rejects weak matches instead of returning misleading adaptations', () => {
   const ingredients = normalizeIngredientInput('butter')
-  const [match] = matchRecipeCatalog(ingredients)
 
-  assert.equal(match.kind, 'adaptation-candidate')
-  assert.equal(match.score, 0)
+  assert.deepEqual(matchRecipeCatalog(ingredients), [])
+})
+
+test('matcher prioritizes essential and distinctive ingredients', () => {
+  const [match] = matchRecipeCatalog(normalizeIngredientInput('peanut butter, pork'))
+
+  assert.equal(match.dish.id, 'kare-kare')
+  assert.ok(match.score >= 20)
+  assert.ok(match.availableIngredients.includes('peanut butter'))
 })
 
 test('matcher handles empty input and custom limits', () => {
@@ -66,4 +73,19 @@ test('expanded catalog matches common Filipino meal combinations', () => {
 test('removed snack and dessert ingredients do not create a main-meal match', () => {
   const matches = matchRecipeCatalog(normalizeIngredientInput('kamote, brown sugar'))
   assert.ok(matches.every((match) => match.score === 0))
+})
+
+test('ingredient groups and explicit substitutions are conservative', () => {
+  assert.equal(getIngredientGroup('shrimp'), 'seafood')
+  assert.equal(getIngredientGroup('garlic'), 'aromatics')
+  assert.equal(getIngredientGroup('butter'), 'cooking-fats')
+
+  const [match] = matchRecipeCatalog(normalizeIngredientInput('shrimp, calamansi, tomato, onion'))
+  assert.equal(match.dish.id, 'sinigang-na-hipon')
+  assert.ok(match.substitutedIngredients.some((item) => item.requiredIngredient === 'tamarind' && item.providedIngredient === 'calamansi'))
+  assert.ok(match.score < 100)
+
+  const [kareKare] = matchRecipeCatalog(normalizeIngredientInput('pork, peanut butter'))
+  assert.equal(kareKare.dish.id, 'kare-kare')
+  assert.equal(kareKare.substitutedIngredients.length, 0)
 })
