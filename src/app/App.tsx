@@ -6,6 +6,7 @@ import { useAuth } from '../hooks/useAuth.ts'
 import { usePreferences } from '../hooks/usePreferences.ts'
 import { useSavedRecipes } from '../hooks/useSavedRecipes.ts'
 import { useRecipeFeedback } from '../hooks/useRecipeFeedback.ts'
+import { persistenceService } from '../services/persistenceService.ts'
 import { AuthPage } from '../pages/AuthPage.tsx'
 import { CookingPage } from '../pages/CookingPage.tsx'
 import { HomePage } from '../pages/HomePage.tsx'
@@ -50,12 +51,26 @@ function App() {
     void savedRecipes.toggleCooked(route.name === 'cooking' ? route.recipeId : '')
     if (route.name === 'cooking') navigate(`/recipes/${route.recipeId}`)
   }
+  const submitFeedback = (recipeId: string, kind: import('../hooks/useRecipeFeedback.ts').RecipeFeedbackKind) => {
+    const previous = recipeFeedback.feedback[recipeId]
+    recipeFeedback.setRecipeFeedback(recipeId, kind)
+    if (!auth.session) return
+    const operation = previous === kind
+      ? persistenceService.removeRecipeFeedback(auth.session.user.id, recipeId)
+      : persistenceService.submitRecipeFeedback(auth.session.user.id, {
+        recipeId,
+        feedbackType: kind,
+        ingredients: discovery.session.ingredients,
+        candidateDishes: discovery.candidateDishes,
+      })
+    void operation.catch(() => undefined)
+  }
 
   const page: ReactNode = (() => {
     switch (route.name) {
       case 'home': return <HomePage onStart={startDiscovery} />
       case 'ulam': return <UlamPage session={discovery.session} onAddIngredients={discovery.addIngredients} onReset={discovery.resetDiscovery} onUpdateConstraints={discovery.updateConstraints} onGenerate={generateSuggestions} onRemove={discovery.removeIngredient} />
-      case 'results': return <ResultsPage session={discovery.session} status={discovery.generationStatus} suggestions={recipeFeedback.rankRecipes(discovery.suggestions)} error={discovery.generationError} savedError={savedRecipes.error} savedIds={savedRecipes.savedIds} feedback={recipeFeedback.feedback} onOpen={(id) => navigate(`/recipes/${id}`)} onToggleSave={toggleSaved} onFeedback={recipeFeedback.setRecipeFeedback} onRetry={generateSuggestions} onEdit={() => navigate('/ulam')} />
+      case 'results': return <ResultsPage session={discovery.session} status={discovery.generationStatus} suggestions={recipeFeedback.rankRecipes(discovery.suggestions)} error={discovery.generationError} savedError={savedRecipes.error} savedIds={savedRecipes.savedIds} feedback={recipeFeedback.feedback} onOpen={(id) => navigate(`/recipes/${id}`)} onToggleSave={toggleSaved} onFeedback={submitFeedback} onRetry={generateSuggestions} onEdit={() => navigate('/ulam')} />
       case 'recipe-detail': return <RecipeDetailPage key={route.recipeId} recipeId={route.recipeId} saved={savedRecipes.savedIds.includes(route.recipeId)} onToggleSave={() => toggleSaved(route.recipeId)} onStartCooking={() => navigate(`/recipes/${route.recipeId}/cook`)} onBack={() => navigate('/results')} />
       case 'cooking': return <CookingPage key={route.recipeId} recipeId={route.recipeId} onFinish={finishCooking} onBack={() => navigate(`/recipes/${route.recipeId}`)} />
       case 'saved': return <SavedPage isAuthenticated={Boolean(auth.session)} status={savedRecipes.status} error={savedRecipes.error} savedIds={savedRecipes.savedIds} savedRecipes={savedRecipes.savedRecipes} cookedRecipes={savedRecipes.cookedRecipes} onOpen={(id) => navigate(`/recipes/${id}`)} onUnsave={(id) => savedRecipes.toggleSaved(id)} onStart={() => navigate('/ulam')} onSignIn={requireAuth} onRetry={savedRecipes.reload} />

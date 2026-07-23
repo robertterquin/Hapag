@@ -9,5 +9,5 @@ const options: Array<{ kind: RecipeFeedbackKind; label: string }> = [
 ]
 
 export function RecipeFeedback({ value, onChange }: RecipeFeedbackProps) {
-  return <div className="recipe-feedback" aria-label="Recipe feedback"><span className="recipe-feedback-label">How was this suggestion?</span><div className="recipe-feedback-options">{options.map((option) => <button key={option.kind} className={value === option.kind ? 'feedback-option feedback-option-active' : 'feedback-option'} type="button" aria-pressed={value === option.kind} onClick={() => onChange(option.kind)}>{option.label}</button>)}</div></div>
+  return <div className="recipe-feedback" aria-label="Recipe feedback"><span className="recipe-feedback-label">How was this suggestion?</span><div className="recipe-feedback-options">{options.map((option) => { const selected = value === option.kind; return <button key={option.kind} className={selected ? 'feedback-option feedback-option-active' : 'feedback-option'} type="button" aria-pressed={selected} onClick={() => onChange(option.kind)}>{selected ? '✓ ' : ''}{option.label}</button> })}</div>{value ? <small className="recipe-feedback-confirmation" role="status" aria-live="polite">Feedback saved. Salamat!</small> : null}</div>
 }

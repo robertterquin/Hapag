@@ -249,6 +249,7 @@ p { line-height: 1.6; }
 .recipe-feedback-options { display: flex; flex-wrap: wrap; gap: 6px; }
 .feedback-option { min-height: 32px; padding: 5px 9px; color: var(--color-muted); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 999px; font-size: 11px; font-weight: 700; }
 .feedback-option:hover, .feedback-option-active { color: var(--color-ube-dark); background: var(--color-lavender); border-color: var(--color-ube); }
+.recipe-feedback-confirmation { color: var(--color-calamansi-dark, var(--color-ube-dark)); font-size: 11px; font-weight: 700; }
 .recipe-match { min-height: 68px; margin: 0; color: var(--color-muted); font-size: 13px; line-height: 1.5; }
 .recipe-metrics { display: flex; flex-wrap: wrap; gap: 6px; }
 .recipe-metrics span { padding: 6px 8px; color: var(--color-muted); background: var(--color-cream); border-radius: 8px; font-size: 11px; font-weight: 700; }

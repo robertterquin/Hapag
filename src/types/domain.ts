@@ -145,6 +145,13 @@ export interface DiscoverySession {
   constraints: GenerationConstraints
 }
 
+export interface RecipeFeedbackSubmission {
+  recipeId: string
+  feedbackType: 'helpful' | 'not-relevant' | 'missing-ingredient' | 'not-filipino'
+  ingredients: NormalizedIngredient[]
+  candidateDishes: CatalogRecipeCandidate[]
+}
+
 export interface RecipeService {
   normalizeIngredients(input: string, source?: IngredientSource): NormalizedIngredient[]
   generateSuggestions(request: GenerationRequest, accessToken?: string): Promise<Recipe[]>

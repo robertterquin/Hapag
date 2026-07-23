@@ -29,6 +29,7 @@ function dedupeIngredients(ingredients: NormalizedIngredient[]) {
 export function useDiscovery() {
   const [session, setSession] = useState<DiscoverySession>({ rawInput: '', ingredients: [], constraints: defaultConstraints })
   const [suggestions, setSuggestions] = useState<Recipe[]>([])
+  const [candidateDishes, setCandidateDishes] = useState<CatalogRecipeCandidate[]>([])
   const [generationStatus, setGenerationStatus] = useState<GenerationStatus>('idle')
   const [generationError, setGenerationError] = useState<string | null>(null)
 
@@ -104,6 +105,7 @@ export function useDiscovery() {
         missingIngredients,
         substitutedIngredients,
       }))
+      setCandidateDishes(candidateDishes)
       // Catalog matches improve authenticity, but a partial or unfamiliar
       // combination may still be useful. In that case the Edge Function asks
       // the AI for a clearly labelled Hapag adaptation grounded in the user's
@@ -126,6 +128,7 @@ export function useDiscovery() {
   return {
     session,
     suggestions,
+    candidateDishes,
     generationStatus,
     generationError,
     startDiscovery,

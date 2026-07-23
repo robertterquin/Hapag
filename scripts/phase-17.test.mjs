@@ -19,5 +19,16 @@ test('Phase 17 stores feedback locally and reranks suggestions', async () => {
   assert.match(source, /not-filipino/)
   const app = await read('src/app/App.tsx')
   assert.match(app, /recipeFeedback\.rankRecipes\(discovery\.suggestions\)/)
-  assert.match(app, /onFeedback=\{recipeFeedback\.setRecipeFeedback\}/)
+  assert.match(app, /onFeedback=\{submitFeedback\}/)
+})
+
+test('Phase 17 includes authenticated persistence with user-owned RLS', async () => {
+  const migration = await read('supabase/migrations/0004_recipe_feedback.sql')
+  assert.match(migration, /create table if not exists public\.recipe_feedback/)
+  assert.match(migration, /enable row level security/)
+  assert.match(migration, /auth\.uid\(\) = user_id/)
+  assert.match(migration, /unique \(user_id, recipe_id\)/)
+  const persistence = await read('src/services/persistenceService.ts')
+  assert.match(persistence, /submitRecipeFeedback/)
+  assert.match(persistence, /candidate_dishes/)
 })

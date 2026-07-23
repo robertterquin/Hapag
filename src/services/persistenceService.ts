@@ -102,6 +102,23 @@ export const persistenceService = {
     if (error) throw error
   },
 
+  async submitRecipeFeedback(userId: string, input: import('../types/domain.ts').RecipeFeedbackSubmission) {
+    const { error } = await requireClient().from('recipe_feedback').upsert({
+      user_id: userId,
+      recipe_id: input.recipeId,
+      feedback_type: input.feedbackType,
+      ingredients: input.ingredients,
+      candidate_dishes: input.candidateDishes,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: 'user_id,recipe_id' })
+    if (error) throw error
+  },
+
+  async removeRecipeFeedback(userId: string, recipeId: string) {
+    const { error } = await requireClient().from('recipe_feedback').delete().eq('user_id', userId).eq('recipe_id', recipeId)
+    if (error) throw error
+  },
+
   async loadPreferences(userId: string): Promise<UserPreferences | null> {
     const { data, error } = await requireClient().from('user_preferences').select('language,default_servings,dietary_preference,allergies,spice_level').eq('user_id', userId).maybeSingle()
     if (error) throw error
