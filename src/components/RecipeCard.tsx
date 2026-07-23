@@ -2,16 +2,20 @@ import { motion } from 'motion/react'
 import type { Recipe } from '../types/domain.ts'
 import { formatCost } from '../lib/format.ts'
 import type { RecipeAuthenticity } from '../types/domain.ts'
+import { RecipeFeedback } from './RecipeFeedback.tsx'
+import type { RecipeFeedbackKind } from '../hooks/useRecipeFeedback.ts'
 
 interface RecipeCardProps {
   recipe: Recipe
   saved: boolean
   onOpen: () => void
   onToggleSave: () => void
+  feedback?: RecipeFeedbackKind
+  onFeedback?: (kind: RecipeFeedbackKind) => void
   animationIndex?: number
 }
 
-export function RecipeCard({ recipe, saved, onOpen, onToggleSave, animationIndex = 0 }: RecipeCardProps) {
+export function RecipeCard({ recipe, saved, onOpen, onToggleSave, feedback, onFeedback, animationIndex = 0 }: RecipeCardProps) {
   const available = recipe.ingredients.filter((ingredient) => ingredient.available)
   const missing = recipe.ingredients.filter((ingredient) => !ingredient.available)
   const delay = Math.min(animationIndex, 5) * 0.045
@@ -47,6 +51,7 @@ export function RecipeCard({ recipe, saved, onOpen, onToggleSave, animationIndex
         </div>
         <span className="card-action">Tingnan ang recipe <span aria-hidden="true">→</span></span>
       </button>
+      {onFeedback ? <RecipeFeedback value={feedback} onChange={onFeedback} /> : null}
     </motion.article>
   )
 }

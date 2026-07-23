@@ -4,6 +4,7 @@ import { ResultsSkeleton } from '../components/Skeletons.tsx'
 import { StatePanel } from '../components/StatePanel.tsx'
 import type { GenerationStatus } from '../hooks/useDiscovery.ts'
 import type { DiscoverySession, Recipe } from '../types/domain.ts'
+import type { RecipeFeedbackKind } from '../hooks/useRecipeFeedback.ts'
 
 export interface ResultsPageProps {
   session: DiscoverySession
@@ -14,11 +15,13 @@ export interface ResultsPageProps {
   savedIds: string[]
   onOpen: (recipeId: string) => void
   onToggleSave: (recipeId: string) => void
+  feedback: Record<string, RecipeFeedbackKind>
+  onFeedback: (recipeId: string, kind: RecipeFeedbackKind) => void
   onRetry: () => void
   onEdit: () => void
 }
 
-export function ResultsPage({ session, status, suggestions, error, savedError, savedIds, onOpen, onToggleSave, onRetry, onEdit }: ResultsPageProps) {
+export function ResultsPage({ session, status, suggestions, error, savedError, savedIds, feedback, onOpen, onToggleSave, onFeedback, onRetry, onEdit }: ResultsPageProps) {
   if (status === 'loading') {
     return <div className="page-shell"><span className="eyebrow">Mga resulta ng recipe</span><h1>Naghahanap ng ulam…</h1><p className="page-intro">Tinitingnan namin kung ano ang puwedeng lutuin gamit ang mga sangkap mo.</p><CookingLoadingState /><ResultsSkeleton /></div>
   }
@@ -55,7 +58,7 @@ export function ResultsPage({ session, status, suggestions, error, savedError, s
         <span><b>Hapag adaptation</b> — sariling variation, hindi tradisyonal na pangalan</span>
       </div>
       <div className="results-grid">
-        {suggestions.map((recipe, index) => <RecipeCard key={recipe.id} recipe={recipe} animationIndex={index} saved={savedIds.includes(recipe.id)} onOpen={() => onOpen(recipe.id)} onToggleSave={() => onToggleSave(recipe.id)} />)}
+        {suggestions.map((recipe, index) => <RecipeCard key={recipe.id} recipe={recipe} animationIndex={index} saved={savedIds.includes(recipe.id)} feedback={feedback[recipe.id]} onOpen={() => onOpen(recipe.id)} onToggleSave={() => onToggleSave(recipe.id)} onFeedback={(kind) => onFeedback(recipe.id, kind)} />)}
       </div>
       <div className="results-footer-actions">
         <button className="button button-secondary" type="button" onClick={onRetry}>Subukan ulit</button>

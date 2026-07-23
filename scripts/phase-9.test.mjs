@@ -34,7 +34,7 @@ test('production function keeps JWT verification, grounding, and composition saf
   assert.match(config, /verify_jwt\s*=\s*true/)
   assert.match(functionSource, /validateRecipeGrounding/)
   assert.match(functionSource, /validateResultComposition/)
-  assert.match(functionSource, /maximumAdaptations = strongCatalogMatches >= 2 \? 0 : 1/)
+  assert.match(functionSource, /maximumAdaptations = strongCatalogMatches >= 2 \? 0 : hasCatalogCandidates \? 1 : 3/)
   assert.match(functionSource, /AI_MAX_INGREDIENTS/)
   assert.match(functionSource, /AI_MAX_INPUT_LENGTH/)
 })

@@ -242,6 +242,14 @@ function removeNullableFields(recipes: JsonRecord[]) {
   })
 }
 
+function removeRedundantAdaptationPrefix(recipes: JsonRecord[]) {
+  return recipes.map((recipe) => {
+    if (recipe.authenticity !== 'hapag-adaptation' || typeof recipe.title !== 'string') return recipe
+    const title = recipe.title.replace(/^hapag\s+/i, '').trim()
+    return title ? { ...recipe, title } : recipe
+  })
+}
+
 function validateResultComposition(recipes: JsonRecord[], candidateDishes: unknown) {
   const adaptationCount = recipes.filter((recipe) => recipe.authenticity === 'hapag-adaptation').length
   const strongCatalogMatches = Array.isArray(candidateDishes)
@@ -254,7 +262,8 @@ function validateResultComposition(recipes: JsonRecord[], candidateDishes: unkno
   // Strong catalog matches should not be replaced by several invented
   // variations. Allow one clearly labelled adaptation only when fewer than
   // two strong catalog matches are available.
-  const maximumAdaptations = strongCatalogMatches >= 2 ? 0 : 1
+  const hasCatalogCandidates = Array.isArray(candidateDishes) && candidateDishes.length > 0
+  const maximumAdaptations = strongCatalogMatches >= 2 ? 0 : hasCatalogCandidates ? 1 : 3
   return adaptationCount <= maximumAdaptations
 }
 
@@ -330,15 +339,19 @@ function validateRecipeGrounding(recipes: JsonRecord[], payload: JsonRecord) {
       const canonical = canonicalizeGeneratedIngredient(ingredient)
       return canonical ? [canonical] : []
     }))
-    : providedIngredients
-  const requiredIngredients = new Set([...providedIngredients, ...groundedIngredients])
+    : new Set<string>()
+  // Catalog-required ingredients must remain in every suggestion. For a
+  // no-match custom adaptation, require overlap with the user's ingredients
+  // without forcing every variation to use every ingredient in the same way.
+  const requiredIngredients = groundedIngredients
 
   return recipes.every((recipe) => {
     const recipeIngredients = getIngredientNames(recipe.ingredients)
     const recipeNames = new Set(recipeIngredients.map((ingredient) => ingredient.canonical))
     const keepsGroundedIngredients = [...requiredIngredients].every((ingredient) => recipeNames.has(ingredient))
+    const usesProvidedIngredient = [...providedIngredients].some((ingredient) => recipeNames.has(ingredient))
     const doesNotInventAvailability = recipeIngredients.every((ingredient) => !ingredient.available || providedIngredients.has(ingredient.canonical))
-    return keepsGroundedIngredients && doesNotInventAvailability
+    return keepsGroundedIngredients && usesProvidedIngredient && doesNotInventAvailability
   })
 }
 
@@ -403,14 +416,14 @@ async function handler(request: Request) {
         role: 'developer',
         content: [{
           type: 'input_text',
-          text: 'You are Hapag, a careful Filipino cooking assistant. Generate exactly three practical recipe choices using the ingredients provided for this cooking session first. Prefer the highest-overlap supplied Filipino candidate dishes, especially the first candidate and its availableIngredients. Candidate substitutions are explicitly marked and are acceptable alternatives, but do not describe a substitute as an exact ingredient match. Every suggestion MUST use every ingredient listed in the first candidate availableIngredients; do not return a suggestion that omits a distinctive user ingredient such as peanut butter. If the strongest candidate has a distinctive ingredient, keep that ingredient in all three suggestions even when adapting the dish. Do not replace a strong candidate with an unrelated dish. Preserve known Filipino dish identity. Set authenticity to classic only for a supplied classic dish, home-style for a familiar variation, or hapag-adaptation for a custom idea. Return at most one hapag-adaptation in the three results. If at least two supplied catalog candidates have a score of 60 or higher, return no hapag-adaptation and use grounded classic or home-style choices instead. Never use an adaptation as filler when a supplied catalog dish is available. Set matchScore to the candidate match score or a realistic 0–100 estimate. Clearly identify ingredients that are still needed. If adapting a candidate or creating a custom idea, describe it as a Hapag adaptation in matchReason; never present an invented recipe as a classic dish. Use Filipino, English, or Taglish naturally. Estimated PHP costs are approximate only. Respect allergies, dietary preference, servings, budget, and spice level. Do not make medical claims. Every step must be safe, clear, and ordered from 1. Return only the requested JSON structure.',
+          text: 'You are Hapag, a careful Filipino cooking assistant. Generate exactly three practical recipe choices using the ingredients provided for this cooking session first. Prefer the highest-overlap supplied Filipino candidate dishes, especially the first candidate and its availableIngredients. Candidate substitutions are explicitly marked and are acceptable alternatives, but do not describe a substitute as an exact ingredient match. Every suggestion MUST use every ingredient listed in the first candidate availableIngredients; do not return a suggestion that omits a distinctive user ingredient such as peanut butter. If the strongest candidate has a distinctive ingredient, keep that ingredient in all three suggestions even when adapting the dish. Do not replace a strong candidate with an unrelated dish. Preserve known Filipino dish identity. Set authenticity to classic only for a supplied classic dish, home-style for a familiar variation, or hapag-adaptation for a custom idea. Do not put Hapag in the title of an adaptation; the authenticity label and matchReason already identify it. Return at most one hapag-adaptation in the three results. If at least two supplied catalog candidates have a score of 60 or higher, return no hapag-adaptation and use grounded classic or home-style choices instead. Never use an adaptation as filler when a supplied catalog dish is available. Set matchScore to the candidate match score or a realistic 0–100 estimate. Clearly identify ingredients that are still needed. If adapting a candidate or creating a custom idea, describe it as a Hapag adaptation in matchReason; never present an invented recipe as a classic dish. Use Filipino, English, or Taglish naturally. Estimated PHP costs are approximate only. Respect allergies, dietary preference, servings, budget, and spice level. Do not make medical claims. Every step must be safe, clear, and ordered from 1. Return only the requested JSON structure.',
         }],
       },
       {
         role: 'developer',
         content: [{
           type: 'input_text',
-          text: 'Grounding review: every provided ingredient must appear in every recipe ingredient list. Do not silently omit user ingredients. Use supplied candidateDishes as Filipino dish identity evidence when they are present. If candidateDishes is empty, generate one clearly labelled Hapag adaptation based only on the provided ingredients; do not present it as a classic dish. If a recipe cannot satisfy these rules, do not invent unrelated ingredients or omit the user ingredients.',
+          text: 'Grounding review: use the provided ingredients as the basis for every recipe and never mark an unprovided ingredient as available. Use supplied candidateDishes as Filipino dish identity evidence when they are present, including every available ingredient from the strongest candidate. If candidateDishes is empty, all three results may be clearly labelled Hapag adaptations based on the provided ingredients; do not present them as classic dishes. If a recipe cannot satisfy these rules, do not invent an unrelated dish.',
         }],
       },
       { role: 'user', content: [{ type: 'input_text', text: JSON.stringify(payload) }] },
@@ -458,7 +471,7 @@ async function handler(request: Request) {
       return responseJson({ error: 'AI returned a recipe that was not grounded in the provided ingredients.' }, 502)
     }
 
-    return responseJson({ recipes: removeNullableFields(recipes) })
+    return responseJson({ recipes: removeNullableFields(removeRedundantAdaptationPrefix(recipes)) })
   } catch (error) {
     console.error('Unexpected recipe generation error', error instanceof Error ? error.message : 'unknown error')
     return responseJson({ error: 'AI generation is temporarily unavailable.' }, 502)

@@ -244,6 +244,11 @@ p { line-height: 1.6; }
 .save-button:hover, .save-button-saved { color: var(--color-tomato); background: var(--color-error-bg); }
 .recipe-card-main { display: grid; flex: 1; gap: var(--space-3); padding: var(--space-4) 0 0; color: inherit; text-align: left; background: transparent; border: 0; }
 .recipe-card-main h2 { margin: 0; font-size: 19px; }
+.recipe-feedback { display: grid; gap: var(--space-2); margin-top: var(--space-4); padding-top: var(--space-3); border-top: 1px solid var(--color-border); }
+.recipe-feedback-label { color: var(--color-muted); font-size: 12px; font-weight: 700; }
+.recipe-feedback-options { display: flex; flex-wrap: wrap; gap: 6px; }
+.feedback-option { min-height: 32px; padding: 5px 9px; color: var(--color-muted); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 999px; font-size: 11px; font-weight: 700; }
+.feedback-option:hover, .feedback-option-active { color: var(--color-ube-dark); background: var(--color-lavender); border-color: var(--color-ube); }
 .recipe-match { min-height: 68px; margin: 0; color: var(--color-muted); font-size: 13px; line-height: 1.5; }
 .recipe-metrics { display: flex; flex-wrap: wrap; gap: 6px; }
 .recipe-metrics span { padding: 6px 8px; color: var(--color-muted); background: var(--color-cream); border-radius: 8px; font-size: 11px; font-weight: 700; }
