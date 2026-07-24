@@ -21,7 +21,7 @@ export function AppShell({ routeName, contentKey, onNavigate, children }: AppShe
   const isActive = (route: AppRoute['name']) => routeName === route || (route === 'ulam' && (routeName === 'results' || routeName === 'recipe-detail' || routeName === 'cooking'))
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell app-shell-${routeName}`}>
       <div className="app-background" aria-hidden="true">
         <svg className="background-flow" viewBox="0 0 1280 900" preserveAspectRatio="none" fill="none">
           <path className="background-flow-line" d="M-40 180C170 55 270 310 470 205C655 108 725 35 900 145C1065 250 1090 420 1340 310" />
