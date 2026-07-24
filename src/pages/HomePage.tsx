@@ -12,7 +12,6 @@ export function HomePage({ onStart }: HomePageProps) {
           <p className="hero-subtitle">Mula sa kusina mo, hanap tayo ng ulam.</p>
           <p className="hero-description">Ilagay ang mga sangkap na meron ka, suriin ang nakita ni Hapag, at iangkop ang mga ideya sa budget, servings, at panlasang gusto mo.</p>
           <div className="home-cta-content">
-            <span className="home-cta-kicker">Simula rito</span>
             <strong>Tuklasin ang ulam na bagay sa iyo.</strong>
             <p>Sa Ulam AI, ilalagay mo ang mga sangkap mo, pipili ng preferences, at makakakita ng tatlong praktikal na ideya.</p>
             <button className="button button-primary" type="button" onClick={() => onStart('')}>Simulan sa Ulam AI <span aria-hidden="true">→</span></button>

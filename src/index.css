@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 @import "@radix-ui/colors/teal.css";
 @import "@radix-ui/colors/teal-alpha.css";
 @import "@radix-ui/colors/slate.css";
@@ -38,8 +39,8 @@
   --color-success-border: var(--green-a7);
   --color-warning-border: var(--amber-a7);
   --color-error-border: var(--tomato-a7);
-  --font-display: "Plus Jakarta Sans", "Nunito", system-ui, sans-serif;
-  --font-body: Inter, "Nunito Sans", system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -53,6 +54,7 @@
   --radius-pill: 999px;
   --shadow-card: 0 10px 26px var(--color-shadow-soft);
   font-family: var(--font-body);
+  font-weight: 500;
   color: var(--color-ink);
   background: var(--color-cream);
   font-synthesis: none;
@@ -63,9 +65,12 @@
 
 * { box-sizing: border-box; }
 
-body { margin: 0; min-width: 320px; min-height: 100vh; }
+body { margin: 0; min-width: 320px; min-height: 100vh; font-weight: 500; letter-spacing: -0.008em; }
 
-button, input, select, textarea { font: inherit; }
+button, input, select, textarea { font: inherit; font-weight: 500; }
+
+h1, h2, h3 { font-family: var(--font-display); font-weight: 800; }
+strong, label { font-weight: 700; }
 
 button { cursor: pointer; }
 
