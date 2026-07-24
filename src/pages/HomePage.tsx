@@ -28,21 +28,6 @@ export function HomePage({ onStart }: HomePageProps) {
         </div>
       </section>
 
-      <section className="foundation-grid" aria-label="Hapag product areas">
-        <article className="info-card info-card-mango">
-          <span className="card-icon" aria-hidden="true">✦</span>
-          <h2>Ulam AI</h2>
-          <p>Maglagay ng available ingredients, ayusin ang iyong preferences, at pumili mula sa tatlong meal ideas na may malinaw na dahilan kung bakit bagay ang mga ito.</p>
-          <button type="button" className="text-button" onClick={() => onStart('')}>Maghanap ng ulam <span aria-hidden="true">→</span></button>
-        </article>
-        <article className="info-card info-card-green">
-          <span className="card-icon" aria-hidden="true">♡</span>
-          <h2>I-save ang mga nagustuhan mo</h2>
-          <p>Kapag may recipe kang nagustuhan, i-save ito at markahan ang mga naluto mo para madali mong mabalikan sa susunod.</p>
-          <span className="card-caption">Kailangan lang mag-sign in para mag-save</span>
-        </article>
-      </section>
-
       <section className="home-how-it-works" aria-labelledby="how-it-works-heading">
         <div className="home-section-heading">
           <span className="eyebrow">Simple lang</span>
@@ -51,9 +36,9 @@ export function HomePage({ onStart }: HomePageProps) {
         </div>
         <div className="how-it-works-steps">
           <div className="how-it-works-step"><span>1</span><strong>Ilagay ang mga sangkap</strong></div>
-          <span className="how-it-works-arrow" aria-hidden="true">→</span>
+          <span className="how-it-works-arrow" aria-hidden="true">↓</span>
           <div className="how-it-works-step"><span>2</span><strong>Suriin at iangkop ang preferences</strong></div>
-          <span className="how-it-works-arrow" aria-hidden="true">→</span>
+          <span className="how-it-works-arrow" aria-hidden="true">↓</span>
           <div className="how-it-works-step"><span>3</span><strong>Pumili ng ulam at simulan ang pagluluto</strong></div>
         </div>
       </section>

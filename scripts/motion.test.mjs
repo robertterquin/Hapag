@@ -38,5 +38,5 @@ test('card elevation uses Radix shadow tokens and reduced-motion-safe hover styl
   assert.match(css, /\.recipe-card:hover, \.recipe-card:focus-within/)
   assert.match(css, /\.recipe-card:hover \.recipe-card-image/)
   assert.match(css, /prefers-reduced-motion/)
-  assert.match(css, /\.info-card:hover, \.info-card:focus-within/)
+  assert.doesNotMatch(css, /\.info-card:hover, \.info-card:focus-within/)
 })
