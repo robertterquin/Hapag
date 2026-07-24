@@ -42,6 +42,14 @@ export function AppShell({ routeName, contentKey, onNavigate, children }: AppShe
           <g className="background-doodle background-doodle-spark">
             <path d="M1010 745V790M988 768H1032M995 753L1025 783M1025 753L995 783" />
           </g>
+          <g className="background-doodle background-doodle-garlic">
+            <path d="M390 430C380 413 387 396 403 388C419 396 426 413 416 430C408 441 398 441 390 430Z" />
+            <path d="M403 388C400 378 405 370 413 366M403 388C398 378 391 373 384 372" />
+          </g>
+          <g className="background-doodle background-doodle-chili">
+            <path d="M930 500C968 483 1002 494 1016 520C990 535 959 532 930 500Z" />
+            <path d="M930 500C955 510 982 515 1010 511M1012 493C1019 484 1028 483 1034 489" />
+          </g>
         </svg>
       </div>
       <header className="app-topbar">

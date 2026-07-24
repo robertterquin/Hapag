@@ -18,7 +18,9 @@ export function HomePage({ onStart }: HomePageProps) {
           </div>
         </div>
         <div className="hero-illustration" aria-label="Illustration of a warm Filipino kitchen" role="img">
-          <div className="illustration-pot" aria-hidden="true">🍲</div>
+          <span className="illustration-steam illustration-steam-one" aria-hidden="true">〰</span>
+          <span className="illustration-steam illustration-steam-two" aria-hidden="true">〰</span>
+          <div className="illustration-pot" aria-hidden="true">🍳</div>
           <span className="ingredient-bubble ingredient-bubble-one">🥚</span>
           <span className="ingredient-bubble ingredient-bubble-two">🌶️</span>
           <span className="ingredient-bubble ingredient-bubble-three">🍅</span>
