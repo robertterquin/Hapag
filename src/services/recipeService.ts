@@ -47,15 +47,28 @@ export class RecipeGenerationError extends Error {
 }
 
 async function generateWithOpenAI(request: GenerationRequest, accessToken?: string) {
-  const response = await fetch(`${appConfig.supabaseFunctionUrl}/generate-recipes`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      apikey: appConfig.supabaseAnonKey,
-      Authorization: `Bearer ${accessToken || appConfig.supabaseAnonKey}`,
-    },
-    body: JSON.stringify(request),
-  })
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), 25_000)
+  let response: Response
+  try {
+    response = await fetch(`${appConfig.supabaseFunctionUrl}/generate-recipes`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: appConfig.supabaseAnonKey,
+        Authorization: `Bearer ${accessToken || appConfig.supabaseAnonKey}`,
+      },
+      body: JSON.stringify(request),
+      signal: controller.signal,
+    })
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      throw new RecipeGenerationError('Recipe generation timed out.', 504)
+    }
+    throw error
+  } finally {
+    clearTimeout(timeoutId)
+  }
 
   if (!response.ok) {
     const errorPayload: unknown = await response.json().catch(() => undefined)

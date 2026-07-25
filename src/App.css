@@ -121,6 +121,7 @@ html::-webkit-scrollbar {
 
 .app-content-wrap { position: relative; z-index: 1; width: 100%; }
 .app-content { width: min(1680px, 100%); margin: 0 auto; padding: 112px clamp(20px, 3vw, 48px) var(--space-8); }
+html { scroll-padding-bottom: 104px; }
 .mobile-header, .mobile-nav { display: none; }
 
 .page-shell { width: 100%; }
