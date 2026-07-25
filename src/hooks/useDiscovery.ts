@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { formatIngredientInput } from '../lib/ingredientParser.ts'
 import { recipeService, RecipeGenerationError } from '../services/recipeService.ts'
 import { matchRecipeCatalog } from '../services/recipeMatcher.ts'
 import type { CatalogRecipeCandidate, DiscoverySession, GenerationConstraints, IngredientDraft, NormalizedIngredient, Recipe } from '../types/domain.ts'
 import { normalizeConstraints } from '../lib/recipeControls.ts'
+import type { UserPreferences } from '../services/persistenceService.ts'
 
 export type GenerationStatus = 'idle' | 'loading' | 'success' | 'error'
 
@@ -11,6 +12,15 @@ const defaultConstraints: GenerationConstraints = {
   servings: 3,
   allergies: [],
   spiceLevel: 'mild',
+}
+
+function constraintsFromPreferences(preferences: UserPreferences): GenerationConstraints {
+  return normalizeConstraints({
+    servings: preferences.default_servings,
+    dietaryPreference: preferences.dietary_preference,
+    allergies: preferences.allergies,
+    spiceLevel: preferences.spice_level,
+  })
 }
 
 function dedupeIngredients(ingredients: NormalizedIngredient[]) {
@@ -27,6 +37,7 @@ function dedupeIngredients(ingredients: NormalizedIngredient[]) {
 }
 
 export function useDiscovery() {
+  const preferredConstraints = useRef<GenerationConstraints>(defaultConstraints)
   const [session, setSession] = useState<DiscoverySession>({ rawInput: '', ingredients: [], constraints: defaultConstraints })
   const [suggestions, setSuggestions] = useState<Recipe[]>([])
   const [candidateDishes, setCandidateDishes] = useState<CatalogRecipeCandidate[]>([])
@@ -41,11 +52,17 @@ export function useDiscovery() {
   }
 
   const resetDiscovery = () => {
-    setSession({ rawInput: '', ingredients: [], constraints: defaultConstraints })
+    setSession({ rawInput: '', ingredients: [], constraints: preferredConstraints.current })
     setSuggestions([])
     setGenerationStatus('idle')
     setGenerationError(null)
   }
+
+  const applyPreferences = useCallback((preferences: UserPreferences) => {
+    const nextConstraints = constraintsFromPreferences(preferences)
+    preferredConstraints.current = nextConstraints
+    setSession((current) => ({ ...current, constraints: nextConstraints }))
+  }, [])
 
   const startFromIngredients = (rawInput: string, ingredients: NormalizedIngredient[]) => {
     setSession((current) => ({ ...current, rawInput, ingredients }))
@@ -133,6 +150,7 @@ export function useDiscovery() {
     generationError,
     startDiscovery,
     resetDiscovery,
+    applyPreferences,
     startFromIngredients,
     updateIngredients,
     addIngredients,

@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { type ReactNode, useEffect, useRef } from 'react'
 import '../App.css'
 import { AppShell } from '../components/AppShell.tsx'
 import { useDiscovery } from '../hooks/useDiscovery.ts'
@@ -24,6 +24,17 @@ function App() {
   const discovery = useDiscovery()
   const savedRecipes = useSavedRecipes(auth.session)
   const preferences = usePreferences(auth.session)
+  const sessionId = auth.session?.user.id
+  const { applyPreferences } = discovery
+  const appliedPreferencesKey = useRef<string | null>(null)
+  useEffect(() => {
+    if (!sessionId || preferences.status !== 'ready') return
+    const value = preferences.preferences
+    const key = [sessionId, value.language, value.default_servings, value.dietary_preference, value.spice_level, value.allergies.join('|')].join(':')
+    if (appliedPreferencesKey.current === key) return
+    appliedPreferencesKey.current = key
+    applyPreferences(value)
+  }, [sessionId, preferences.status, preferences.preferences, applyPreferences])
   const recipeFeedback = useRecipeFeedback()
   const startDiscovery = (value: string) => {
     discovery.startDiscovery(value)
@@ -74,7 +85,7 @@ function App() {
       case 'recipe-detail': return <RecipeDetailPage key={route.recipeId} recipeId={route.recipeId} saved={savedRecipes.savedIds.includes(route.recipeId)} onToggleSave={() => toggleSaved(route.recipeId)} onStartCooking={() => navigate(`/recipes/${route.recipeId}/cook`)} onBack={() => navigate('/results')} />
       case 'cooking': return <CookingPage key={route.recipeId} recipeId={route.recipeId} onFinish={finishCooking} onBack={() => navigate(`/recipes/${route.recipeId}`)} />
       case 'saved': return <SavedPage isAuthenticated={Boolean(auth.session)} status={savedRecipes.status} error={savedRecipes.error} savedIds={savedRecipes.savedIds} savedRecipes={savedRecipes.savedRecipes} cookedRecipes={savedRecipes.cookedRecipes} onOpen={(id) => navigate(`/recipes/${id}`)} onUnsave={(id) => savedRecipes.toggleSaved(id)} onStart={() => navigate('/ulam')} onSignIn={requireAuth} onRetry={savedRecipes.reload} />
-      case 'profile': return <ProfilePage key={`${auth.session?.user.id ?? 'signed-out'}-${preferences.preferences.language}-${preferences.preferences.default_servings}-${preferences.preferences.dietary_preference}`} session={auth.session} preferences={preferences.preferences} status={preferences.status} error={preferences.error} onSave={preferences.save} onSignIn={requireAuth} onSignOut={auth.signOut} />
+      case 'profile': return <ProfilePage key={`${auth.session?.user.id ?? 'signed-out'}-${preferences.preferences.language}-${preferences.preferences.default_servings}-${preferences.preferences.dietary_preference}-${preferences.preferences.spice_level}-${preferences.preferences.allergies.join('|')}`} session={auth.session} preferences={preferences.preferences} status={preferences.status} error={preferences.error} onSave={preferences.save} onSignIn={requireAuth} onSignOut={auth.signOut} />
       case 'auth': return <AuthPage session={auth.session} status={auth.status} error={auth.error} onSignIn={auth.signIn} onSignUp={auth.signUp} onSignOut={auth.signOut} onContinue={() => navigate('/')} />
       case 'not-found': return <NotFoundPage onBack={() => navigate('/')} />
     }
