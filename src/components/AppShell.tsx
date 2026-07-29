@@ -20,6 +20,7 @@ const navigation = [
 
 export function AppShell({ routeName, contentKey, onNavigate, firstName, children }: AppShellProps) {
   const isActive = (route: AppRoute['name']) => routeName === route || (route === 'ulam' && (routeName === 'results' || routeName === 'recipe-detail' || routeName === 'cooking'))
+  const profileInitial = (firstName?.[0] ?? 'U').toUpperCase()
 
   return (
     <div className={`app-shell app-shell-${routeName}`}>
@@ -78,6 +79,7 @@ export function AppShell({ routeName, contentKey, onNavigate, firstName, childre
         </nav>
 
         <button className="profile-link" type="button" onClick={() => onNavigate('/profile')}>
+          <span className="avatar" aria-hidden="true">{profileInitial}</span>
           <span className="profile-copy">
             <strong>{firstName ?? 'Profile'}</strong>
             <small>Preferences</small>
@@ -92,7 +94,7 @@ export function AppShell({ routeName, contentKey, onNavigate, firstName, childre
             <strong>Hapag</strong>
           </button>
           <button className="mobile-profile-button" type="button" onClick={() => onNavigate('/profile')} aria-label="Open profile">
-            {firstName ?? 'Profile'}
+            <span className="avatar" aria-hidden="true">{profileInitial}</span>
           </button>
         </header>
 
