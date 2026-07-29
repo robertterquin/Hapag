@@ -8,6 +8,7 @@ interface AppShellProps {
   routeName: AppRoute['name']
   contentKey: string
   onNavigate: (path: string) => void
+  firstName?: string
   children: ReactNode
 }
 
@@ -17,7 +18,7 @@ const navigation = [
   { label: 'Saved', path: '/saved', route: 'saved' as const, icon: 'lucide:heart' },
 ]
 
-export function AppShell({ routeName, contentKey, onNavigate, children }: AppShellProps) {
+export function AppShell({ routeName, contentKey, onNavigate, firstName, children }: AppShellProps) {
   const isActive = (route: AppRoute['name']) => routeName === route || (route === 'ulam' && (routeName === 'results' || routeName === 'recipe-detail' || routeName === 'cooking'))
 
   return (
@@ -77,9 +78,8 @@ export function AppShell({ routeName, contentKey, onNavigate, children }: AppShe
         </nav>
 
         <button className="profile-link" type="button" onClick={() => onNavigate('/profile')}>
-          <span className="avatar" aria-hidden="true">U</span>
           <span className="profile-copy">
-            <strong>Profile</strong>
+            <strong>{firstName ?? 'Profile'}</strong>
             <small>Preferences</small>
           </span>
         </button>
@@ -91,8 +91,8 @@ export function AppShell({ routeName, contentKey, onNavigate, children }: AppShe
             <BrandMark className="brand-mark" size={36} />
             <strong>Hapag</strong>
           </button>
-          <button className="icon-button" type="button" onClick={() => onNavigate('/profile')} aria-label="Open profile">
-            U
+          <button className="mobile-profile-button" type="button" onClick={() => onNavigate('/profile')} aria-label="Open profile">
+            {firstName ?? 'Profile'}
           </button>
         </header>
 

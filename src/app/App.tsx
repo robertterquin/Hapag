@@ -92,7 +92,9 @@ function App() {
   })()
 
   const contentKey = route.name === 'recipe-detail' || route.name === 'cooking' ? `${route.name}:${route.recipeId}` : route.name
-  return <AppShell routeName={route.name} contentKey={contentKey} onNavigate={navigateFromShell}>{page}</AppShell>
+  const fullName = auth.session?.user.user_metadata?.full_name
+  const firstName = typeof fullName === 'string' ? fullName.trim().split(/\s+/)[0] || undefined : undefined
+  return <AppShell routeName={route.name} contentKey={contentKey} firstName={firstName} onNavigate={navigateFromShell}>{page}</AppShell>
 }
 
 export default App

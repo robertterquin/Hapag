@@ -438,7 +438,7 @@ p { line-height: 1.6; }
   .mobile-header { display: flex; align-items: center; justify-content: space-between; padding: var(--space-4) 20px; background: var(--color-surface); border-bottom: 1px solid var(--color-border); }
   .mobile-brand { padding: 0; }
   .mobile-brand .brand-mark { width: 36px; height: 36px; }
-  .icon-button { display: grid; width: 40px; height: 40px; place-items: center; color: var(--color-ube-dark); font-weight: 800; background: var(--color-mango); border: 0; border-radius: 50%; }
+  .mobile-profile-button { min-height: 40px; padding: 0 12px; color: var(--color-ube-dark); font-weight: 800; background: var(--color-mango); border: 0; border-radius: var(--radius-pill); }
   .app-content { padding: var(--space-5) 20px 104px; }
   .mobile-nav { position: fixed; inset: auto 0 0; z-index: 20; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: var(--space-2) 8px calc(var(--space-2) + env(safe-area-inset-bottom)); background: var(--white-a11); border-top: 1px solid var(--color-border); box-shadow: 0 -8px 24px var(--color-shadow-soft); }
   .mobile-nav-item { display: grid; min-height: 54px; place-items: center; gap: 2px; border-radius: 12px; font-size: 19px; }
