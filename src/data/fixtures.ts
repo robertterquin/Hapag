@@ -62,7 +62,7 @@ const rawRecipeFixtures = [
   {
     id: 'ginisang-pechay-egg',
     title: 'Ginisang pechay with egg',
-    imageUrl: 'https://images.unsplash.com/photo-1512621776951-a57141f2e2f8?auto=format&fit=crop&w=1200&q=82',
+    imageUrl: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=1200&q=82',
     localTitle: 'Ginisang pechay na may itlog',
     description: 'Simple, mabilis, at nakasentro sa gulay na ulam.',
     matchReason: 'Pechay, kamatis, at itlog ang bida; kaunti lang ang kailangang idagdag.',
