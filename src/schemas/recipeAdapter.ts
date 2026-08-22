@@ -14,7 +14,7 @@ function sanitizeRecipe(recipe: Recipe): Recipe {
     cleaned = {
       ...cleaned,
       matchReason: availableNames
-        ? `A great match to make with the ${availableNames} you already have on hand.`
+        ? `Your ${availableNames} are a natural fit for this dish — the cooking method brings out the best in these ingredients without needing much else.`
         : cleaned.description,
     }
   }
