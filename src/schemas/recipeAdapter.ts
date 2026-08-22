@@ -1,5 +1,6 @@
 import { validateRecipe, validateRecipeList } from './recipeSchema.ts'
 import type { Recipe } from '../types/domain.ts'
+import { generateDishCulinaryInsight } from '../lib/culinaryInsights.ts'
 
 function removeAdaptationTitlePrefix(recipe: Recipe): Recipe {
   if (recipe.authenticity !== 'hapag-adaptation') return recipe
@@ -9,13 +10,16 @@ function removeAdaptationTitlePrefix(recipe: Recipe): Recipe {
 
 function sanitizeRecipe(recipe: Recipe): Recipe {
   let cleaned = removeAdaptationTitlePrefix(recipe)
-  if (cleaned.matchReason && /(?:candidate|match at \d+|availableingredients|minarkahang available|preserves classic|still needed:)/i.test(cleaned.matchReason)) {
-    const availableNames = cleaned.ingredients.filter((i) => i.available).map((i) => i.name).join(', ')
+  if (
+    !cleaned.matchReason ||
+    /(?:candidate match at \d+|availableingredients|minarkahang available|preserves classic .* identity|still needed:|natural fit for this dish|already have on hand)/i.test(
+      cleaned.matchReason
+    )
+  ) {
+    const availableNames = cleaned.ingredients.filter((i) => i.available).map((i) => i.name)
     cleaned = {
       ...cleaned,
-      matchReason: availableNames
-        ? `Your ${availableNames} are a natural fit for this dish — the cooking method brings out the best in these ingredients without needing much else.`
-        : cleaned.description,
+      matchReason: generateDishCulinaryInsight(cleaned.title, availableNames),
     }
   }
   return cleaned
