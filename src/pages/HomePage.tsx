@@ -21,43 +21,50 @@ export function HomePage({ onStart }: HomePageProps) {
         <div className="hero-preview-wrapper" aria-label="Hapag Recipe Preview Card">
           <div className="hero-preview-card">
             <div className="hero-preview-topline">
-              <span className="hero-preview-badge">Classic Ulam</span>
+              <div className="hero-preview-tags">
+                <span className="hero-preview-badge">Classic Ulam</span>
+                <span className="hero-preview-authenticity">Lutong Bahay</span>
+              </div>
               <span className="hero-preview-match">96% Match</span>
             </div>
 
             <div className="hero-preview-body">
-              <h3 className="hero-preview-title">Classic Chicken Adobo</h3>
+              <div className="hero-preview-header">
+                <h3 className="hero-preview-title">Classic Chicken Adobo</h3>
+                <span className="hero-preview-local-name">Adobong Manok na may Patatas</span>
+              </div>
+
               <p className="hero-preview-desc">Ginisang manok sa toyo, suka, at maraming piniritong bawang na may patatas.</p>
 
               <div className="hero-preview-metrics">
-                <span>⏱ 35 min</span>
-                <span>Easy</span>
-                <span className="hero-preview-price">₱140–₱190</span>
-                <span>4 serv.</span>
+                <span className="metric-pill">35 mins</span>
+                <span className="metric-pill">Easy</span>
+                <span className="metric-pill metric-price">₱140 – ₱190</span>
+                <span className="metric-pill">4 servings</span>
               </div>
 
               <div className="hero-preview-ingredients">
                 <div className="hero-preview-group">
                   <span className="hero-preview-group-label meron">Meron ka na (4)</span>
                   <div className="hero-preview-chips">
-                    <span className="chip-meron">✓ Manok</span>
-                    <span className="chip-meron">✓ Patatas</span>
-                    <span className="chip-meron">✓ Bawang</span>
-                    <span className="chip-meron">✓ Toyo</span>
+                    <span className="chip-meron">Manok</span>
+                    <span className="chip-meron">Patatas</span>
+                    <span className="chip-meron">Bawang</span>
+                    <span className="chip-meron">Toyo</span>
                   </div>
                 </div>
 
                 <div className="hero-preview-group">
                   <span className="hero-preview-group-label kulang">Kulang pa (1)</span>
                   <div className="hero-preview-chips">
-                    <span className="chip-kulang">+ Suka</span>
+                    <span className="chip-kulang">Suka</span>
                   </div>
                 </div>
               </div>
 
               <div className="hero-preview-sub-tip">
-                <span className="sub-tip-icon">💡</span>
-                <span className="sub-tip-text"><strong>Sari-Sari Tip:</strong> Pwedeng palitan ang Patatas ng Tokwa.</span>
+                <span className="sub-tip-badge">Pamalit</span>
+                <span className="sub-tip-text">Pwedeng palitan ang Patatas ng Tokwa</span>
               </div>
             </div>
           </div>
