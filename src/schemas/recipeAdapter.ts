@@ -12,7 +12,7 @@ function sanitizeRecipe(recipe: Recipe): Recipe {
   let cleaned = removeAdaptationTitlePrefix(recipe)
   if (
     !cleaned.matchReason ||
-    /(?:candidate match at \d+|availableingredients|minarkahang available|preserves classic .* identity|still needed:|natural fit for this dish|already have on hand)/i.test(
+    /(?:candidate|score|\bgrounded\b|from the session|supplied|marked.*available|marks.*as unavailable|availableingredients|missingingredients|preserves.*identity|still needed|natural fit for this dish|already have on hand|minarkahang available)/i.test(
       cleaned.matchReason
     )
   ) {

@@ -47,6 +47,30 @@ export function generateDishCulinaryInsight(dishTitle: string, availableIngredie
   if (/curry|kari/i.test(lower)) {
     return 'Simmering with coconut milk and aromatics creates a rich, creamy sauce that gently coats each ingredient.'
   }
+  if (/kinulob/i.test(lower)) {
+    return 'Slow cooking in a tightly covered pot traps steam and aromatics to keep the meat remarkably tender, juicy, and infused with flavor.'
+  }
+  if (/pinakbet|pakbet/i.test(lower)) {
+    return 'Gently steaming fresh indigenous vegetables allows their natural sweetness and crisp textures to shine through with savory depth.'
+  }
+  if (/laing|pinangat/i.test(lower)) {
+    return 'Simmering leaves slowly in rich coconut milk and chilies creates a velvety, melt-in-your-mouth consistency with gentle heat.'
+  }
+  if (/inasal/i.test(lower)) {
+    return 'Marinating with calamansi, ginger, and garlic infuses the meat with a bright, citrusy aroma that browns beautifully.'
+  }
+  if (/humba/i.test(lower)) {
+    return 'Slow braising with soy sauce, vinegar, and aromatics yields a melt-in-your-mouth tenderness with a rich sweet-savory finish.'
+  }
+  if (/pesa/i.test(lower)) {
+    return 'Simmering with fresh ginger and greens produces a clean, delicately aromatic broth that comforts without feeling heavy.'
+  }
+  if (/ginataang|gata/i.test(lower)) {
+    return 'Simmering gently in coconut milk creates a luscious, creamy sauce that brings out the best in vegetables and proteins.'
+  }
+  if (/arroz caldo|lugaw|goto/i.test(lower)) {
+    return 'Simmering rice with ginger, garlic, and broth creates a deeply comforting, silky porridge perfect for any time of day.'
+  }
   if (/monggo|munggo/i.test(lower)) {
     return 'Slow-simmered mung beans break down into a comforting, earthy stew enriched with savory aromatics.'
   }
