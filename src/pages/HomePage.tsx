@@ -18,15 +18,49 @@ export function HomePage({ onStart }: HomePageProps) {
             </button>
           </div>
         </div>
-        <div className="hero-illustration" aria-label="Illustration of a warm Filipino kitchen" role="img">
-          <span className="illustration-steam illustration-steam-one" aria-hidden="true">〰</span>
-          <span className="illustration-steam illustration-steam-two" aria-hidden="true">〰</span>
-          <div className="illustration-pot" aria-hidden="true">🍳</div>
-          <span className="ingredient-bubble ingredient-bubble-one">🥚</span>
-          <span className="ingredient-bubble ingredient-bubble-two">🌶️</span>
-          <span className="ingredient-bubble ingredient-bubble-three">🍅</span>
-          <span className="illustration-spark illustration-spark-one" aria-hidden="true">✦</span>
-          <span className="illustration-spark illustration-spark-two" aria-hidden="true">✦</span>
+        <div className="hero-preview-wrapper" aria-label="Hapag Recipe Preview Card">
+          <div className="hero-preview-card">
+            <div className="hero-preview-topline">
+              <span className="hero-preview-badge">Classic Ulam</span>
+              <span className="hero-preview-match">96% Match</span>
+            </div>
+
+            <div className="hero-preview-body">
+              <h3 className="hero-preview-title">Classic Chicken Adobo</h3>
+              <p className="hero-preview-desc">Ginisang manok sa toyo, suka, at maraming piniritong bawang na may patatas.</p>
+
+              <div className="hero-preview-metrics">
+                <span>⏱ 35 min</span>
+                <span>Easy</span>
+                <span className="hero-preview-price">₱140–₱190</span>
+                <span>4 serv.</span>
+              </div>
+
+              <div className="hero-preview-ingredients">
+                <div className="hero-preview-group">
+                  <span className="hero-preview-group-label meron">Meron ka na (4)</span>
+                  <div className="hero-preview-chips">
+                    <span className="chip-meron">✓ Manok</span>
+                    <span className="chip-meron">✓ Patatas</span>
+                    <span className="chip-meron">✓ Bawang</span>
+                    <span className="chip-meron">✓ Toyo</span>
+                  </div>
+                </div>
+
+                <div className="hero-preview-group">
+                  <span className="hero-preview-group-label kulang">Kulang pa (1)</span>
+                  <div className="hero-preview-chips">
+                    <span className="chip-kulang">+ Suka</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="hero-preview-sub-tip">
+                <span className="sub-tip-icon">💡</span>
+                <span className="sub-tip-text"><strong>Sari-Sari Tip:</strong> Pwedeng palitan ang Patatas ng Tokwa.</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
