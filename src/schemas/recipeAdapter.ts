@@ -7,10 +7,24 @@ function removeAdaptationTitlePrefix(recipe: Recipe): Recipe {
   return title ? { ...recipe, title } : recipe
 }
 
+function sanitizeRecipe(recipe: Recipe): Recipe {
+  let cleaned = removeAdaptationTitlePrefix(recipe)
+  if (cleaned.matchReason && /(?:candidate match|match at \d+|supplied candidate|preserves classic .* identity|still needed:)/i.test(cleaned.matchReason)) {
+    const availableNames = cleaned.ingredients.filter((i) => i.available).map((i) => i.name).join(', ')
+    cleaned = {
+      ...cleaned,
+      matchReason: availableNames
+        ? `Bagay lutuin gamit ang ${availableNames} na meron ka na sa kusina.`
+        : cleaned.description,
+    }
+  }
+  return cleaned
+}
+
 export function adaptRecipePayload(payload: unknown): Recipe {
-  return removeAdaptationTitlePrefix(validateRecipe(payload))
+  return sanitizeRecipe(validateRecipe(payload))
 }
 
 export function adaptRecipeListPayload(payload: unknown): Recipe[] {
-  return validateRecipeList(payload).map(removeAdaptationTitlePrefix)
+  return validateRecipeList(payload).map(sanitizeRecipe)
 }

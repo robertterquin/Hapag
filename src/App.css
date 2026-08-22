@@ -296,7 +296,7 @@ p { line-height: 1.6; }
 
 .recipe-card-main { display: grid; flex: 1; gap: 10px; padding: 0; color: inherit; text-align: left; background: transparent; border: 0; }
 .recipe-card-main h2 { margin: 0; font-family: var(--font-display); font-size: 20px; font-weight: 900; color: var(--color-ink); letter-spacing: -.02em; line-height: 1.25; }
-.recipe-match { min-height: 48px; margin: 0; color: var(--color-muted); font-size: 13.5px; line-height: 1.45; }
+.recipe-description, .recipe-match { min-height: 44px; margin: 0; color: var(--color-muted); font-size: 13.5px; line-height: 1.45; }
 
 .recipe-metrics { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0; }
 .recipe-metrics span { font-size: 12px; font-weight: 700; color: var(--color-ink); background: var(--sand-2); border: 1px solid var(--slate-a3); padding: 4px 8px; border-radius: 6px; }

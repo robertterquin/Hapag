@@ -44,7 +44,7 @@ export function RecipeCard({ recipe, saved, onOpen, onToggleSave, feedback, onFe
       </div>
       <button className="recipe-card-main" type="button" onClick={onOpen}>
         <h2>{recipe.title}</h2>
-        <p className="recipe-match">{recipe.matchReason}</p>
+        <p className="recipe-description">{recipe.description || recipe.matchReason}</p>
         <div className="recipe-metrics" aria-label="Recipe summary">
           <span>{recipe.timeMinutes} min</span>
           <span>{recipe.difficulty}</span>
