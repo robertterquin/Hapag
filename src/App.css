@@ -275,10 +275,8 @@ p { line-height: 1.6; }
 .hero-preview-sub-tip { display: flex; align-items: center; gap: 12px; background: var(--teal-1); border: 1px solid var(--teal-4); border-radius: 10px; padding: 10px 14px; font-size: 14px; color: var(--teal-12); }
 .sub-tip-badge { font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: var(--teal-11); background: var(--teal-3); border: 1px solid var(--teal-6); padding: 3px 8px; border-radius: 5px; flex-shrink: 0; }
 .sub-tip-text { font-weight: 600; }
-.card-stack-footer-prompt { display: flex; justify-content: center; margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--slate-a4); }
-.card-shuffle-hint { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800; color: var(--teal-11); background: var(--teal-2); border: 1px solid var(--teal-6); padding: 4px 12px; border-radius: var(--radius-pill); transition: background-color 150ms ease, transform 150ms ease; }
-.card-stack-top:hover .card-shuffle-hint { background: var(--teal-3); transform: scale(1.03); }
-.shuffle-icon { font-size: 13px; font-weight: 900; }
+.card-stack-bg-1 { box-shadow: 0 16px 36px -8px var(--color-shadow-soft); border-color: var(--slate-a5); }
+.card-stack-bg-2 { box-shadow: 0 10px 24px -6px var(--color-shadow-subtle); border-color: var(--slate-a4); }
 
 .ingredient-prompt textarea::placeholder { color: var(--color-muted); }
 .ingredient-prompt textarea:focus { border-color: var(--color-ube); box-shadow: 0 0 0 3px var(--color-focus-ring); }

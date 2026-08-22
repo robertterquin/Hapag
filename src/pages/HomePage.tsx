@@ -96,8 +96,6 @@ export function HomePage({ onStart }: HomePageProps) {
     setCards((prev) => [...prev.slice(1), prev[0]])
   }
 
-  const currentDishIndex = PREVIEW_CARDS.findIndex((c) => c.id === cards[0].id) + 1
-
   return (
     <div className="page-shell page-shell-home">
       <section className="hero-panel">
@@ -135,10 +133,11 @@ export function HomePage({ onStart }: HomePageProps) {
                   className={`hero-preview-card card-stack-item ${isTop ? 'card-stack-top' : `card-stack-bg card-stack-bg-${index}`}`}
                   style={{ zIndex: 3 - index }}
                   animate={{
-                    scale: 1 - index * 0.045,
-                    y: index * -14,
-                    opacity: 1 - index * 0.18,
-                    rotate: index === 0 ? 0 : index === 1 ? 2.2 : -2.2,
+                    scale: index === 0 ? 1 : index === 1 ? 0.96 : 0.92,
+                    y: index === 0 ? 0 : index === 1 ? -16 : -30,
+                    x: index === 0 ? 0 : index === 1 ? 8 : -6,
+                    rotate: index === 0 ? 0 : index === 1 ? 2.5 : -2,
+                    opacity: index === 0 ? 1 : index === 1 ? 0.9 : 0.72,
                   }}
                   transition={{
                     type: 'spring',
@@ -197,15 +196,6 @@ export function HomePage({ onStart }: HomePageProps) {
                       <div className="hero-preview-sub-tip">
                         <span className="sub-tip-badge">Pamalit</span>
                         <span className="sub-tip-text">{dish.subTip}</span>
-                      </div>
-                    )}
-
-                    {isTop && (
-                      <div className="card-stack-footer-prompt">
-                        <span className="card-shuffle-hint">
-                          <span className="shuffle-icon" aria-hidden="true">↻</span>
-                          I-click para mag-shuffle ({currentDishIndex}/{PREVIEW_CARDS.length})
-                        </span>
                       </div>
                     )}
                   </div>
