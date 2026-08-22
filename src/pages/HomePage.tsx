@@ -1,21 +1,40 @@
+import { useState, type FormEvent } from 'react'
+
 export interface HomePageProps {
   onStart: (value: string) => void
 }
 
 export function HomePage({ onStart }: HomePageProps) {
+  const [ingredients, setIngredients] = useState('')
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault()
+    onStart(ingredients.trim())
+  }
+
   return (
     <div className="page-shell page-shell-home">
       <section className="hero-panel">
         <div className="hero-copy">
           <span className="eyebrow">Filipino meal assistant</span>
           <h1>May sangkap ka? May maluluto tayo.</h1>
-          <p className="hero-subtitle">Mula sa kusina mo, hanap tayo ng ulam.</p>
-          <p className="hero-description">Ilagay ang mga sangkap na meron ka, suriin ang nakita ni Hapag, at iangkop ang mga ideya sa budget, servings, at panlasang gusto mo.</p>
-          <div className="home-cta-content">
-            <strong>Tuklasin ang ulam na bagay sa iyo.</strong>
-            <p>Sa Ulam AI, ilalagay mo ang mga sangkap mo, pipili ng preferences, at makakakita ng tatlong praktikal na ideya.</p>
-            <button className="button button-primary" type="button" onClick={() => onStart('')}>Simulan sa Ulam AI <span aria-hidden="true">→</span></button>
-          </div>
+          <p className="hero-description">
+            Ilagay ang mga sangkap na nasa kusina mo para makahanap ng praktikal at authentic na Pinoy ulam na swak sa iyong budget, servings, at panlasa.
+          </p>
+
+          <form className="home-search-bar" onSubmit={handleSubmit}>
+            <input
+              type="text"
+              className="home-search-input"
+              placeholder="Ilagay ang mga sangkap (e.g. manok, toyo, bawang...)"
+              value={ingredients}
+              onChange={(e) => setIngredients(e.target.value)}
+              aria-label="Mga sangkap"
+            />
+            <button className="button button-primary home-search-button" type="submit">
+              Hanapan ng Ulam <span aria-hidden="true">→</span>
+            </button>
+          </form>
         </div>
 
         <div className="hero-preview-wrapper" aria-label="Hapag Recipe Preview Card">
