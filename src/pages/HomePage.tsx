@@ -10,37 +10,67 @@ export function HomePage({ onStart }: HomePageProps) {
           <span className="eyebrow">Filipino Meal Assistant</span>
           <h1>May sangkap ka? May maluluto tayo.</h1>
           <p className="hero-subtitle">Mula sa kusina mo, hanap tayo ng ulam.</p>
-          <p className="hero-description">I-type ang mga sangkap na meron ka para sa mga ulam na may budget check, servings, at praktikal na pamalit.</p>
-          <div className="home-cta-content">
-            <strong>Tuklasin ang ulam na bagay sa iyo.</strong>
-            <p>Pumili ng preferences at makakuha agad ng 3 praktikal na recipe options.</p>
-            <button className="button button-primary" type="button" onClick={() => onStart('')}>Simulan sa Ulam AI <span aria-hidden="true">→</span></button>
+          <p className="hero-description">
+            I-type ang mga sangkap na meron ka sa kusina para makahanap ng mga praktikal na ulam na may real-time budget check, servings, at sari-sari store substitutions.
+          </p>
+          <div className="hero-actions">
+            <button className="button button-primary" type="button" onClick={() => onStart('')}>
+              Simulan sa Ulam AI <span aria-hidden="true">→</span>
+            </button>
           </div>
         </div>
-        <div className="hero-illustration" aria-label="Illustration of a warm Filipino kitchen" role="img">
-          <span className="illustration-steam illustration-steam-one" aria-hidden="true">〰</span>
-          <span className="illustration-steam illustration-steam-two" aria-hidden="true">〰</span>
-          <div className="illustration-pot" aria-hidden="true">🍳</div>
-          <span className="ingredient-bubble ingredient-bubble-one">🥚</span>
-          <span className="ingredient-bubble ingredient-bubble-two">🌶️</span>
-          <span className="ingredient-bubble ingredient-bubble-three">🍅</span>
-          <span className="illustration-spark illustration-spark-one" aria-hidden="true">✦</span>
-          <span className="illustration-spark illustration-spark-two" aria-hidden="true">✦</span>
-        </div>
-      </section>
 
-      <section className="home-how-it-works" aria-labelledby="how-it-works-heading">
-        <div className="home-section-heading">
-          <span className="eyebrow">Simple lang</span>
-          <h2 id="how-it-works-heading">Paano gumagana ang Hapag?</h2>
-          <p>Mula sa mga sangkap mo hanggang sa ulam na puwede mong lutuin.</p>
-        </div>
-        <div className="how-it-works-steps">
-          <div className="how-it-works-step"><span>1</span><strong>Ilagay ang mga sangkap</strong></div>
-          <span className="how-it-works-arrow" aria-hidden="true">↓</span>
-          <div className="how-it-works-step"><span>2</span><strong>Suriin at iangkop ang preferences</strong></div>
-          <span className="how-it-works-arrow" aria-hidden="true">↓</span>
-          <div className="how-it-works-step"><span>3</span><strong>Pumili ng ulam at simulan ang pagluluto</strong></div>
+        <div className="hero-preview-wrapper" aria-label="Hapag Recipe Preview Card">
+          <div className="hero-preview-input-capsule">
+            <span className="capsule-icon">🧺</span>
+            <span className="capsule-pill">🍗 500g Manok</span>
+            <span className="capsule-pill">🥔 2 Patatas</span>
+            <span className="capsule-pill">🧄 Bawang</span>
+            <span className="capsule-pill">🍶 Toyo</span>
+          </div>
+
+          <div className="hero-preview-card">
+            <div className="hero-preview-topline">
+              <span className="hero-preview-badge">Classic Ulam</span>
+              <span className="hero-preview-match">96% Match</span>
+            </div>
+
+            <div className="hero-preview-body">
+              <h3 className="hero-preview-title">Classic Chicken Adobo</h3>
+              <p className="hero-preview-desc">Ginisang manok sa toyo, suka, at maraming piniritong bawang na may patatas.</p>
+
+              <div className="hero-preview-metrics">
+                <span>⏱ 35 min</span>
+                <span>Easy</span>
+                <span className="hero-preview-price">₱140–₱190</span>
+                <span>4 serv.</span>
+              </div>
+
+              <div className="hero-preview-ingredients">
+                <div className="hero-preview-group">
+                  <span className="hero-preview-group-label meron">Meron ka na (4)</span>
+                  <div className="hero-preview-chips">
+                    <span className="chip-meron">✓ Manok</span>
+                    <span className="chip-meron">✓ Patatas</span>
+                    <span className="chip-meron">✓ Bawang</span>
+                    <span className="chip-meron">✓ Toyo</span>
+                  </div>
+                </div>
+
+                <div className="hero-preview-group">
+                  <span className="hero-preview-group-label kulang">Kulang pa (1)</span>
+                  <div className="hero-preview-chips">
+                    <span className="chip-kulang">+ Suka</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="hero-preview-sub-tip">
+                <span className="sub-tip-icon">💡</span>
+                <span className="sub-tip-text"><strong>Sari-Sari Tip:</strong> Pwedeng palitan ang Patatas ng Tokwa.</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </div>
