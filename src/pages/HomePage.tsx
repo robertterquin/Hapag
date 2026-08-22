@@ -7,28 +7,18 @@ export function HomePage({ onStart }: HomePageProps) {
     <div className="page-shell page-shell-home">
       <section className="hero-panel">
         <div className="hero-copy">
-          <span className="eyebrow">Filipino Meal Assistant</span>
+          <span className="eyebrow">Filipino meal assistant</span>
           <h1>May sangkap ka? May maluluto tayo.</h1>
           <p className="hero-subtitle">Mula sa kusina mo, hanap tayo ng ulam.</p>
-          <p className="hero-description">
-            I-type ang mga sangkap na meron ka sa kusina para makahanap ng mga praktikal na ulam na may real-time budget check, servings, at sari-sari store substitutions.
-          </p>
-          <div className="hero-actions">
-            <button className="button button-primary" type="button" onClick={() => onStart('')}>
-              Simulan sa Ulam AI <span aria-hidden="true">→</span>
-            </button>
+          <p className="hero-description">Ilagay ang mga sangkap na meron ka, suriin ang nakita ni Hapag, at iangkop ang mga ideya sa budget, servings, at panlasang gusto mo.</p>
+          <div className="home-cta-content">
+            <strong>Tuklasin ang ulam na bagay sa iyo.</strong>
+            <p>Sa Ulam AI, ilalagay mo ang mga sangkap mo, pipili ng preferences, at makakakita ng tatlong praktikal na ideya.</p>
+            <button className="button button-primary" type="button" onClick={() => onStart('')}>Simulan sa Ulam AI <span aria-hidden="true">→</span></button>
           </div>
         </div>
 
         <div className="hero-preview-wrapper" aria-label="Hapag Recipe Preview Card">
-          <div className="hero-preview-input-capsule">
-            <span className="capsule-icon">🧺</span>
-            <span className="capsule-pill">🍗 500g Manok</span>
-            <span className="capsule-pill">🥔 2 Patatas</span>
-            <span className="capsule-pill">🧄 Bawang</span>
-            <span className="capsule-pill">🍶 Toyo</span>
-          </div>
-
           <div className="hero-preview-card">
             <div className="hero-preview-topline">
               <span className="hero-preview-badge">Classic Ulam</span>
