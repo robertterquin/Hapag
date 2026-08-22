@@ -26,8 +26,8 @@ const rawRecipeFixtures = [
     title: 'Sardines with egg and pechay',
     imageUrl: 'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1200&q=82',
     localTitle: 'Sardinas na may itlog at pechay',
-    description: 'Isang mabilis at sulit na ulam gamit ang mga sangkap na meron ka.',
-    matchReason: 'Ginagamit nito ang sardinas, itlog, at pechay na meron ka na.',
+    description: 'A quick and budget-friendly home dish using the ingredients you already have.',
+    matchReason: 'A great way to use the sardines, eggs, and pechay you already have on hand.',
     ingredients: [
       available('sardines', 'Sardines', 'canned sardines', 1, 'can'),
       available('egg', 'Itlog', 'egg', 2, 'piece'),
@@ -64,8 +64,8 @@ const rawRecipeFixtures = [
     title: 'Ginisang pechay with egg',
     imageUrl: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=1200&q=82',
     localTitle: 'Ginisang pechay na may itlog',
-    description: 'Simple, mabilis, at nakasentro sa gulay na ulam.',
-    matchReason: 'Pechay, kamatis, at itlog ang bida; kaunti lang ang kailangang idagdag.',
+    description: 'A simple, quick, and vegetable-centered Filipino home sauté.',
+    matchReason: 'Pechay, tomatoes, and eggs take center stage with only basic pantry items needed.',
     ingredients: [
       available('pechay', 'Pechay', 'pechay', 1, 'bundle'),
       available('tomato', 'Kamatis', 'tomato', 2, 'piece'),
@@ -102,8 +102,8 @@ const rawRecipeFixtures = [
     title: 'Sardine omelet with tomato',
     imageUrl: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=1200&q=82',
     localTitle: 'Tortang sardinas na may kamatis',
-    description: 'Malinamnam na omelet na puwedeng pang-ulam o pang-baon.',
-    matchReason: 'Pinagsasama nito ang itlog, sardinas, at kamatis sa isang mabilis na ulam.',
+    description: 'A flavorful Filipino sardine omelet perfect for quick meals and baon.',
+    matchReason: 'Combines eggs, sardines, and fresh tomatoes into an easy home-cooked dish.',
     ingredients: [
       available('egg', 'Itlog', 'egg', 3, 'piece'),
       available('sardines', 'Sardinas', 'canned sardines', 1, 'can'),

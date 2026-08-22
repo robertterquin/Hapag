@@ -34,7 +34,7 @@ export function HomePage({ onStart }: HomePageProps) {
                 <span className="hero-preview-local-name">Adobong Manok na may Patatas</span>
               </div>
 
-              <p className="hero-preview-desc">Ginisang manok sa toyo, suka, at maraming piniritong bawang na may patatas.</p>
+              <p className="hero-preview-desc">Classic Filipino chicken braised in savory soy sauce and vinegar with crisp garlic and potatoes.</p>
 
               <div className="hero-preview-metrics">
                 <span className="metric-pill">35 mins</span>
@@ -64,7 +64,7 @@ export function HomePage({ onStart }: HomePageProps) {
 
               <div className="hero-preview-sub-tip">
                 <span className="sub-tip-badge">Pamalit</span>
-                <span className="sub-tip-text">Pwedeng palitan ang Patatas ng Tokwa</span>
+                <span className="sub-tip-text">Can substitute Potatoes with Tofu</span>
               </div>
             </div>
           </div>

@@ -9,12 +9,12 @@ function removeAdaptationTitlePrefix(recipe: Recipe): Recipe {
 
 function sanitizeRecipe(recipe: Recipe): Recipe {
   let cleaned = removeAdaptationTitlePrefix(recipe)
-  if (cleaned.matchReason && /(?:candidate match|match at \d+|supplied candidate|preserves classic .* identity|still needed:)/i.test(cleaned.matchReason)) {
+  if (cleaned.matchReason && /(?:candidate|match at \d+|availableingredients|minarkahang available|preserves classic|still needed:)/i.test(cleaned.matchReason)) {
     const availableNames = cleaned.ingredients.filter((i) => i.available).map((i) => i.name).join(', ')
     cleaned = {
       ...cleaned,
       matchReason: availableNames
-        ? `Bagay lutuin gamit ang ${availableNames} na meron ka na sa kusina.`
+        ? `A great match to make with the ${availableNames} you already have on hand.`
         : cleaned.description,
     }
   }
