@@ -7,13 +7,13 @@ export function HomePage({ onStart }: HomePageProps) {
     <div className="page-shell page-shell-home">
       <section className="hero-panel">
         <div className="hero-copy">
-          <span className="eyebrow">Filipino meal assistant</span>
+          <span className="eyebrow">Filipino Meal Assistant</span>
           <h1>May sangkap ka? May maluluto tayo.</h1>
           <p className="hero-subtitle">Mula sa kusina mo, hanap tayo ng ulam.</p>
-          <p className="hero-description">Ilagay ang mga sangkap na meron ka, suriin ang nakita ni Hapag, at iangkop ang mga ideya sa budget, servings, at panlasang gusto mo.</p>
+          <p className="hero-description">I-type ang mga sangkap na meron ka para sa mga ulam na may budget check, servings, at praktikal na pamalit.</p>
           <div className="home-cta-content">
             <strong>Tuklasin ang ulam na bagay sa iyo.</strong>
-            <p>Sa Ulam AI, ilalagay mo ang mga sangkap mo, pipili ng preferences, at makakakita ng tatlong praktikal na ideya.</p>
+            <p>Pumili ng preferences at makakuha agad ng 3 praktikal na recipe options.</p>
             <button className="button button-primary" type="button" onClick={() => onStart('')}>Simulan sa Ulam AI <span aria-hidden="true">→</span></button>
           </div>
         </div>
