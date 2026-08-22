@@ -55,7 +55,6 @@ export function ResultsPage({ session, status, suggestions, error, savedError, s
         <strong>Paano basahin ang resulta:</strong>
         <span><b>Meron ka na</b> — sangkap na inilagay mo</span>
         <span><b>Kulang pa</b> — sangkap na maaaring kailanganin</span>
-        <span><b>Hapag adaptation</b> — sariling variation, hindi tradisyonal na pangalan</span>
       </div>
       <div className="results-grid">
         {suggestions.map((recipe, index) => <RecipeCard key={recipe.id} recipe={recipe} animationIndex={index} saved={savedIds.includes(recipe.id)} feedback={feedback[recipe.id]} onOpen={() => onOpen(recipe.id)} onToggleSave={() => onToggleSave(recipe.id)} onFeedback={(kind) => onFeedback(recipe.id, kind)} />)}

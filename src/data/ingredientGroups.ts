@@ -37,6 +37,8 @@ export const ingredientSubstitutionRules: readonly IngredientSubstitutionRule[] 
   { ingredient: 'rice noodles', substitute: 'flour noodles', group: 'noodles', note: 'Flour noodles create a chewier noodle variation.' },
   { ingredient: 'flour noodles', substitute: 'rice noodles', group: 'noodles', note: 'Rice noodles create a lighter noodle variation.' },
   { ingredient: 'cooked rice', substitute: 'uncooked rice', group: 'rice-and-grains', note: 'Uncooked rice must be cooked before serving.' },
+  { ingredient: 'tomato sauce', substitute: 'tomato', group: 'souring-agents', note: 'Fresh tomatoes can be sautéed to build a flavorful tomato base.' },
+  { ingredient: 'tomato', substitute: 'tomato sauce', group: 'souring-agents', note: 'Tomato sauce can replace fresh tomatoes for rich stewing.' },
 ]
 
 const groupByIngredient = new Map<string, IngredientGroup>()
