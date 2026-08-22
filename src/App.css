@@ -288,13 +288,10 @@ p { line-height: 1.6; }
 .placeholder-pattern { position: absolute; inset: 0; opacity: 0.12; background-image: radial-gradient(var(--teal-11) 0.8px, transparent 0.8px); background-size: 14px 14px; }
 .placeholder-brand { font-family: var(--font-display); font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--teal-11); background: var(--color-surface); padding: 4px 12px; border-radius: var(--radius-pill); border: 1px solid var(--teal-6); position: relative; z-index: 1; }
 
-.recipe-card-topline { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
-.recipe-tags-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-.recipe-topline-actions { display: flex; align-items: center; gap: 8px; }
+.recipe-card-topline { display: flex; align-items: center; justify-content: flex-start; gap: 8px; margin-bottom: 10px; }
 .recipe-badge { display: inline-flex; width: max-content; padding: 3px 9px; color: var(--teal-11); background: var(--teal-2); border: 1px solid var(--teal-6); border-radius: var(--radius-pill); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
 .recipe-authenticity-badge { display: inline-flex; width: max-content; padding: 3px 9px; color: var(--color-muted); background: var(--sand-2); border: 1px solid var(--slate-a3); border-radius: var(--radius-pill); font-size: 11px; font-weight: 700; }
-.recipe-match-pill { display: inline-flex; width: max-content; padding: 3px 9px; color: var(--green-11); background: var(--green-2); border: 1px solid var(--green-6); border-radius: var(--radius-pill); font-size: 11.5px; font-weight: 800; }
-.save-button { display: grid; width: 34px; height: 34px; place-items: center; color: var(--color-muted); background: var(--sand-2); border: 1px solid var(--slate-a3); border-radius: 50%; font-size: 17px; transition: color 150ms ease, background 150ms ease, border-color 150ms ease; }
+.save-button { display: grid; width: 34px; height: 34px; place-items: center; color: var(--color-muted); background: var(--sand-2); border: 1px solid var(--slate-a3); border-radius: 50%; font-size: 17px; transition: color 150ms ease, background 150ms ease, border-color 150ms ease; margin-left: auto; }
 .save-button:hover, .save-button-saved { color: var(--tomato-11); background: var(--tomato-2); border-color: var(--tomato-6); }
 
 .recipe-card-main { display: grid; flex: 1; gap: 10px; padding: 0; color: inherit; text-align: left; background: transparent; border: 0; }
@@ -302,8 +299,9 @@ p { line-height: 1.6; }
 .recipe-match { min-height: 48px; margin: 0; color: var(--color-muted); font-size: 13.5px; line-height: 1.45; }
 
 .recipe-metrics { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0; }
-.recipe-metrics .metric-pill { font-size: 12px; font-weight: 700; color: var(--color-ink); background: var(--sand-2); border: 1px solid var(--slate-a3); padding: 4px 8px; border-radius: 6px; }
+.recipe-metrics span { font-size: 12px; font-weight: 700; color: var(--color-ink); background: var(--sand-2); border: 1px solid var(--slate-a3); padding: 4px 8px; border-radius: 6px; }
 .recipe-metrics .metric-price { color: var(--teal-11); background: var(--teal-2); border-color: var(--teal-6); font-weight: 800; }
+.recipe-metrics .metric-match { color: var(--green-11); background: var(--green-2); border-color: var(--green-6); font-weight: 800; }
 
 .recipe-metrics-large { display: flex; flex-wrap: wrap; gap: 8px; margin: var(--space-4) 0; }
 .recipe-metrics-large span { font-size: 13.5px; font-weight: 700; color: var(--color-ink); background: var(--sand-2); border: 1px solid var(--slate-a3); padding: 6px 12px; border-radius: 8px; }
@@ -311,14 +309,12 @@ p { line-height: 1.6; }
 .recipe-metrics-large strong { color: inherit; }
 
 .ingredient-summary { display: grid; gap: 10px; padding: 12px 0 6px 0; border-top: 1px solid var(--slate-a3); border-bottom: 1px solid var(--slate-a3); }
-.ingredient-group { display: grid; gap: 5px; }
-.ingredient-group .group-label { display: block; font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; }
-.ingredient-group .group-label.meron { color: var(--teal-11); }
-.ingredient-group .group-label.kulang { color: var(--tomato-11); }
-.ingredient-group .group-chips { display: flex; flex-wrap: wrap; gap: 5px; }
-.ingredient-group .chip-meron { font-size: 11.5px; font-weight: 700; color: var(--teal-11); background: var(--teal-2); border: 1px solid var(--teal-6); border-radius: 5px; padding: 2px 7px; }
-.ingredient-group .chip-kulang { font-size: 11.5px; font-weight: 700; color: var(--tomato-11); background: var(--tomato-2); border: 1px solid var(--tomato-6); border-radius: 5px; padding: 2px 7px; }
-.ingredient-group .chip-empty { font-size: 11.5px; color: var(--color-muted); font-style: italic; }
+.ingredient-summary div { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; font-size: 11px; }
+.ingredient-summary strong { width: 100%; color: var(--color-muted); font-size: 10.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 2px; }
+.ingredient-summary span { padding: 3px 8px; color: var(--teal-11); background: var(--teal-2); border: 1px solid var(--teal-6); border-radius: 5px; font-size: 11.5px; font-weight: 700; }
+.ingredient-summary div:last-child span { color: var(--tomato-11); background: var(--tomato-2); border: 1px solid var(--tomato-6); }
+.ingredient-summary .chip-meron { color: var(--teal-11); background: var(--teal-2); border: 1px solid var(--teal-6); }
+.ingredient-summary .chip-kulang { color: var(--tomato-11); background: var(--tomato-2); border: 1px solid var(--tomato-6); }
 
 .card-action { margin-top: 6px; color: var(--color-ube); font-size: 13px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; transition: gap 150ms ease, color 150ms ease; }
 .recipe-card:hover .card-action { color: var(--color-ube-dark); gap: 8px; }
