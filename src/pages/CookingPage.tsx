@@ -30,7 +30,18 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
 
   return (
     <div className="cooking-page">
-      <div className="cooking-topbar"><button className="back-button" type="button" onClick={onBack}>← Bumalik sa recipe</button><span className="cooking-title">Paraan ng pagluluto</span><span className="cooking-dish">{recipe.title}</span></div>
+      <div className="cooking-topbar">
+        <button className="cooking-back-button" type="button" onClick={onBack}>
+          ← Bumalik sa recipe
+        </button>
+        <div className="cooking-dish-header">
+          <span className="cooking-mode-kicker">Paraan ng pagluluto</span>
+          <h2 className="cooking-dish-title">{recipe.title}</h2>
+        </div>
+        <div className="cooking-step-badge">
+          <span>Hakbang {step.order} / {recipe.steps.length}</span>
+        </div>
+      </div>
       <div className="cooking-progress-header"><span>Hakbang {step.order} sa {recipe.steps.length}</span><strong>{Math.round(progress)}%</strong></div>
       <div className="progress-track"><motion.span animate={{ width: `${progress}%` }} transition={{ duration: 0.22, ease: 'easeOut' }} /></div>
       <section className="cooking-step-card" aria-live="polite">
