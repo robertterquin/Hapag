@@ -8,7 +8,7 @@ interface AppShellProps {
   routeName: AppRoute['name']
   contentKey: string
   onNavigate: (path: string) => void
-  firstName?: string
+  fullName?: string
   children: ReactNode
 }
 
@@ -18,9 +18,9 @@ const navigation = [
   { label: 'Saved', path: '/saved', route: 'saved' as const, icon: 'lucide:heart' },
 ]
 
-export function AppShell({ routeName, contentKey, onNavigate, firstName, children }: AppShellProps) {
+export function AppShell({ routeName, contentKey, onNavigate, fullName, children }: AppShellProps) {
   const isActive = (route: AppRoute['name']) => routeName === route || (route === 'ulam' && (routeName === 'results' || routeName === 'recipe-detail' || routeName === 'cooking'))
-  const profileInitial = (firstName?.[0] ?? 'U').toUpperCase()
+  const profileInitial = (fullName?.[0] ?? 'U').toUpperCase()
 
   return (
     <div className={`app-shell app-shell-${routeName}`}>
@@ -81,7 +81,7 @@ export function AppShell({ routeName, contentKey, onNavigate, firstName, childre
         <button className="profile-link" type="button" onClick={() => onNavigate('/profile')}>
           <span className="avatar" aria-hidden="true">{profileInitial}</span>
           <span className="profile-copy">
-            <strong>{firstName ?? 'Profile'}</strong>
+            <strong>{fullName ?? 'Profile'}</strong>
             <small>Preferences</small>
           </span>
         </button>
