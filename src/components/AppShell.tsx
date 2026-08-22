@@ -54,38 +54,35 @@ export function AppShell({ routeName, contentKey, onNavigate, fullName, children
           </g>
         </svg>
       </div>
-      <header className="app-topbar">
-        <button className="brand-lockup" type="button" onClick={() => onNavigate('/')}>
-          <BrandMark className="brand-mark" />
-          <span>
-            <strong>Hapag</strong>
-            <small>May sahog ka? Luto tayo.</small>
-          </span>
-        </button>
 
-        <nav className="topbar-nav" aria-label="Main navigation">
-          {navigation.map((item) => (
-            <button
-              className={`nav-item ${isActive(item.route) ? 'nav-item-active' : ''}`}
-              key={item.path}
-              type="button"
-              onClick={() => onNavigate(item.path)}
-              aria-current={isActive(item.route) ? 'page' : undefined}
-            >
-              <Icon className="nav-icon" icon={item.icon} width={20} height={20} aria-hidden="true" />
-              {item.label}
-            </button>
-          ))}
-        </nav>
+      <div className="app-topbar-wrapper">
+        <header className="app-topbar">
+          <button className="brand-lockup" type="button" onClick={() => onNavigate('/')}>
+            <BrandMark className="brand-mark" size={30} />
+            <strong className="brand-name">Hapag</strong>
+          </button>
 
-        <button className="profile-link" type="button" onClick={() => onNavigate('/profile')}>
-          <span className="avatar" aria-hidden="true">{profileInitial}</span>
-          <span className="profile-copy">
-            <strong>{fullName ?? 'Profile'}</strong>
-            <small>Preferences</small>
-          </span>
-        </button>
-      </header>
+          <nav className="topbar-nav" aria-label="Main navigation">
+            {navigation.map((item) => (
+              <button
+                className={`nav-item ${isActive(item.route) ? 'nav-item-active' : ''}`}
+                key={item.path}
+                type="button"
+                onClick={() => onNavigate(item.path)}
+                aria-current={isActive(item.route) ? 'page' : undefined}
+              >
+                <Icon className="nav-icon" icon={item.icon} width={18} height={18} aria-hidden="true" />
+                <span>{item.label}</span>
+              </button>
+            ))}
+          </nav>
+
+          <button className="profile-link" type="button" onClick={() => onNavigate('/profile')} aria-label="Profile and preferences">
+            <span className="avatar" aria-hidden="true">{profileInitial}</span>
+            <span className="profile-name">{fullName?.split(' ')[0] ?? 'Profile'}</span>
+          </button>
+        </header>
+      </div>
 
       <div className="app-content-wrap">
         <header className="mobile-header">
