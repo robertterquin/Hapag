@@ -8,22 +8,22 @@
  *   2. Browser cache (previously synthesized via Edge Function)
  *   3. Live Edge Function synthesis (then cached for next time)
  *
- * Every recipe step — whether from fixtures or AI-generated — gets the
- * exact same fil-PH-BlessicaNeural studio voice.
+ * If all tiers fail, returns null and the caller falls back to
+ * browser SpeechSynthesis via useVoiceReadout.
  */
 
 import { appConfig } from '../config/env.ts'
 
 const CACHE_NAME = 'hapag-tts-v1'
-const TTS_ENDPOINT = `${appConfig.supabaseFunctionUrl}/text-to-speech`
+const TTS_ENDPOINT = appConfig.supabaseFunctionUrl
+  ? `${appConfig.supabaseFunctionUrl}/text-to-speech`
+  : ''
 
 /** Check whether a static MP3 file exists at the given path. */
 async function staticFileExists(path: string): Promise<boolean> {
   try {
     const response = await fetch(path, { method: 'HEAD' })
-    const isAudio = response.ok && (response.headers.get('content-type')?.includes('audio') ?? false)
-    if (!isAudio) console.debug('[TTS] Static file miss:', path, response.status)
-    return isAudio
+    return response.ok && (response.headers.get('content-type')?.includes('audio') ?? false)
   } catch {
     return false
   }
@@ -31,7 +31,6 @@ async function staticFileExists(path: string): Promise<boolean> {
 
 /** Derive a stable cache key from the spoken text. */
 function cacheKey(text: string): string {
-  // Use a simple hash to avoid overly long cache keys
   let hash = 0
   for (let i = 0; i < text.length; i++) {
     hash = ((hash << 5) - hash + text.charCodeAt(i)) | 0
@@ -44,7 +43,7 @@ function cacheKey(text: string): string {
  *
  * @param text       The full spoken text for the step
  * @param staticPath Optional path to a pre-rendered static MP3
- * @returns A blob: or path URL ready for `new Audio(url)`
+ * @returns A blob: or path URL ready for `new Audio(url)`, or null
  */
 export async function getAudioUrl(text: string, staticPath?: string): Promise<string | null> {
   // Tier 1: Pre-rendered static MP3
@@ -60,23 +59,17 @@ export async function getAudioUrl(text: string, staticPath?: string): Promise<st
     const cache = await caches.open(CACHE_NAME)
     const cached = await cache.match(key)
     if (cached) {
-      console.debug('[TTS] Cache hit:', key)
       const blob = await cached.blob()
       return URL.createObjectURL(blob)
     }
-    console.debug('[TTS] Cache miss:', key)
   } catch {
-    // Cache API unavailable (e.g. incognito in some browsers) — continue
+    // Cache API unavailable — continue
   }
 
   // Tier 3: Live Edge Function synthesis
-  if (!TTS_ENDPOINT) {
-    console.warn('[TTS] No TTS endpoint configured')
-    return null
-  }
+  if (!TTS_ENDPOINT) return null
 
   try {
-    console.debug('[TTS] Calling Edge Function:', TTS_ENDPOINT)
     const response = await fetch(TTS_ENDPOINT, {
       method: 'POST',
       headers: {
@@ -86,10 +79,7 @@ export async function getAudioUrl(text: string, staticPath?: string): Promise<st
       body: JSON.stringify({ text }),
     })
 
-    if (!response.ok) {
-      console.warn('[TTS] Edge Function error:', response.status, await response.text().catch(() => ''))
-      return null
-    }
+    if (!response.ok) return null
 
     const blob = await response.blob()
 
