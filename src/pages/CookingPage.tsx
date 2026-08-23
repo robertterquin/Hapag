@@ -27,6 +27,10 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
       if (typeof window !== 'undefined') {
         localStorage.setItem('hapag_sound_enabled', String(next))
       }
+      if (next) {
+        soundManager.unlock()
+        soundManager.playConfirmationPing()
+      }
       return next
     })
   }
@@ -42,6 +46,7 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
   }
 
   const handleTimerToggle = () => {
+    soundManager.unlock()
     if (timerFinished) {
       setTimerFinished(false)
       setTimerSeconds(defaultDurationSeconds)
