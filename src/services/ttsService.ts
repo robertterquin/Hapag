@@ -21,7 +21,9 @@ const TTS_ENDPOINT = `${appConfig.supabaseFunctionUrl}/text-to-speech`
 async function staticFileExists(path: string): Promise<boolean> {
   try {
     const response = await fetch(path, { method: 'HEAD' })
-    return response.ok && (response.headers.get('content-type')?.includes('audio') ?? false)
+    const isAudio = response.ok && (response.headers.get('content-type')?.includes('audio') ?? false)
+    if (!isAudio) console.debug('[TTS] Static file miss:', path, response.status)
+    return isAudio
   } catch {
     return false
   }
@@ -58,17 +60,23 @@ export async function getAudioUrl(text: string, staticPath?: string): Promise<st
     const cache = await caches.open(CACHE_NAME)
     const cached = await cache.match(key)
     if (cached) {
+      console.debug('[TTS] Cache hit:', key)
       const blob = await cached.blob()
       return URL.createObjectURL(blob)
     }
+    console.debug('[TTS] Cache miss:', key)
   } catch {
     // Cache API unavailable (e.g. incognito in some browsers) — continue
   }
 
   // Tier 3: Live Edge Function synthesis
-  if (!TTS_ENDPOINT) return null
+  if (!TTS_ENDPOINT) {
+    console.warn('[TTS] No TTS endpoint configured')
+    return null
+  }
 
   try {
+    console.debug('[TTS] Calling Edge Function:', TTS_ENDPOINT)
     const response = await fetch(TTS_ENDPOINT, {
       method: 'POST',
       headers: {
@@ -78,7 +86,10 @@ export async function getAudioUrl(text: string, staticPath?: string): Promise<st
       body: JSON.stringify({ text }),
     })
 
-    if (!response.ok) return null
+    if (!response.ok) {
+      console.warn('[TTS] Edge Function error:', response.status, await response.text().catch(() => ''))
+      return null
+    }
 
     const blob = await response.blob()
 
