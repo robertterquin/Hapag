@@ -6,10 +6,6 @@
  *
  * Voice: fil-PH-BlessicaNeural (same as pre-rendered studio clips)
  * Rate:  -4% (comfortable kitchen listening pace)
- *
- * POST /text-to-speech
- *   Body: { "text": "Igisa ang bawang..." }
- *   Response: audio/mpeg binary stream
  */
 
 const TRUSTED_TOKEN = '6A5AA1D4EAFF4E9FB37E23D68491D6F4'
@@ -18,7 +14,7 @@ const RATE = '-4%'
 const PITCH = '+0Hz'
 const OUTPUT_FORMAT = 'audio-24khz-48kbitrate-mono-mp3'
 
-const WS_URL =
+const WS_BASE =
   `wss://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?TrustedClientToken=${TRUSTED_TOKEN}&ConnectionId=`
 
 const corsHeaders: Record<string, string> = {
@@ -27,14 +23,12 @@ const corsHeaders: Record<string, string> = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
-/** Generate a compact hex ID for the WebSocket connection. */
 function connectionId(): string {
   const bytes = new Uint8Array(16)
   crypto.getRandomValues(bytes)
   return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('')
 }
 
-/** Build the SSML payload for a single utterance. */
 function buildSsml(text: string): string {
   const escaped = text
     .replace(/&/g, '&amp;')
@@ -48,30 +42,72 @@ function buildSsml(text: string): string {
   )
 }
 
-/** ISO 8601 timestamp for the Edge TTS protocol header. */
 function isoNow(): string {
   return new Date().toISOString()
 }
 
 /**
- * Connect to the Edge TTS WebSocket and collect MP3 audio chunks.
- * Resolves with the concatenated MP3 binary.
+ * Extract audio bytes from a binary WebSocket frame.
+ * The frame has text headers followed by the audio payload.
+ * The header section ends after "Path:audio\r\n".
  */
+function extractAudioFromBinary(data: Uint8Array): Uint8Array | null {
+  const headerTag = new TextEncoder().encode('Path:audio\r\n')
+
+  for (let i = 0; i <= data.length - headerTag.length; i++) {
+    let match = true
+    for (let j = 0; j < headerTag.length; j++) {
+      if (data[i + j] !== headerTag[j]) {
+        match = false
+        break
+      }
+    }
+    if (match) {
+      const audioStart = i + headerTag.length
+      if (audioStart < data.length) {
+        return data.slice(audioStart)
+      }
+      return null
+    }
+  }
+  return null
+}
+
+/**
+ * Convert various binary message types to Uint8Array.
+ * Deno Deploy WebSocket may deliver binary data as Blob or ArrayBuffer.
+ */
+async function toUint8Array(data: unknown): Promise<Uint8Array | null> {
+  if (data instanceof ArrayBuffer) {
+    return new Uint8Array(data)
+  }
+  if (data instanceof Uint8Array) {
+    return data
+  }
+  if (typeof Blob !== 'undefined' && data instanceof Blob) {
+    const buffer = await data.arrayBuffer()
+    return new Uint8Array(buffer)
+  }
+  return null
+}
+
 async function synthesize(text: string): Promise<Uint8Array> {
   const connId = connectionId()
-  const ws = new WebSocket(`${WS_URL}${connId}`)
-
-  const chunks: Uint8Array[] = []
-  let totalLength = 0
 
   return new Promise<Uint8Array>((resolve, reject) => {
+    const ws = new WebSocket(`${WS_BASE}${connId}`)
+    ws.binaryType = 'arraybuffer'
+
+    const chunks: Uint8Array[] = []
+    let totalLength = 0
+
     const timeout = setTimeout(() => {
-      ws.close()
-      reject(new Error('TTS synthesis timed out'))
+      try { ws.close() } catch { /* ignore */ }
+      reject(new Error('TTS synthesis timed out after 30s'))
     }, 30_000)
 
-    ws.onopen = () => {
-      // 1. Send configuration message
+    ws.addEventListener('open', () => {
+      // 1. Send audio output configuration
       ws.send(
         `Content-Type:application/json; charset=utf-8\r\n` +
         `Path:speech.config\r\n\r\n` +
@@ -79,7 +115,10 @@ async function synthesize(text: string): Promise<Uint8Array> {
           context: {
             synthesis: {
               audio: {
-                metadataoptions: { sentenceBoundaryEnabled: 'false', wordBoundaryEnabled: 'false' },
+                metadataoptions: {
+                  sentenceBoundaryEnabled: 'false',
+                  wordBoundaryEnabled: 'false',
+                },
                 outputFormat: OUTPUT_FORMAT,
               },
             },
@@ -88,23 +127,24 @@ async function synthesize(text: string): Promise<Uint8Array> {
       )
 
       // 2. Send SSML synthesis request
-      const requestId = connId
       ws.send(
-        `X-RequestId:${requestId}\r\n` +
+        `X-RequestId:${connId}\r\n` +
         `Content-Type:application/ssml+xml\r\n` +
         `X-Timestamp:${isoNow()}\r\n` +
         `Path:ssml\r\n\r\n` +
         buildSsml(text)
       )
-    }
+    })
 
-    ws.onmessage = (event: MessageEvent) => {
-      if (typeof event.data === 'string') {
-        // Text message — check for turn.end to know synthesis is complete
-        if (event.data.includes('Path:turn.end')) {
+    ws.addEventListener('message', async (event: MessageEvent) => {
+      const { data } = event
+
+      if (typeof data === 'string') {
+        // Text frame — check for synthesis completion
+        if (data.includes('Path:turn.end')) {
           clearTimeout(timeout)
-          ws.close()
-          // Concatenate collected chunks
+          try { ws.close() } catch { /* ignore */ }
+
           const result = new Uint8Array(totalLength)
           let offset = 0
           for (const chunk of chunks) {
@@ -113,53 +153,37 @@ async function synthesize(text: string): Promise<Uint8Array> {
           }
           resolve(result)
         }
-      } else if (event.data instanceof ArrayBuffer) {
-        // Binary message — extract audio data after the header separator
-        const view = new Uint8Array(event.data)
-        const headerTag = 'Path:audio\r\n'
-        const headerBytes = new TextEncoder().encode(headerTag)
-
-        // Find the end of headers (look for the audio path marker)
-        let audioStart = -1
-        for (let i = 0; i <= view.length - headerBytes.length; i++) {
-          let found = true
-          for (let j = 0; j < headerBytes.length; j++) {
-            if (view[i + j] !== headerBytes[j]) {
-              found = false
-              break
-            }
-          }
-          if (found) {
-            audioStart = i + headerBytes.length
-            break
-          }
-        }
-
-        if (audioStart > 0 && audioStart < view.length) {
-          const audioData = view.slice(audioStart)
-          chunks.push(audioData)
-          totalLength += audioData.length
-        }
+        return
       }
-    }
 
-    ws.onerror = (err) => {
-      clearTimeout(timeout)
-      reject(err)
-    }
+      // Binary frame — extract audio payload
+      const binary = await toUint8Array(data)
+      if (!binary) return
 
-    ws.onclose = (event) => {
-      clearTimeout(timeout)
-      if (chunks.length === 0 && event.code !== 1000) {
-        reject(new Error(`WebSocket closed unexpectedly: ${event.code}`))
+      const audio = extractAudioFromBinary(binary)
+      if (audio && audio.length > 0) {
+        chunks.push(audio)
+        totalLength += audio.length
       }
-    }
+    })
+
+    ws.addEventListener('error', (event) => {
+      clearTimeout(timeout)
+      const msg = event instanceof ErrorEvent ? event.message : 'WebSocket connection failed'
+      reject(new Error(msg))
+    })
+
+    ws.addEventListener('close', (event) => {
+      clearTimeout(timeout)
+      if (chunks.length === 0) {
+        reject(new Error(`WebSocket closed with code ${event.code} before receiving audio`))
+      }
+    })
   })
 }
 
 // deno-lint-ignore no-explicit-any
-Deno.serve(async (req: any) => {
-  // Handle CORS preflight
+(Deno as any).serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { status: 204, headers: corsHeaders })
   }
@@ -184,6 +208,13 @@ Deno.serve(async (req: any) => {
 
     const audio = await synthesize(text)
 
+    if (audio.length === 0) {
+      return new Response(
+        JSON.stringify({ error: 'Synthesis returned empty audio' }),
+        { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
     return new Response(audio, {
       status: 200,
       headers: {
@@ -194,7 +225,8 @@ Deno.serve(async (req: any) => {
       },
     })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Internal synthesis error'
+    const message = error instanceof Error ? error.message : String(error)
+    console.error('[TTS] Synthesis failed:', message)
     return new Response(
       JSON.stringify({ error: message }),
       { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
