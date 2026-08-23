@@ -5,19 +5,15 @@
  * a playable audio URL using a three-tier waterfall:
  *
  *   1. Pre-rendered static MP3 (instant, offline-capable)
- *   2. Browser cache (previously synthesized via Edge Function)
- *   3. Live Edge Function synthesis (then cached for next time)
+ *   2. Browser cache (previously synthesized via Vercel API)
+ *   3. Live Vercel Serverless Function synthesis (then cached)
  *
  * If all tiers fail, returns null and the caller falls back to
  * browser SpeechSynthesis via useVoiceReadout.
  */
 
-import { appConfig } from '../config/env.ts'
-
 const CACHE_NAME = 'hapag-tts-v1'
-const TTS_ENDPOINT = appConfig.supabaseFunctionUrl
-  ? `${appConfig.supabaseFunctionUrl}/text-to-speech`
-  : ''
+const TTS_ENDPOINT = '/api/text-to-speech'
 
 /** Check whether a static MP3 file exists at the given path. */
 async function staticFileExists(path: string): Promise<boolean> {
@@ -66,16 +62,11 @@ export async function getAudioUrl(text: string, staticPath?: string): Promise<st
     // Cache API unavailable — continue
   }
 
-  // Tier 3: Live Edge Function synthesis
-  if (!TTS_ENDPOINT) return null
-
+  // Tier 3: Vercel Serverless Function synthesis
   try {
     const response = await fetch(TTS_ENDPOINT, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        apikey: appConfig.supabaseAnonKey,
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text }),
     })
 
