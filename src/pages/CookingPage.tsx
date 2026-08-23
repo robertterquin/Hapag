@@ -14,7 +14,7 @@ export interface CookingPageProps {
 
 export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
   const { recipe } = useRecipe(recipeId)
-  const { isLocked, isSupported } = useWakeLock()
+  useWakeLock()
   const { isSupported: isVoiceSupported, isSpeaking, stop: stopVoice, toggle: toggleVoice } = useVoiceReadout()
   const [stepIndex, setStepIndex] = useState(0)
   const [timerSeconds, setTimerSeconds] = useState(0)
@@ -179,20 +179,6 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
           <h2 className="cooking-dish-title">{recipe.title}</h2>
         </div>
         <div className="cooking-topbar-actions">
-          {isSupported && isLocked && (
-            <div
-              className="cooking-wake-badge"
-              title="Aktibo ang Screen Wake Lock — hindi mamamatay ang screen habang nagluluto"
-              aria-label="Aktibo ang Screen Wake Lock"
-            >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
-                <line x1="8" y1="21" x2="16" y2="21" />
-                <line x1="12" y1="17" x2="12" y2="21" />
-              </svg>
-              <span className="wake-badge-text">Gising ang Screen</span>
-            </div>
-          )}
           <button
             className={`cooking-sound-toggle ${soundEnabled ? 'sound-active' : 'sound-muted'}`}
             type="button"
@@ -367,14 +353,6 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
         >
           {stepIndex === recipe.steps.length - 1 ? 'Tapos na' : 'Susunod →'}
         </button>
-      </div>
-
-      <div className="cooking-keyboard-hints" aria-hidden="true">
-        <span className="kbd-pill"><kbd>←</kbd> <kbd>→</kbd> Hakbang</span>
-        <span className="kbd-pill"><kbd>Space</kbd> Timer</span>
-        <span className="kbd-pill"><kbd>V</kbd> Boses</span>
-        <span className="kbd-pill"><kbd>R</kbd> Reset</span>
-        <span className="kbd-pill"><kbd>M</kbd> Tunog</span>
       </div>
 
       <p className="cooking-note">
