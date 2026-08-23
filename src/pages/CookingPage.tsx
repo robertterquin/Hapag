@@ -12,6 +12,15 @@ export interface CookingPageProps {
   onBack: () => void
 }
 
+function formatHeatTagalog(heat?: 'low' | 'medium' | 'high' | 'none' | null): string {
+  switch (heat) {
+    case 'low': return 'Mahinang init'
+    case 'medium': return 'Katamtamang init'
+    case 'high': return 'Malakas na init'
+    default: return 'Paghahanda'
+  }
+}
+
 export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
   const { recipe } = useRecipe(recipeId)
   useWakeLock()
@@ -147,9 +156,10 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
       } else if (e.key === 'v' || e.key === 'V') {
         e.preventDefault()
         if (step && recipe) {
+          const heatPart = step.heat && step.heat !== 'none' ? `${formatHeatTagalog(step.heat)}.` : ''
           const spokenText = `${step.action}. ${
             step.durationMinutes ? `Humigit-kumulang ${step.durationMinutes} minuto.` : ''
-          } ${step.heat && step.heat !== 'none' ? `Katamtamang init: ${step.heat}.` : ''}`
+          } ${heatPart}`.trim()
           const audioUrl = `/audio/steps/${recipe.id}-step-${step.order}.mp3`
           toggleVoice(spokenText, audioUrl)
         }
@@ -241,9 +251,10 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
                   className={`cooking-voice-button ${isSpeaking ? 'voice-speaking' : ''}`}
                   type="button"
                   onClick={() => {
+                    const heatPart = step.heat && step.heat !== 'none' ? `${formatHeatTagalog(step.heat)}.` : ''
                     const spokenText = `${step.action}. ${
                       step.durationMinutes ? `Humigit-kumulang ${step.durationMinutes} minuto.` : ''
-                    } ${step.heat && step.heat !== 'none' ? `Katamtamang init: ${step.heat}.` : ''}`
+                    } ${heatPart}`.trim()
                     const audioUrl = `/audio/steps/${recipe.id}-step-${step.order}.mp3`
                     toggleVoice(spokenText, audioUrl)
                   }}
@@ -279,7 +290,7 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
             <h1>{step.action}</h1>
             <div className="step-details">
               <span>{step.durationMinutes ? `Humigit-kumulang ${step.durationMinutes} minuto` : 'Hanggang maluto'}</span>
-              <span>{step.heat && step.heat !== 'none' ? `Katamtamang init: ${step.heat}` : 'Paghahanda'}</span>
+              <span>{formatHeatTagalog(step.heat)}</span>
             </div>
 
             <div className="timer-controls-cluster">
