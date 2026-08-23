@@ -3,6 +3,8 @@ import { AnimatePresence, motion } from 'motion/react'
 import { ResultsSkeleton } from '../components/Skeletons.tsx'
 import { useRecipe } from '../hooks/useRecipe.ts'
 import { soundManager } from '../lib/audioAlert.ts'
+import { useWakeLock } from '../hooks/useWakeLock.ts'
+import { useVoiceReadout } from '../hooks/useVoiceReadout.ts'
 
 export interface CookingPageProps {
   recipeId: string
@@ -12,6 +14,8 @@ export interface CookingPageProps {
 
 export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
   const { recipe } = useRecipe(recipeId)
+  const { isLocked, isSupported } = useWakeLock()
+  const { isSupported: isVoiceSupported, isSpeaking, stop: stopVoice, toggle: toggleVoice } = useVoiceReadout()
   const [stepIndex, setStepIndex] = useState(0)
   const [timerSeconds, setTimerSeconds] = useState(0)
   const [timerRunning, setTimerRunning] = useState(false)
@@ -39,6 +43,7 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
   const defaultDurationSeconds = (step?.durationMinutes ?? 2) * 60
 
   const handleStepChange = (newIndex: number) => {
+    stopVoice()
     setTimerRunning(false)
     setTimerFinished(false)
     setTimerSeconds(0)
@@ -87,6 +92,73 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
     return () => window.clearInterval(interval)
   }, [timerRunning, soundEnabled])
 
+  const [touchStart, setTouchStart] = useState<number | null>(null)
+  const [touchEnd, setTouchEnd] = useState<number | null>(null)
+
+  const minSwipeDistance = 50
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null)
+    setTouchStart(e.targetTouches[0].clientX)
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX)
+  }
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return
+    const distance = touchStart - touchEnd
+    const isLeftSwipe = distance > minSwipeDistance
+    const isRightSwipe = distance < -minSwipeDistance
+
+    if (isLeftSwipe && stepIndex < (recipe?.steps.length ?? 0) - 1) {
+      handleStepChange(stepIndex + 1)
+    } else if (isRightSwipe && stepIndex > 0) {
+      handleStepChange(stepIndex - 1)
+    }
+  }
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const activeEl = document.activeElement
+      if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
+        return
+      }
+
+      if (e.key === 'ArrowRight' || e.key === 'j' || e.key === 'J') {
+        e.preventDefault()
+        if (stepIndex < (recipe?.steps.length ?? 0) - 1) {
+          handleStepChange(stepIndex + 1)
+        } else if (stepIndex === (recipe?.steps.length ?? 0) - 1) {
+          onFinish()
+        }
+      } else if (e.key === 'ArrowLeft' || e.key === 'k' || e.key === 'K') {
+        e.preventDefault()
+        if (stepIndex > 0) {
+          handleStepChange(stepIndex - 1)
+        }
+      } else if (e.key === ' ' || e.code === 'Space') {
+        e.preventDefault()
+        handleTimerToggle()
+      } else if (e.key === 'r' || e.key === 'R') {
+        e.preventDefault()
+        handleTimerReset()
+      } else if (e.key === 'v' || e.key === 'V') {
+        e.preventDefault()
+        if (step) {
+          const spokenText = `${step.action}. ${
+            step.durationMinutes ? `Humigit-kumulang ${step.durationMinutes} minuto.` : ''
+          } ${step.heat && step.heat !== 'none' ? `Katamtamang init: ${step.heat}.` : ''}`
+          toggleVoice(spokenText)
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [stepIndex, recipe, timerRunning, timerSeconds, timerFinished, soundEnabled, isSpeaking, toggleVoice])
+
   if (!recipe || !step) return <div className="page-shell"><ResultsSkeleton /></div>
 
   const minutes = Math.floor(timerSeconds / 60).toString().padStart(2, '0')
@@ -107,6 +179,20 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
           <h2 className="cooking-dish-title">{recipe.title}</h2>
         </div>
         <div className="cooking-topbar-actions">
+          {isSupported && isLocked && (
+            <div
+              className="cooking-wake-badge"
+              title="Aktibo ang Screen Wake Lock — hindi mamamatay ang screen habang nagluluto"
+              aria-label="Aktibo ang Screen Wake Lock"
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                <line x1="8" y1="21" x2="16" y2="21" />
+                <line x1="12" y1="17" x2="12" y2="21" />
+              </svg>
+              <span className="wake-badge-text">Gising ang Screen</span>
+            </div>
+          )}
           <button
             className={`cooking-sound-toggle ${soundEnabled ? 'sound-active' : 'sound-muted'}`}
             type="button"
@@ -145,7 +231,13 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
         <motion.span animate={{ width: `${progress}%` }} transition={{ duration: 0.22, ease: 'easeOut' }} />
       </div>
 
-      <section className="cooking-step-card" aria-live="polite">
+      <section
+        className="cooking-step-card"
+        aria-live="polite"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
             className="cooking-step-content"
@@ -155,7 +247,47 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
             exit={{ opacity: 0, x: -8 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
           >
-            <span className="step-kicker">Gawin ito ngayon</span>
+            <div className="cooking-step-header-row">
+              <span className="step-kicker">Gawin ito ngayon</span>
+              {isVoiceSupported && (
+                <button
+                  className={`cooking-voice-button ${isSpeaking ? 'voice-speaking' : ''}`}
+                  type="button"
+                  onClick={() => {
+                    const spokenText = `${step.action}. ${
+                      step.durationMinutes ? `Humigit-kumulang ${step.durationMinutes} minuto.` : ''
+                    } ${step.heat && step.heat !== 'none' ? `Katamtamang init: ${step.heat}.` : ''}`
+                    toggleVoice(spokenText)
+                  }}
+                  aria-label={isSpeaking ? 'Itigil ang pagbasa ng boses' : 'Pakinggan ang hakbang sa boses'}
+                  title={isSpeaking ? 'Itigil ang boses' : 'Basahin ang hakbang'}
+                >
+                  <svg className="voice-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    {isSpeaking ? (
+                      <>
+                        <rect x="6" y="4" width="4" height="16" />
+                        <rect x="14" y="4" width="4" height="16" />
+                      </>
+                    ) : (
+                      <>
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                      </>
+                    )}
+                  </svg>
+                  <span>{isSpeaking ? 'Itigil ang Boses' : 'Pakinggan'}</span>
+                  {isSpeaking && (
+                    <span className="voice-waveform" aria-hidden="true">
+                      <span className="wave-bar" />
+                      <span className="wave-bar" />
+                      <span className="wave-bar" />
+                    </span>
+                  )}
+                </button>
+              )}
+            </div>
+
             <h1>{step.action}</h1>
             <div className="step-details">
               <span>{step.durationMinutes ? `Humigit-kumulang ${step.durationMinutes} minuto` : 'Hanggang maluto'}</span>
@@ -235,6 +367,14 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
         >
           {stepIndex === recipe.steps.length - 1 ? 'Tapos na' : 'Susunod →'}
         </button>
+      </div>
+
+      <div className="cooking-keyboard-hints" aria-hidden="true">
+        <span className="kbd-pill"><kbd>←</kbd> <kbd>→</kbd> Hakbang</span>
+        <span className="kbd-pill"><kbd>Space</kbd> Timer</span>
+        <span className="kbd-pill"><kbd>V</kbd> Boses</span>
+        <span className="kbd-pill"><kbd>R</kbd> Reset</span>
+        <span className="kbd-pill"><kbd>M</kbd> Tunog</span>
       </div>
 
       <p className="cooking-note">

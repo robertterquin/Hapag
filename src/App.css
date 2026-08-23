@@ -494,6 +494,7 @@ p { line-height: 1.6; }
 .cooking-mode-kicker { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--teal-11); line-height: 1.2; }
 .cooking-dish-title { margin: 2px 0 0 0; font-family: var(--font-display); font-size: 17px; font-weight: 900; color: var(--color-ink); letter-spacing: -0.02em; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 .cooking-topbar-actions { display: flex; align-items: center; gap: 8px; }
+.cooking-wake-badge { display: inline-flex; align-items: center; gap: 5px; padding: 6px 10px; font-size: 11px; font-weight: 700; color: var(--teal-11); background: var(--teal-2); border: 1px solid var(--teal-6); border-radius: var(--radius-pill); white-space: nowrap; }
 .cooking-sound-toggle { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; font-size: 12px; font-weight: 700; color: var(--teal-11); background: var(--teal-2); border: 1px solid var(--teal-6); border-radius: var(--radius-pill); cursor: pointer; transition: background-color 150ms ease, border-color 150ms ease; white-space: nowrap; }
 .cooking-sound-toggle:hover { background: var(--teal-3); border-color: var(--teal-7); }
 .cooking-sound-toggle.sound-muted { color: var(--color-muted); background: var(--sand-2); border-color: var(--slate-a4); }
@@ -502,9 +503,21 @@ p { line-height: 1.6; }
 .cooking-progress-header strong { color: var(--color-ube); }
 .progress-track { height: 10px; overflow: hidden; background: var(--color-border); border-radius: var(--radius-pill); }
 .progress-track span { display: block; height: 100%; background: var(--color-ube); border-radius: inherit; transition: width 220ms ease; }
-.cooking-step-card { display: grid; min-height: 390px; align-content: center; justify-items: center; margin-top: var(--space-6); padding: clamp(28px, 8vw, 72px) var(--space-6); text-align: center; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 28px; box-shadow: var(--shadow-card); }
+.cooking-step-card { display: grid; min-height: 390px; align-content: center; justify-items: center; margin-top: var(--space-6); padding: clamp(28px, 8vw, 72px) var(--space-6); text-align: center; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 28px; box-shadow: var(--shadow-card); touch-action: pan-y; }
 .cooking-step-content { display: grid; justify-items: center; width: 100%; }
+.cooking-step-header-row { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 4px; flex-wrap: wrap; }
 .step-kicker { color: var(--color-calamansi); font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.cooking-voice-button { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; font-size: 11.5px; font-weight: 700; color: var(--teal-11); background: var(--teal-2); border: 1px solid var(--teal-6); border-radius: var(--radius-pill); cursor: pointer; transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease; }
+.cooking-voice-button:hover { background: var(--teal-3); border-color: var(--teal-7); }
+.cooking-voice-button.voice-speaking { color: var(--color-surface); background: var(--teal-9); border-color: var(--teal-10); }
+.voice-waveform { display: inline-flex; align-items: center; gap: 2px; height: 12px; margin-left: 2px; }
+.wave-bar { display: inline-block; width: 2px; height: 10px; background: currentColor; border-radius: 1px; animation: wave-anim 0.8s ease-in-out infinite alternate; }
+.wave-bar:nth-child(2) { animation-delay: 0.25s; height: 6px; }
+.wave-bar:nth-child(3) { animation-delay: 0.5s; height: 8px; }
+@keyframes wave-anim {
+  0% { transform: scaleY(0.4); }
+  100% { transform: scaleY(1.2); }
+}
 .cooking-step-card h1 { max-width: 620px; margin: var(--space-4) 0; font-size: clamp(28px, 5vw, 46px); }
 .step-details { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-2); }
 .step-details span { padding: 8px 12px; color: var(--color-muted); background: var(--color-cream); border-radius: var(--radius-pill); font-size: 12px; font-weight: 800; }
@@ -526,6 +539,12 @@ p { line-height: 1.6; }
 .timer-alert-cue { display: inline-flex; align-items: center; margin-top: 14px; padding: 8px 16px; font-size: 13px; font-weight: 700; color: var(--green-11); background: var(--green-2); border: 1px solid var(--green-6); border-radius: var(--radius-pill); }
 
 .cooking-controls { display: flex; justify-content: space-between; gap: var(--space-3); margin-top: var(--space-5); }
+.cooking-keyboard-hints { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: var(--space-4); flex-wrap: wrap; }
+.kbd-pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; font-weight: 700; color: var(--color-muted); background: var(--sand-2); border: 1px solid var(--slate-a3); padding: 4px 10px; border-radius: var(--radius-pill); }
+.kbd-pill kbd { display: inline-block; padding: 2px 6px; font-size: 10.5px; font-weight: 800; font-family: inherit; color: var(--teal-11); background: var(--color-surface); border: 1px solid var(--slate-a4); border-radius: 4px; box-shadow: 0 1px 2px var(--color-shadow-subtle); }
+@media (max-width: 768px) {
+  .cooking-keyboard-hints { display: none; }
+}
 .cooking-note { margin-top: var(--space-5); color: var(--color-muted); text-align: center; font-size: 12px; }
 
 .saved-section { box-shadow: none; }
@@ -658,6 +677,8 @@ p { line-height: 1.6; }
   .detail-section, .cost-panel { padding: 16px 14px; border-radius: 18px; }
 
   /* Cooking step card compact styling */
+  .cooking-wake-badge .wake-badge-text { display: none; }
+  .cooking-wake-badge { padding: 6px 8px; }
   .cooking-step-card { min-height: 280px; padding: 24px 14px; border-radius: 20px; }
   .cooking-step-card h1 { font-size: 22px; margin: 12px 0; }
   .timer-button { width: 100%; min-height: 46px; }
