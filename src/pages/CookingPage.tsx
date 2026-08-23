@@ -146,11 +146,12 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
         handleTimerReset()
       } else if (e.key === 'v' || e.key === 'V') {
         e.preventDefault()
-        if (step) {
+        if (step && recipe) {
           const spokenText = `${step.action}. ${
             step.durationMinutes ? `Humigit-kumulang ${step.durationMinutes} minuto.` : ''
           } ${step.heat && step.heat !== 'none' ? `Katamtamang init: ${step.heat}.` : ''}`
-          toggleVoice(spokenText)
+          const audioUrl = `/audio/steps/${recipe.id}-step-${step.order}.mp3`
+          toggleVoice(spokenText, audioUrl)
         }
       }
     }
@@ -243,7 +244,8 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
                     const spokenText = `${step.action}. ${
                       step.durationMinutes ? `Humigit-kumulang ${step.durationMinutes} minuto.` : ''
                     } ${step.heat && step.heat !== 'none' ? `Katamtamang init: ${step.heat}.` : ''}`
-                    toggleVoice(spokenText)
+                    const audioUrl = `/audio/steps/${recipe.id}-step-${step.order}.mp3`
+                    toggleVoice(spokenText, audioUrl)
                   }}
                   aria-label={isSpeaking ? 'Itigil ang pagbasa ng boses' : 'Pakinggan ang hakbang sa boses'}
                   title={isSpeaking ? 'Itigil ang boses' : 'Basahin ang hakbang'}

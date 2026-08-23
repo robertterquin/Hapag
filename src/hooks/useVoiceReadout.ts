@@ -3,9 +3,9 @@ import { useCallback, useEffect, useState, useRef } from 'react'
 export interface VoiceReadoutState {
   isSupported: boolean
   isSpeaking: boolean
-  speak: (text: string) => void
+  speak: (text: string, audioUrl?: string) => void
   stop: () => void
-  toggle: (text: string) => void
+  toggle: (text: string, audioUrl?: string) => void
 }
 
 export function detectLanguage(text: string): 'tl-PH' | 'en-US' {
@@ -98,22 +98,25 @@ export function useVoiceReadout(): VoiceReadoutState {
   const [isSpeaking, setIsSpeaking] = useState(false)
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([])
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+    if (typeof window !== 'undefined') {
       setIsSupported(true)
 
-      const loadVoices = () => {
-        const availableVoices = window.speechSynthesis.getVoices()
-        setVoices(availableVoices)
-      }
+      if ('speechSynthesis' in window) {
+        const loadVoices = () => {
+          const availableVoices = window.speechSynthesis.getVoices()
+          setVoices(availableVoices)
+        }
 
-      loadVoices()
-      window.speechSynthesis.onvoiceschanged = loadVoices
+        loadVoices()
+        window.speechSynthesis.onvoiceschanged = loadVoices
 
-      return () => {
-        if ('speechSynthesis' in window) {
-          window.speechSynthesis.onvoiceschanged = null
+        return () => {
+          if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = null
+          }
         }
       }
     }
@@ -121,13 +124,18 @@ export function useVoiceReadout(): VoiceReadoutState {
   }, [])
 
   const stop = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current.currentTime = 0
+      audioRef.current = null
+    }
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       window.speechSynthesis.cancel()
-      setIsSpeaking(false)
     }
+    setIsSpeaking(false)
   }, [])
 
-  const speak = useCallback((text: string) => {
+  const speakWithSynthesis = useCallback((text: string) => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return
 
     window.speechSynthesis.cancel()
@@ -148,7 +156,6 @@ export function useVoiceReadout(): VoiceReadoutState {
       utterance.lang = detectedLang
     }
 
-    // Calibrated rate for clear syllable separation in kitchen settings
     utterance.rate = 0.88
     utterance.pitch = 1.0
 
@@ -159,11 +166,38 @@ export function useVoiceReadout(): VoiceReadoutState {
     window.speechSynthesis.speak(utterance)
   }, [voices])
 
-  const toggle = useCallback((text: string) => {
+  const speak = useCallback((text: string, audioUrl?: string) => {
+    stop()
+
+    if (audioUrl) {
+      const audio = new Audio(audioUrl)
+      audioRef.current = audio
+
+      audio.onplay = () => setIsSpeaking(true)
+      audio.onended = () => {
+        setIsSpeaking(false)
+        audioRef.current = null
+      }
+      audio.onerror = () => {
+        audioRef.current = null
+        speakWithSynthesis(text)
+      }
+
+      audio.play().catch(() => {
+        audioRef.current = null
+        speakWithSynthesis(text)
+      })
+      return
+    }
+
+    speakWithSynthesis(text)
+  }, [stop, speakWithSynthesis])
+
+  const toggle = useCallback((text: string, audioUrl?: string) => {
     if (isSpeaking) {
       stop()
     } else {
-      speak(text)
+      speak(text, audioUrl)
     }
   }, [isSpeaking, speak, stop])
 
