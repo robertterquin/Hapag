@@ -156,10 +156,9 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
       } else if (e.key === 'v' || e.key === 'V') {
         e.preventDefault()
         if (step && recipe) {
-          const heatPart = step.heat && step.heat !== 'none' ? `${formatHeatTagalog(step.heat)}.` : ''
-          const spokenText = `${step.action}. ${
-            step.durationMinutes ? `Humigit-kumulang ${step.durationMinutes} minuto.` : ''
-          } ${heatPart}`.trim()
+          const heatPart = step.heat && step.heat !== 'none' ? `Heat: ${step.heat}.` : ''
+          const durationPart = step.durationMinutes ? `Duration: about ${step.durationMinutes} minutes.` : ''
+          const spokenText = `${step.action}. ${durationPart} ${heatPart}`.trim()
           const audioUrl = `/audio/steps/${recipe.id}-step-${step.order}.mp3`
           toggleVoice(spokenText, audioUrl)
         }
@@ -251,10 +250,9 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
                   className={`cooking-voice-button ${isSpeaking ? 'voice-speaking' : ''}`}
                   type="button"
                   onClick={() => {
-                    const heatPart = step.heat && step.heat !== 'none' ? `${formatHeatTagalog(step.heat)}.` : ''
-                    const spokenText = `${step.action}. ${
-                      step.durationMinutes ? `Humigit-kumulang ${step.durationMinutes} minuto.` : ''
-                    } ${heatPart}`.trim()
+                    const heatPart = step.heat && step.heat !== 'none' ? `Heat: ${step.heat}.` : ''
+                    const durationPart = step.durationMinutes ? `Duration: about ${step.durationMinutes} minutes.` : ''
+                    const spokenText = `${step.action}. ${durationPart} ${heatPart}`.trim()
                     const audioUrl = `/audio/steps/${recipe.id}-step-${step.order}.mp3`
                     toggleVoice(spokenText, audioUrl)
                   }}

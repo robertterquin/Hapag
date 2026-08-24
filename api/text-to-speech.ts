@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { MsEdgeTTS, OUTPUT_FORMAT } from 'msedge-tts'
 
-const VOICE = 'fil-PH-BlessicaNeural'
+const VOICE = 'en-PH-RosaNeural'
 const MAX_TEXT_LENGTH = 2000
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
