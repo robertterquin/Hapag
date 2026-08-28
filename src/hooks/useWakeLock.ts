@@ -1,4 +1,4 @@
-﻿import { useEffect, useState, useCallback, useRef } from "react"
+import { useEffect, useState, useCallback, useRef } from "react"
 
 export interface WakeLockState {
   isSupported: boolean
@@ -9,7 +9,7 @@ export interface WakeLockState {
 
 export function useWakeLock(): WakeLockState {
   const [isLocked, setIsLocked] = useState(false)
-  const [isSupported, setIsSupported] = useState(false)
+  const [isSupported] = useState(() => typeof window !== 'undefined' && 'wakeLock' in navigator)
   const sentinelRef = useRef<WakeLockSentinel | null>(null)
 
   const request = useCallback(async () => {
@@ -43,24 +43,42 @@ export function useWakeLock(): WakeLockState {
   }, [])
 
   useEffect(() => {
-    if (typeof window !== "undefined" && "wakeLock" in navigator) {
-      setIsSupported(true)
-      void request()
+    let isMounted = true
+    if (!isSupported) return undefined
 
-      const handleVisibilityChange = () => {
-        if (document.visibilityState === "visible") {
-          void request()
+    const acquire = async () => {
+      if (typeof window === "undefined" || !("wakeLock" in navigator)) return
+      try {
+        if (sentinelRef.current && !sentinelRef.current.released) return
+        const sentinel = await navigator.wakeLock.request("screen")
+        if (isMounted) {
+          sentinelRef.current = sentinel
+          setIsLocked(true)
         }
-      }
-
-      document.addEventListener("visibilitychange", handleVisibilityChange)
-      return () => {
-        document.removeEventListener("visibilitychange", handleVisibilityChange)
-        void release()
+        sentinel.addEventListener("release", () => {
+          sentinelRef.current = null
+          if (isMounted) setIsLocked(false)
+        })
+      } catch {
+        if (isMounted) setIsLocked(false)
       }
     }
-    return undefined
-  }, [request, release])
+
+    void acquire()
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        void acquire()
+      }
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+    return () => {
+      isMounted = false
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
+      void release()
+    }
+  }, [isSupported, release])
 
   return { isSupported, isLocked, request, release }
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { ResultsSkeleton } from '../components/Skeletons.tsx'
 import { useRecipe } from '../hooks/useRecipe.ts'
@@ -51,15 +51,15 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
   const step = recipe?.steps[stepIndex]
   const defaultDurationSeconds = (step?.durationMinutes ?? 2) * 60
 
-  const handleStepChange = (newIndex: number) => {
+  const handleStepChange = useCallback((newIndex: number) => {
     stopVoice()
     setTimerRunning(false)
     setTimerFinished(false)
     setTimerSeconds(0)
     setStepIndex(newIndex)
-  }
+  }, [stopVoice])
 
-  const handleTimerToggle = () => {
+  const handleTimerToggle = useCallback(() => {
     soundManager.unlock()
     if (timerFinished) {
       setTimerFinished(false)
@@ -74,14 +74,14 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
       return
     }
 
-    setTimerRunning(!timerRunning)
-  }
+    setTimerRunning((prev) => !prev)
+  }, [timerFinished, timerRunning, timerSeconds, defaultDurationSeconds])
 
-  const handleTimerReset = () => {
+  const handleTimerReset = useCallback(() => {
     setTimerRunning(false)
     setTimerFinished(false)
     setTimerSeconds(0)
-  }
+  }, [])
 
   useEffect(() => {
     if (!timerRunning) return undefined
@@ -167,7 +167,7 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [stepIndex, recipe, timerRunning, timerSeconds, timerFinished, soundEnabled, isSpeaking, toggleVoice])
+  }, [stepIndex, recipe, step, handleStepChange, handleTimerToggle, handleTimerReset, onFinish, toggleVoice])
 
   if (!recipe || !step) return <div className="page-shell"><ResultsSkeleton /></div>
 
