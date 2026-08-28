@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" fill="none">
+  <!-- Smooth App Icon Squircle Base -->
+  <rect width="512" height="512" rx="115" fill="#087F8C" />
+
+  <!-- Inner Subtle Ambient Gradient -->
+  <radialGradient id="glow" cx="50%" cy="30%" r="70%">
+    <stop offset="0%" stop-color="#0CA6B7" stop-opacity="0.4" />
+    <stop offset="100%" stop-color="#087F8C" stop-opacity="0" />
+  </radialGradient>
+  <rect width="512" height="512" rx="115" fill="url(#glow)" />
+
+  <g transform="translate(0, 8)">
+    <!-- Steam Curves -->
+    <path d="M204 210C180 180 204 156 204 132C204 108 186 96 174 84" stroke="#FFFDF5" stroke-width="20" stroke-linecap="round" />
+    <path d="M298 210C274 180 298 156 298 132C298 108 280 96 268 84" stroke="#FFFDF5" stroke-width="20" stroke-linecap="round" />
+
+    <!-- Table Mat -->
+    <path d="M116 442H396" stroke="#F4B942" stroke-width="34" stroke-linecap="round" />
+
+    <!-- Bowl Base -->
+    <path d="M145 302H367C361.8 389 323.5 430 256 430C188.5 430 150.2 389 145 302Z" fill="#F4B942" stroke="#18323A" stroke-width="18" stroke-linejoin="round" />
+
+    <!-- Broth Surface -->
+    <path d="M134 291C134 265 188.6 244 256 244C323.4 244 378 265 378 291C378 317 323.4 338 256 338C188.6 338 134 317 134 291Z" fill="#FFFDF5" stroke="#18323A" stroke-width="18" />
+
+    <!-- Garnish Leaf & Calamansi Slice -->
+    <path d="M186 279C198 267 215 261 233 261" stroke="#4F8A5B" stroke-width="18" stroke-linecap="round" />
+    <circle cx="308" cy="285" r="24" fill="#4F8A5B" />
+  </g>
+</svg>
