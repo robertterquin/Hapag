@@ -71,6 +71,7 @@ const aliases: Record<string, string> = {
   'peanut butter': 'peanut butter',
   peanut: 'peanut',
   mani: 'peanut',
+  'cooked rice': 'cooked rice',
   kanin: 'cooked rice',
   'leftover rice': 'cooked rice',
   bigas: 'uncooked rice',
@@ -301,6 +302,66 @@ const aliases: Record<string, string> = {
   'itlog ng pugo': 'quail egg',
   'coconut vinegar': 'coconut vinegar',
   'beef tripe': 'beef tripe',
+  'corned beef': 'corned beef',
+  'corned-beef': 'corned beef',
+  cornedbeef: 'corned beef',
+  'karne norte': 'corned beef',
+  'canned corned beef': 'corned beef',
+  'bay leaf': 'bay leaf',
+  'bay leaves': 'bay leaf',
+  laurel: 'bay leaf',
+  'dahon ng laurel': 'bay leaf',
+  radish: 'radish',
+  labanos: 'radish',
+  radishes: 'radish',
+  'beef shank': 'beef shank',
+  bulalo: 'beef shank',
+  'beef marrow bone': 'beef marrow bone',
+  'buto buto': 'beef marrow bone',
+  'beef short rib': 'beef short rib',
+  'short ribs': 'beef short rib',
+  oxtail: 'oxtail',
+  'buntot ng baka': 'oxtail',
+  'beef stew meat': 'beef stew meat',
+  'liver spread': 'liver spread',
+  reno: 'liver spread',
+  'chicken liver': 'chicken liver',
+  'atay ng manok': 'chicken liver',
+  intestine: 'intestine',
+  isaw: 'intestine',
+  peas: 'peas',
+  'green peas': 'peas',
+  gisantes: 'peas',
+  'black beans': 'black beans',
+  tausi: 'black beans',
+  'red beans': 'red beans',
+  zucchini: 'zucchini',
+  lettuce: 'lettuce',
+  spinach: 'spinach',
+  'string beans': 'green beans',
+  'lumpia wrapper': 'lumpia wrapper',
+  'lumpia wrappers': 'lumpia wrapper',
+  'balat ng lumpia': 'lumpia wrapper',
+  'spring roll wrapper': 'spring roll wrapper',
+  'spring roll wrappers': 'spring roll wrapper',
+  'ground chicken': 'ground chicken',
+  'giniling na manok': 'ground chicken',
+  'salted fish': 'salted fish',
+  daing: 'salted fish',
+  tuna: 'tuna',
+  'canned tuna': 'tuna',
+  'leftover chicken': 'chicken',
+  safflower: 'safflower',
+  kasubha: 'safflower',
+  pickle: 'pickle',
+  pickles: 'pickle',
+  atsara: 'pickle',
+  'salted egg': 'salted egg',
+  'itlog na maalat': 'salted egg',
+  'itlog maalat': 'salted egg',
+  'pie crust': 'pie crust',
+  sinangag: 'cooked rice',
+  'fried rice': 'cooked rice',
 }
 
 const displayNames: Record<string, string> = {
@@ -329,6 +390,18 @@ const displayNames: Record<string, string> = {
   'soy sauce': 'toyo',
   'peanut butter': 'peanut butter',
   peanut: 'mani',
+  'corned beef': 'corned beef',
+  'bay leaf': 'laurel',
+  radish: 'labanos',
+  'beef shank': 'bulalo',
+  'liver spread': 'liver spread',
+  peas: 'gisantes',
+  'chicken liver': 'atay ng manok',
+  'black beans': 'tausi',
+  'lumpia wrapper': 'balat ng lumpia',
+  'salted egg': 'itlog na maalat',
+  'salted fish': 'daing',
+  safflower: 'kasubha',
 }
 
 const unitAliases: Array<[IngredientInputUnit, string[]]> = [
@@ -345,7 +418,7 @@ const unitAliases: Array<[IngredientInputUnit, string[]]> = [
 ]
 
 function normalizeKey(value: string) {
-  return value.trim().toLowerCase().replace(/\s+/g, ' ')
+  return value.trim().toLowerCase().replace(/[-_]/g, ' ').replace(/\s+/g, ' ')
 }
 
 export function normalizeIngredientName(value: string) {
@@ -366,6 +439,11 @@ function splitInput(input: string) {
 }
 
 function parseUnit(value: string): { unit: IngredientInputUnit; name: string } {
+  const norm = normalizeKey(value)
+  if (aliases[norm]) {
+    return { unit: 'piece', name: value.replace(/^(?:of|ng|na)\s+/i, '') }
+  }
+
   for (const [unit, aliasesForUnit] of unitAliases) {
     const alias = aliasesForUnit.find((candidate) => new RegExp(`^${candidate.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:\\s|$)`, 'i').test(value))
     if (alias) {
