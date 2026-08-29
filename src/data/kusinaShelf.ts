@@ -13,7 +13,7 @@ export interface KusinaCategory {
 
 export const kusinaCategories: readonly KusinaCategory[] = [
   { id: 'all', label: 'Lahat', sublabel: 'Pangunahing sangkap' },
-  { id: 'protina', label: 'Protina at Karne', sublabel: 'Manok, Baboy, Isda, Itlog' },
+  { id: 'protina', label: 'Protina at Karne', sublabel: 'Manok, Baboy, Bangus, Itlog' },
   { id: 'gulay', label: 'Sariwang Gulay', sublabel: 'Pechay, Kangkong, Talong' },
   { id: 'pampalasa', label: 'Pampalasa at Sahog', sublabel: 'Bawang, Sibuyas, Toyo, Suka' },
 ] as const
@@ -25,7 +25,8 @@ export const kusinaPantryItems: readonly KusinaItem[] = [
   { name: 'Egg', localName: 'Itlog', canonicalName: 'egg', category: 'protina' },
   { name: 'Sardines', localName: 'Sardinas', canonicalName: 'canned sardines', category: 'protina' },
   { name: 'Tofu', localName: 'Tokwa', canonicalName: 'tofu', category: 'protina' },
-  { name: 'Fish', localName: 'Isda', canonicalName: 'fish', category: 'protina' },
+  { name: 'Bangus', localName: 'Bangus', canonicalName: 'milkfish', category: 'protina' },
+  { name: 'Tilapia', localName: 'Tilapia', canonicalName: 'tilapia', category: 'protina' },
   { name: 'Shrimp', localName: 'Hipon', canonicalName: 'shrimp', category: 'protina' },
   { name: 'Corned Beef', localName: 'Corned Beef', canonicalName: 'corned beef', category: 'protina' },
 
@@ -81,16 +82,42 @@ const pairingRules: Record<string, { name: string; localName: string }[]> = {
     { name: 'Eggplant', localName: 'Talong' },
     { name: 'Sardines', localName: 'Sardinas' },
   ],
-  fish: [
-    { name: 'Tomato', localName: 'Kamatis' },
+  // Bangus (Milkfish) pairings — classic Filipino flavors
+  milkfish: [
     { name: 'Ginger', localName: 'Luya' },
-    { name: 'Kangkong', localName: 'Kangkong' },
+    { name: 'Tomato', localName: 'Kamatis' },
+    { name: 'Garlic', localName: 'Bawang' },
+    { name: 'Vinegar', localName: 'Suka' },
+  ],
+  // Tilapia pairings — popular freshwater fish
+  tilapia: [
+    { name: 'Ginger', localName: 'Luya' },
+    { name: 'Garlic', localName: 'Bawang' },
+    { name: 'Tomato', localName: 'Kamatis' },
     { name: 'Sayote', localName: 'Sayote' },
   ],
   pechay: [
     { name: 'Garlic', localName: 'Bawang' },
     { name: 'Egg', localName: 'Itlog' },
     { name: 'Sardines', localName: 'Sardinas' },
+  ],
+  shrimp: [
+    { name: 'Garlic', localName: 'Bawang' },
+    { name: 'Ginger', localName: 'Luya' },
+    { name: 'Sayote', localName: 'Sayote' },
+    { name: 'Kangkong', localName: 'Kangkong' },
+  ],
+  'corned beef': [
+    { name: 'Potato', localName: 'Patatas' },
+    { name: 'Garlic', localName: 'Bawang' },
+    { name: 'Onion', localName: 'Sibuyas' },
+    { name: 'Tomato', localName: 'Kamatis' },
+  ],
+  tofu: [
+    { name: 'Garlic', localName: 'Bawang' },
+    { name: 'Soy Sauce', localName: 'Toyo' },
+    { name: 'Vinegar', localName: 'Suka' },
+    { name: 'Pechay', localName: 'Pechay' },
   ],
 }
 
