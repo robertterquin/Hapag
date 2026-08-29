@@ -39,6 +39,10 @@ export const ingredientSubstitutionRules: readonly IngredientSubstitutionRule[] 
   { ingredient: 'cooked rice', substitute: 'uncooked rice', group: 'rice-and-grains', note: 'Uncooked rice must be cooked before serving.' },
   { ingredient: 'tomato sauce', substitute: 'tomato', group: 'souring-agents', note: 'Fresh tomatoes can be sautéed to build a flavorful tomato base.' },
   { ingredient: 'tomato', substitute: 'tomato sauce', group: 'souring-agents', note: 'Tomato sauce can replace fresh tomatoes for rich stewing.' },
+  { ingredient: 'fish', substitute: 'tilapia', group: 'seafood', note: 'Tilapia is a practical and widely available fish choice.' },
+  { ingredient: 'fish', substitute: 'milkfish', group: 'seafood', note: 'Bangus (milkfish) is a traditional Filipino fish choice.' },
+  { ingredient: 'milkfish', substitute: 'tilapia', group: 'seafood', note: 'Tilapia is an accessible alternative to milkfish.' },
+  { ingredient: 'tilapia', substitute: 'milkfish', group: 'seafood', note: 'Milkfish is a flavorful alternative to tilapia.' },
 ]
 
 const groupByIngredient = new Map<string, IngredientGroup>()

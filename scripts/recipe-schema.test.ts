@@ -24,3 +24,23 @@ test('non-consecutive cooking steps are rejected', () => {
 
   assert.throws(() => validateRecipe(malformed), RecipeValidationError)
 })
+
+test('cleanDishTitle strips artificial compound phrases and prefixes', async () => {
+  const { cleanDishTitle, adaptRecipePayload } = await import('../src/schemas/recipeAdapter.ts')
+
+  assert.equal(cleanDishTitle('Ginataang Tilapia sa Sibuyas at Paminta'), 'Ginataang Tilapia')
+  assert.equal(cleanDishTitle('Ginataang Tilapia na May Inihaw-Style na Bawang'), 'Ginataang Tilapia')
+  assert.equal(cleanDishTitle('Chicken Adobo with Garlic and Onion'), 'Chicken Adobo')
+  assert.equal(cleanDishTitle('Hapag Pork Sinigang sa Bawang'), 'Pork Sinigang')
+  assert.equal(cleanDishTitle('Pritong Isda sa Kamatis at Sibuyas'), 'Pritong Isda')
+  assert.equal(cleanDishTitle('Home-Style Sinigang na Baboy'), 'Sinigang na Baboy')
+
+  const adapted = adaptRecipePayload({
+    ...recipeFixtures[0],
+    title: 'Ginataang Tilapia sa Sibuyas at Paminta',
+    localTitle: 'Ginataang Tilapia na May Inihaw-Style na Bawang',
+  })
+  assert.equal(adapted.title, 'Ginataang Tilapia')
+  assert.equal(adapted.localTitle, 'Ginataang Tilapia')
+})
+

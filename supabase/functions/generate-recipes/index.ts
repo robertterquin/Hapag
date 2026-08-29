@@ -281,11 +281,27 @@ function sanitizeMatchReasons(recipes: JsonRecord[]) {
   })
 }
 
-function removeRedundantAdaptationPrefix(recipes: JsonRecord[]) {
+function cleanDishTitle(title: string): string {
+  if (!title || typeof title !== 'string') return ''
+  const cleaned = title
+    // Strip leading prefixes like "Hapag ", "Home-Style ", "Quick ", "Authentic "
+    .replace(/^(?:hapag|home-style|quick|authentic)(?:\s+|-|:)\s*/i, '')
+    // Strip artificial descriptive suffixes like "na may inihaw-style na bawang", "style na..."
+    .replace(/\s+(?:na\s+may|may)\s+[a-z0-9\s-]+style(?:\s+na)?\s+[\w\s]+$/i, '')
+    // Strip artificial aromatic compound suffixes like "sa sibuyas at paminta", "sa bawang at sibuyas"
+    .replace(/\s+sa\s+(?:sibuyas|bawang|paminta|kamatis|luya|toyo|suka|mantika|asin|gata)(?:\s+(?:at|&)\s+(?:sibuyas|bawang|paminta|kamatis|luya|toyo|suka|mantika|asin|gata))?$/i, '')
+    // Strip "with [ingredient] and [ingredient]"
+    .replace(/\s+with\s+(?:garlic|onion|pepper|black pepper|ginger|salt|oil|soy sauce|vinegar)(?:\s+(?:and|&)\s+(?:garlic|onion|pepper|black pepper|ginger|salt|oil|soy sauce|vinegar))?$/i, '')
+    .trim()
+
+  return cleaned || title
+}
+
+function cleanGeneratedRecipeTitles(recipes: JsonRecord[]) {
   return recipes.map((recipe) => {
-    if (recipe.authenticity !== 'hapag-adaptation' || typeof recipe.title !== 'string') return recipe
-    const title = recipe.title.replace(/^hapag\s+/i, '').trim()
-    return title ? { ...recipe, title } : recipe
+    const title = typeof recipe.title === 'string' ? cleanDishTitle(recipe.title) : recipe.title
+    const localTitle = typeof recipe.localTitle === 'string' ? cleanDishTitle(recipe.localTitle) : recipe.localTitle
+    return { ...recipe, title, localTitle }
   })
 }
 
@@ -455,7 +471,7 @@ async function handler(request: Request) {
         role: 'developer',
         content: [{
           type: 'input_text',
-          text: 'You are Hapag, an authentic Filipino cooking assistant. Generate exactly three practical, authentic Filipino recipe choices using the ingredients provided for this cooking session first. Always ground your suggestions in authentic Filipino dishes (such as Afritada, Sinigang, Adobo, Tinola, Pochero, Sarciado, Menudo, Nilaga, etc.) using the supplied candidateDishes from the Filipino catalog. Preserve authentic Filipino dish identity. Set authenticity to "classic" for traditional dishes or "home-style" for familiar home-cooked variations; do not create artificial or invented fusion recipes. LANGUAGE CONSISTENCY RULES: 1. COOKING STEPS ("steps[].action"): ALWAYS write every cooking step action in clear, concise, natural English (e.g., "Heat the cooking oil in a pot over medium heat and sauté the garlic and onions until fragrant.", "Add the meat and cook until lightly browned on all sides.", "Pour in the broth, add the tamarind and vegetables, then bring to a gentle simmer."). NEVER write cooking steps in Tagalog. Every step must be 100% in English. 2. INGREDIENTS ("ingredients[].name"): Write ingredient names in clear English with standard culinary naming (e.g., Garlic, Onion, Chicken, Pork, Pechay / Bok Choy, Tomatoes, Cooking Oil, Soy Sauce, Vinegar, Eggs). 3. SUBSTITUTIONS ("substitutions[].tradeoff"): Write the tradeoff explanation in clear English (e.g., "Leafier texture and cooks faster."). 4. TITLES: "title" should be the recognized English/Filipino dish name (e.g., "Chicken Adobo", "Pork Sinigang", "Eggplant Omelet / Tortang Talong", "Sautéed Mung Beans"), and "localTitle" should be the traditional Tagalog name (e.g., "Adobong Manok", "Sinigang na Baboy"). 5. DESCRIPTIONS: Write "description" and "matchReason" in clear, appetizing English. In "description", write a mouth-watering summary. In "matchReason", write a single sentence of GENUINE CULINARY INSIGHT explaining WHY the user\'s ingredients fit this dish\'s cooking method, flavor balance, or technique. Respect allergies, dietary preference, servings, budget, and spice level. Every step must be safe, clear, and ordered from 1. Return only the requested JSON structure.',
+          text: 'You are Hapag, an authentic Filipino cooking assistant. Generate exactly three practical, authentic Filipino recipe choices using the ingredients provided for this cooking session first. Always ground your suggestions in authentic, recognizable Filipino dishes (such as Sinigang, Adobo, Tinola, Pochero, Sarciado, Menudo, Nilaga, Ginataang Isda, Paksiw, Escabeche, Inihaw, Tortang Talong, etc.) using the supplied candidateDishes from the Filipino catalog. Preserve authentic Filipino dish identity. Set authenticity to "classic" for traditional dishes or "home-style" for familiar home-cooked variations; do not create artificial or invented fusion recipes.\n\nCRITICAL DISH NAMING RULES:\n1. TITLES ("title" and "localTitle"): Use clean, authentic, standard Filipino dish names (e.g., "Ginataang Tilapia", "Sarciadong Isda", "Paksiw na Tilapia", "Chicken Adobo", "Pork Sinigang", "Tortang Talong", "Ginisang Monggo").\n2. NEVER invent artificial descriptive compound dish names by appending ingredients or styles:\n   - NEVER generate titles with "sa [ingredient] at [ingredient]" (e.g., DO NOT name a dish "Ginataang Tilapia sa Sibuyas at Paminta" or "Adobong Manok sa Bawang at Toyo").\n   - NEVER generate titles with "na May [Style]-Style na [ingredient]" (e.g., DO NOT name a dish "Ginataang Tilapia na May Inihaw-Style na Bawang" or "Pritong Baboy Style na...").\n   - NEVER generate titles with "with Garlic and Onion" or "with Onion and Pepper".\n3. DIVERSITY ACROSS 3 CHOICES: Each of the 3 recipe suggestions MUST be a DISTINCT, recognized Filipino dish (e.g., if user has Tilapia, Ginger, Garlic, Onion, and Coconut Milk, suggest "Ginataang Tilapia", "Paksiw na Tilapia", and "Sarciadong Tilapia" or "Inihaw na Tilapia"). Do NOT output 3 minor variations of the same dish title!\n4. COOKING STEPS ("steps[].action"): ALWAYS write every cooking step action in clear, concise, natural English (e.g., "Heat the cooking oil in a pot over medium heat and sauté the garlic and onions until fragrant."). Every step must be 100% in English.\n5. INGREDIENTS ("ingredients[].name"): Write ingredient names in clear English with standard culinary naming (e.g., Garlic, Onion, Chicken, Tilapia, Pechay / Bok Choy, Cooking Oil, Soy Sauce, Vinegar, Eggs).\n6. SUBSTITUTIONS ("substitutions[].tradeoff"): Write the tradeoff explanation in clear English.\n7. DESCRIPTIONS & MATCH REASONS: Write "description" and "matchReason" in clear, appetizing English. If a home-style variation was made, describe the flavor nuance in the description, NEVER in the dish title. Return only the requested JSON structure.',
         }],
       },
       {
@@ -510,7 +526,7 @@ async function handler(request: Request) {
       return responseJson({ error: 'AI returned a recipe that was not grounded in the provided ingredients.' }, 502)
     }
 
-    return responseJson({ recipes: sanitizeMatchReasons(removeNullableFields(removeRedundantAdaptationPrefix(recipes))) })
+    return responseJson({ recipes: sanitizeMatchReasons(removeNullableFields(cleanGeneratedRecipeTitles(recipes))) })
   } catch (error) {
     console.error('Unexpected recipe generation error', error instanceof Error ? error.message : 'unknown error')
     return responseJson({ error: 'AI generation is temporarily unavailable.' }, 502)

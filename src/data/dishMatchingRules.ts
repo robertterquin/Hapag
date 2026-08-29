@@ -61,7 +61,7 @@ export const dishMatchingRules: Record<string, DishMatchingRule> = {
     preferredIngredients: ['potato', 'carrot'],
   },
   'sarciadong-isda': {
-    requiredAny: [['fish', 'chicken'], ['tomato', 'tomato sauce']],
+    requiredAny: [['fish', 'tilapia', 'milkfish', 'chicken'], ['tomato', 'tomato sauce']],
     preferredIngredients: ['egg', 'onion'],
   },
   'sinigang-na-baka': {
@@ -85,7 +85,7 @@ export const dishMatchingRules: Record<string, DishMatchingRule> = {
     preferredIngredients: ['water spinach', 'chili leaves'],
   },
   'tinolang-isda': {
-    requiredAny: [['fish', 'milkfish'], ['ginger']],
+    requiredAny: [['fish', 'milkfish', 'tilapia'], ['ginger']],
     preferredIngredients: ['water spinach', 'onion'],
   },
   'nilagang-baboy': {
