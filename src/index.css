@@ -26,11 +26,11 @@
   --color-tomato: var(--tomato-9);
 
   /* Warm Soy Glaze, Peppercorn & Earth Tones */
-  --color-ink: var(--brown-12);
-  --color-muted: var(--sand-11);
+  --color-ink: #20130E;
+  --color-muted: #523E36;
   --color-lavender: var(--orange-2);
-  --color-border: var(--sand-6);
-  --color-border-strong: var(--sand-7);
+  --color-border: var(--sand-7);
+  --color-border-strong: var(--sand-8);
   --color-focus: var(--orange-9);
 
   /* Status Colors */

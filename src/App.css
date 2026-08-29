@@ -402,17 +402,17 @@ p { line-height: 1.6; }
 .recipe-metrics .metric-match { color: var(--green-11); background: var(--green-2); border-color: var(--green-6); font-weight: 800; }
 
 .recipe-metrics-large { display: flex; flex-wrap: wrap; gap: 8px; margin: var(--space-4) 0; }
-.recipe-metrics-large span { font-size: 13.5px; font-weight: 700; color: var(--color-ink); background: var(--sand-2); border: 1px solid var(--slate-a3); padding: 6px 12px; border-radius: 8px; }
-.recipe-metrics-large span:nth-child(3) { color: var(--teal-11); background: var(--teal-2); border-color: var(--teal-6); font-weight: 800; }
+.recipe-metrics-large span { font-size: 13.5px; font-weight: 700; color: var(--color-ink); background: var(--sand-2); border: 1px solid var(--color-border-strong); padding: 6px 12px; border-radius: 8px; }
+.recipe-metrics-large span:nth-child(3) { color: var(--color-ube-dark); background: var(--color-lavender); border-color: var(--color-ube); font-weight: 800; }
 .recipe-metrics-large strong { color: inherit; }
 
-.ingredient-summary { display: grid; gap: 10px; padding: 12px 0 6px 0; border-top: 1px solid var(--slate-a3); border-bottom: 1px solid var(--slate-a3); }
+.ingredient-summary { display: grid; gap: 10px; padding: 12px 0 6px 0; border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); }
 .ingredient-summary div { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; font-size: 11px; }
-.ingredient-summary strong { width: 100%; color: var(--color-muted); font-size: 10.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 2px; }
-.ingredient-summary span { padding: 3px 8px; color: var(--teal-11); background: var(--teal-2); border: 1px solid var(--teal-6); border-radius: 5px; font-size: 11.5px; font-weight: 700; }
-.ingredient-summary div:last-child span { color: var(--tomato-11); background: var(--tomato-2); border: 1px solid var(--tomato-6); }
-.ingredient-summary .chip-meron { color: var(--teal-11); background: var(--teal-2); border: 1px solid var(--teal-6); }
-.ingredient-summary .chip-kulang { color: var(--tomato-11); background: var(--tomato-2); border: 1px solid var(--tomato-6); }
+.ingredient-summary strong { width: 100%; color: var(--color-muted); font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 2px; }
+.ingredient-summary span { padding: 3px 8px; color: var(--color-ink); background: var(--color-success-bg); border: 1.5px solid var(--color-success-border); border-radius: 6px; font-size: 11.5px; font-weight: 700; }
+.ingredient-summary div:last-child span { color: var(--color-ink); background: var(--color-error-bg); border: 1.5px solid var(--color-error-border); }
+.ingredient-summary .chip-meron { color: #14532D; background: var(--green-2); border: 1.5px solid var(--green-7); font-weight: 800; }
+.ingredient-summary .chip-kulang { color: #7F1D1D; background: var(--tomato-2); border: 1.5px solid var(--tomato-7); font-weight: 800; }
 
 .card-action { margin-top: 6px; color: var(--color-ube); font-size: 13px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; transition: gap 150ms ease, color 150ms ease; }
 .recipe-card:hover .card-action { color: var(--color-ube-dark); gap: 8px; }
@@ -420,9 +420,9 @@ p { line-height: 1.6; }
 .recipe-feedback { display: grid; gap: var(--space-2); margin-top: var(--space-4); padding-top: var(--space-3); border-top: 1px solid var(--color-border); }
 .recipe-feedback-label { color: var(--color-muted); font-size: 12px; font-weight: 700; }
 .recipe-feedback-options { display: flex; flex-wrap: wrap; gap: 6px; }
-.feedback-option { min-height: 32px; padding: 5px 9px; color: var(--color-muted); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 999px; font-size: 11px; font-weight: 700; }
+.feedback-option { min-height: 32px; padding: 5px 10px; color: var(--color-ink); background: var(--color-surface); border: 1.5px solid var(--color-border-strong); border-radius: 999px; font-size: 11.5px; font-weight: 700; }
 .feedback-option:hover, .feedback-option-active { color: var(--color-ube-dark); background: var(--color-lavender); border-color: var(--color-ube); }
-.recipe-feedback-confirmation { color: var(--color-calamansi-dark, var(--color-ube-dark)); font-size: 11px; font-weight: 700; }
+.recipe-feedback-confirmation { color: var(--color-ube-dark); font-size: 12px; font-weight: 800; }
 .results-footer-actions { display: flex; justify-content: center; margin-top: var(--space-6); }
 .trust-note-block { max-width: none; justify-content: center; margin: var(--space-5) 0 0; padding: var(--space-3) var(--space-4); background: var(--color-lavender); border-radius: 10px; text-align: center; }
 
@@ -487,18 +487,18 @@ p { line-height: 1.6; }
 .safety-note p { margin: var(--space-2) 0 0; color: var(--color-muted); }
 
 .cooking-page { width: min(760px, 100%); margin: 0 auto; padding: var(--space-4) 0; }
-.cooking-topbar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); margin-bottom: 24px; padding: 12px 18px; background: var(--color-surface); border: 1.5px solid var(--slate-a4); border-radius: 18px; box-shadow: 0 4px 14px var(--color-shadow-subtle); }
-.cooking-back-button { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; font-size: 13px; font-weight: 700; color: var(--teal-11); background: var(--teal-2); border: 1px solid var(--teal-6); border-radius: var(--radius-pill); cursor: pointer; transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease; white-space: nowrap; }
-.cooking-back-button:hover { background: var(--teal-3); border-color: var(--teal-7); transform: translateY(-1px); }
+.cooking-topbar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); margin-bottom: 24px; padding: 12px 18px; background: var(--color-surface); border: 1.5px solid var(--color-border); border-radius: 18px; box-shadow: 0 4px 14px var(--color-shadow-subtle); }
+.cooking-back-button { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; font-size: 13px; font-weight: 700; color: var(--color-ink); background: var(--color-surface); border: 1.5px solid var(--color-border-strong); border-radius: var(--radius-pill); cursor: pointer; transition: background-color 150ms ease, border-color 150ms ease, transform 150ms ease, color 150ms ease; white-space: nowrap; }
+.cooking-back-button:hover { background: var(--color-lavender); border-color: var(--color-ube); color: var(--color-ube-dark); transform: translateY(-1px); }
 .cooking-dish-header { display: flex; flex-direction: column; align-items: center; text-align: center; min-width: 0; flex: 1; }
-.cooking-mode-kicker { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--teal-11); line-height: 1.2; }
+.cooking-mode-kicker { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-ube); line-height: 1.2; }
 .cooking-dish-title { margin: 2px 0 0 0; font-family: var(--font-display); font-size: 17px; font-weight: 900; color: var(--color-ink); letter-spacing: -0.02em; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 .cooking-topbar-actions { display: flex; align-items: center; gap: 8px; }
-.cooking-sound-toggle { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; font-size: 12px; font-weight: 700; color: var(--teal-11); background: var(--teal-2); border: 1px solid var(--teal-6); border-radius: var(--radius-pill); cursor: pointer; transition: background-color 150ms ease, border-color 150ms ease; white-space: nowrap; }
-.cooking-sound-toggle:hover { background: var(--teal-3); border-color: var(--teal-7); }
-.cooking-sound-toggle.sound-muted { color: var(--color-muted); background: var(--sand-2); border-color: var(--slate-a4); }
-.cooking-step-badge { display: inline-flex; align-items: center; padding: 6px 12px; font-size: 12px; font-weight: 800; color: var(--color-muted); background: var(--sand-2); border: 1px solid var(--slate-a3); border-radius: var(--radius-pill); white-space: nowrap; }
-.cooking-progress-header { display: flex; justify-content: space-between; margin-bottom: var(--space-2); color: var(--color-muted); font-size: 13px; font-weight: 800; }
+.cooking-sound-toggle { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; font-size: 12px; font-weight: 700; color: var(--color-ink); background: var(--color-surface); border: 1.5px solid var(--color-border-strong); border-radius: var(--radius-pill); cursor: pointer; transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease; white-space: nowrap; }
+.cooking-sound-toggle:hover { background: var(--color-lavender); border-color: var(--color-ube); color: var(--color-ube-dark); }
+.cooking-sound-toggle.sound-muted { color: var(--color-muted); background: var(--sand-2); border-color: var(--color-border); }
+.cooking-step-badge { display: inline-flex; align-items: center; padding: 6px 12px; font-size: 12px; font-weight: 800; color: var(--color-ink); background: var(--color-surface); border: 1.5px solid var(--color-border-strong); border-radius: var(--radius-pill); white-space: nowrap; }
+.cooking-progress-header { display: flex; justify-content: space-between; margin-bottom: var(--space-2); color: var(--color-ink); font-size: 13px; font-weight: 800; }
 .cooking-progress-header strong { color: var(--color-ube); }
 .progress-track { height: 10px; overflow: hidden; background: var(--color-border); border-radius: var(--radius-pill); }
 .progress-track span { display: block; height: 100%; background: var(--color-ube); border-radius: inherit; transition: width 220ms ease; }
@@ -506,9 +506,9 @@ p { line-height: 1.6; }
 .cooking-step-content { display: grid; justify-items: center; width: 100%; }
 .cooking-step-header-row { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 4px; flex-wrap: wrap; }
 .step-kicker { color: var(--color-calamansi); font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-.cooking-voice-button { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; font-size: 11.5px; font-weight: 700; color: var(--teal-11); background: var(--teal-2); border: 1px solid var(--teal-6); border-radius: var(--radius-pill); cursor: pointer; transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease; }
-.cooking-voice-button:hover { background: var(--teal-3); border-color: var(--teal-7); }
-.cooking-voice-button.voice-speaking { color: var(--color-surface); background: var(--teal-9); border-color: var(--teal-10); }
+.cooking-voice-button { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; font-size: 12px; font-weight: 700; color: var(--color-ink); background: var(--color-surface); border: 1.5px solid var(--color-border-strong); border-radius: var(--radius-pill); cursor: pointer; transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease; }
+.cooking-voice-button:hover { background: var(--color-lavender); border-color: var(--color-ube); color: var(--color-ube-dark); }
+.cooking-voice-button.voice-speaking { color: var(--color-surface); background: var(--color-ube); border-color: var(--color-ube-dark); }
 .voice-waveform { display: inline-flex; align-items: center; gap: 2px; height: 12px; margin-left: 2px; }
 .wave-bar { display: inline-block; width: 2px; height: 10px; background: currentColor; border-radius: 1px; animation: wave-anim 0.8s ease-in-out infinite alternate; }
 .wave-bar:nth-child(2) { animation-delay: 0.25s; height: 6px; }
@@ -517,15 +517,15 @@ p { line-height: 1.6; }
   0% { transform: scaleY(0.4); }
   100% { transform: scaleY(1.2); }
 }
-.cooking-step-card h1 { max-width: 620px; margin: var(--space-4) 0; font-size: clamp(28px, 5vw, 46px); }
+.cooking-step-card h1 { max-width: 620px; margin: var(--space-4) 0; font-size: clamp(28px, 5vw, 46px); color: var(--color-ink); }
 .step-details { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-2); }
-.step-details span { padding: 8px 12px; color: var(--color-muted); background: var(--color-cream); border-radius: var(--radius-pill); font-size: 12px; font-weight: 800; }
+.step-details span { padding: 8px 12px; color: var(--color-ink); background: var(--sand-2); border: 1px solid var(--color-border); border-radius: var(--radius-pill); font-size: 12px; font-weight: 800; }
 
 .timer-controls-cluster { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: var(--space-6); flex-wrap: wrap; }
-.timer-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 var(--space-5); color: var(--teal-11); background: var(--teal-2); border: 1.5px solid var(--teal-6); border-radius: var(--radius-control); font-weight: 800; font-size: 14.5px; cursor: pointer; transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease; }
-.timer-button:hover { background: var(--teal-3); border-color: var(--teal-7); }
-.timer-button-active { color: var(--color-surface); background: var(--teal-9); border-color: var(--teal-10); box-shadow: 0 4px 14px var(--teal-a5); }
-.timer-button-paused { color: var(--amber-11); background: var(--amber-2); border-color: var(--amber-6); }
+.timer-button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 var(--space-5); color: var(--color-ink); background: var(--sand-2); border: 1.5px solid var(--color-border-strong); border-radius: var(--radius-control); font-weight: 800; font-size: 14.5px; cursor: pointer; transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease, color 150ms ease; }
+.timer-button:hover { background: var(--color-lavender); border-color: var(--color-ube); color: var(--color-ube-dark); }
+.timer-button-active { color: var(--color-surface); background: var(--color-ube); border-color: var(--color-ube-dark); box-shadow: 0 4px 14px var(--orange-a5); }
+.timer-button-paused { color: var(--amber-11); background: var(--amber-2); border-color: var(--amber-7); }
 .timer-button-finished { color: var(--color-surface); background: var(--green-9); border-color: var(--green-10); animation: timer-pulse 1.6s infinite; }
 @keyframes timer-pulse {
   0% { box-shadow: 0 0 0 0 rgba(46, 160, 67, 0.45); }
@@ -533,12 +533,12 @@ p { line-height: 1.6; }
   100% { box-shadow: 0 0 0 0 rgba(46, 160, 67, 0); }
 }
 .timer-icon { font-weight: 900; font-size: 14px; }
-.timer-reset-button { display: inline-flex; align-items: center; gap: 5px; min-height: 48px; padding: 0 14px; font-size: 13px; font-weight: 700; color: var(--color-muted); background: var(--sand-2); border: 1px solid var(--slate-a4); border-radius: var(--radius-control); cursor: pointer; transition: color 150ms ease, border-color 150ms ease; }
-.timer-reset-button:hover { color: var(--color-ink); border-color: var(--slate-a6); }
+.timer-reset-button { display: inline-flex; align-items: center; gap: 6px; min-height: 48px; padding: 0 16px; font-size: 13.5px; font-weight: 800; color: var(--color-ink); background: var(--color-surface); border: 1.5px solid var(--color-border-strong); border-radius: var(--radius-control); cursor: pointer; box-shadow: 0 2px 6px var(--color-shadow-subtle); transition: color 150ms ease, border-color 150ms ease, background-color 150ms ease, transform 150ms ease; }
+.timer-reset-button:hover { color: var(--color-ube-dark); background: var(--color-lavender); border-color: var(--color-ube); transform: translateY(-1px); }
 .timer-alert-cue { display: inline-flex; align-items: center; margin-top: 14px; padding: 8px 16px; font-size: 13px; font-weight: 700; color: var(--green-11); background: var(--green-2); border: 1px solid var(--green-6); border-radius: var(--radius-pill); }
 
 .cooking-controls { display: flex; justify-content: space-between; gap: var(--space-3); margin-top: var(--space-5); }
-.cooking-note { margin-top: var(--space-5); color: var(--color-muted); text-align: center; font-size: 12px; }
+.cooking-note { margin-top: var(--space-5); color: var(--color-muted); text-align: center; font-size: 13px; font-weight: 600; }
 
 .saved-section { box-shadow: none; }
 .saved-section + .saved-section { margin-top: var(--space-5); }
@@ -808,11 +808,11 @@ p { line-height: 1.6; }
 .shelf-tab {
   min-height: 32px;
   padding: 0 14px;
-  background: var(--sand-2);
-  color: var(--color-muted);
-  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  border: 1.5px solid var(--color-border-strong);
   border-radius: var(--radius-pill);
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 700;
   white-space: nowrap;
   cursor: pointer;
@@ -820,14 +820,15 @@ p { line-height: 1.6; }
 }
 
 .shelf-tab:hover {
-  color: var(--color-ink);
-  border-color: var(--color-border-strong);
+  color: var(--color-ube-dark);
+  background: var(--color-lavender);
+  border-color: var(--color-ube);
 }
 
 .shelf-tab.tab-active {
   background: var(--color-ube);
   color: var(--color-surface);
-  border-color: var(--color-ube);
+  border-color: var(--color-ube-dark);
   box-shadow: 0 2px 6px var(--color-shadow-subtle);
 }
 
@@ -852,28 +853,28 @@ p { line-height: 1.6; }
 }
 
 .shelf-item-chip.item-inactive {
-  background: var(--sand-2);
+  background: var(--color-surface);
   color: var(--color-ink);
-  border: 1px solid var(--color-border);
+  border: 1.5px solid var(--color-border-strong);
 }
 
 .shelf-item-chip.item-inactive:hover {
   background: var(--color-lavender);
   border-color: var(--color-ube);
-  color: var(--color-ube);
+  color: var(--color-ube-dark);
   transform: translateY(-1px);
 }
 
 .shelf-item-chip.item-active {
-  background: var(--color-success-bg);
-  color: var(--color-calamansi);
-  border: 1.5px solid var(--color-success-border);
+  background: var(--green-2);
+  color: #14532D;
+  border: 1.5px solid var(--green-7);
   box-shadow: 0 2px 8px var(--color-shadow-subtle);
 }
 
 .shelf-item-chip.item-active:hover {
   background: var(--tomato-2);
-  color: var(--tomato-9);
+  color: #7F1D1D;
   border-color: var(--tomato-7);
 }
 
