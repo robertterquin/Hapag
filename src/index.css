@@ -1,11 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-@import "@radix-ui/colors/teal.css";
-@import "@radix-ui/colors/teal-alpha.css";
-@import "@radix-ui/colors/slate.css";
-@import "@radix-ui/colors/slate-alpha.css";
-@import "@radix-ui/colors/sand.css";
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import "@radix-ui/colors/orange.css";
+@import "@radix-ui/colors/orange-alpha.css";
+@import "@radix-ui/colors/brown.css";
+@import "@radix-ui/colors/brown-alpha.css";
 @import "@radix-ui/colors/amber.css";
 @import "@radix-ui/colors/amber-alpha.css";
+@import "@radix-ui/colors/sand.css";
+@import "@radix-ui/colors/sand-alpha.css";
 @import "@radix-ui/colors/green.css";
 @import "@radix-ui/colors/green-alpha.css";
 @import "@radix-ui/colors/tomato.css";
@@ -13,34 +14,46 @@
 @import "@radix-ui/colors/white-alpha.css";
 
 :root {
+  /* Warm Pandesal Cream & Pure Porcelain Surfaces */
   --color-cream: var(--sand-1);
   --color-surface: #ffffff;
-  --color-ube: var(--teal-9);
-  --color-ube-dark: var(--teal-11);
+
+  /* Primary Culinary Accents: Palayok Terracotta & Golden Mango */
+  --color-ube: var(--orange-9);
+  --color-ube-dark: var(--orange-10);
   --color-mango: var(--amber-9);
   --color-calamansi: var(--green-9);
   --color-tomato: var(--tomato-9);
-  --color-ink: var(--slate-12);
-  --color-muted: var(--slate-11);
-  --color-lavender: var(--teal-2);
-  --color-border: var(--teal-6);
-  --color-border-strong: var(--teal-7);
-  --color-focus: var(--teal-9);
+
+  /* Warm Soy Glaze, Peppercorn & Earth Tones */
+  --color-ink: var(--brown-12);
+  --color-muted: var(--sand-11);
+  --color-lavender: var(--orange-2);
+  --color-border: var(--sand-6);
+  --color-border-strong: var(--sand-7);
+  --color-focus: var(--orange-9);
+
+  /* Status Colors */
   --color-success-bg: var(--green-2);
   --color-warning-bg: var(--amber-2);
   --color-error-bg: var(--tomato-2);
-  --color-shadow-subtle: var(--slate-a3);
-  --color-shadow-soft: var(--slate-a4);
-  --color-shadow: var(--slate-a5);
-  --color-shadow-hover: var(--slate-a6);
-  --color-card-focus: var(--teal-a5);
-  --color-focus-ring: var(--teal-a4);
+
+  /* Warm Shadows */
+  --color-shadow-subtle: var(--brown-a3);
+  --color-shadow-soft: var(--brown-a4);
+  --color-shadow: var(--brown-a5);
+  --color-shadow-hover: var(--brown-a6);
+  --color-card-focus: var(--orange-a5);
+  --color-focus-ring: var(--orange-a4);
   --color-surface-translucent: var(--white-a10);
   --color-success-border: var(--green-a7);
   --color-warning-border: var(--amber-a7);
   --color-error-border: var(--tomato-a7);
-  --font-display: "Plus Jakarta Sans", system-ui, sans-serif;
+
+  /* Warm Editorial + High-Legibility Typography */
+  --font-display: "Fraunces", Georgia, serif;
   --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
+
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -53,6 +66,7 @@
   --radius-card: 20px;
   --radius-pill: 999px;
   --shadow-card: 0 10px 26px var(--color-shadow-soft);
+
   font-family: var(--font-body);
   font-weight: 500;
   color: var(--color-ink);
@@ -65,11 +79,26 @@
 
 * { box-sizing: border-box; }
 
-body { margin: 0; min-width: 320px; min-height: 100vh; overflow-x: hidden; font-weight: 500; letter-spacing: -0.008em; }
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-weight: 500;
+  letter-spacing: -0.008em;
+  color: var(--color-ink);
+  background: var(--color-cream);
+}
 
 button, input, select, textarea { font: inherit; font-weight: 500; }
 
-h1, h2, h3 { font-family: var(--font-display); font-weight: 800; }
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+}
+
 strong, label { font-weight: 700; }
 
 button { cursor: pointer; }

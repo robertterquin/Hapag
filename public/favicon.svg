@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
-  <!-- Full-bleed Teal/Green Brand Squircle -->
-  <rect width="512" height="512" rx="115" fill="#087F8C" />
+  <!-- Full-bleed Palayok Terracotta Brand Squircle -->
+  <rect width="512" height="512" rx="115" fill="#C84B31" />
   <g transform="translate(0, 10)">
     <!-- Steam Curves -->
     <path d="M204 210C180 180 204 156 204 132C204 108 186 96 174 84" stroke="#FFFDF5" stroke-width="22" stroke-linecap="round" />
@@ -10,10 +10,10 @@
     <path d="M116 442H396" stroke="#F4B942" stroke-width="36" stroke-linecap="round" />
 
     <!-- Bowl Base -->
-    <path d="M145 302H367C361.8 389 323.5 430 256 430C188.5 430 150.2 389 145 302Z" fill="#F4B942" stroke="#18323A" stroke-width="20" stroke-linejoin="round" />
+    <path d="M145 302H367C361.8 389 323.5 430 256 430C188.5 430 150.2 389 145 302Z" fill="#F4B942" stroke="#2B1B17" stroke-width="20" stroke-linejoin="round" />
 
     <!-- Broth Surface -->
-    <path d="M134 291C134 265 188.6 244 256 244C323.4 244 378 265 378 291C378 317 323.4 338 256 338C188.6 338 134 317 134 291Z" fill="#FFFDF5" stroke="#18323A" stroke-width="20" />
+    <path d="M134 291C134 265 188.6 244 256 244C323.4 244 378 265 378 291C378 317 323.4 338 256 338C188.6 338 134 317 134 291Z" fill="#FFFDF5" stroke="#2B1B17" stroke-width="20" />
 
     <!-- Garnish Leaf & Calamansi -->
     <path d="M186 279C198 267 215 261 233 261" stroke="#4F8A5B" stroke-width="20" stroke-linecap="round" />
