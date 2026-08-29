@@ -340,7 +340,7 @@ p { line-height: 1.6; }
 .review-panel, .constraints-panel, .detail-section, .saved-section { margin-top: var(--space-6); padding: var(--space-6); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); }
 .review-panel h2, .constraints-panel h2, .detail-section h2 { margin-bottom: 0; }
 .ingredient-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: var(--space-4) 0 0; padding: 0; list-style: none; }
-.ingredient-chip { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 36px; padding: 0 8px 0 14px; color: var(--color-ink); background: var(--color-success-bg); border: 1px solid var(--color-success-border); border-radius: var(--radius-pill); font-size: 14px; font-weight: 700; }
+.ingredient-chip { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 36px; padding: 0 8px 0 14px; color: var(--color-ink); background: var(--color-success-bg); border: 1.5px solid var(--color-success-border); border-radius: var(--radius-pill); font-size: 13.5px; font-weight: 700; }
 .ingredient-chip-uncertain { background: var(--color-warning-bg); border-color: var(--color-mango); }
 .ingredient-chip button { display: grid; width: 26px; height: 26px; place-items: center; color: var(--color-muted); background: transparent; border: 0; border-radius: 50%; font-size: 18px; }
 .ingredient-chip button:hover { color: var(--color-tomato); background: var(--tomato-a3); }
@@ -355,8 +355,8 @@ p { line-height: 1.6; }
 .serving-stepper strong { min-width: 20px; text-align: center; }
 .allergy-callout { display: flex; gap: var(--space-3); margin-top: var(--space-5); padding: var(--space-3) var(--space-4); color: var(--color-ink); background: var(--color-warning-bg); border-radius: 12px; font-size: 12px; line-height: 1.5; }
 .allergy-callout strong { color: var(--color-tomato); white-space: nowrap; }
-.cooking-loading { display: flex; align-items: center; gap: var(--space-4); margin: var(--space-5) 0; padding: var(--space-4) var(--space-5); color: var(--color-ink); background: var(--teal-2); border: 1px solid var(--teal-6); border-radius: var(--radius-card); }
-.cooking-loading-icon { display: grid; width: 42px; height: 42px; flex: 0 0 auto; place-items: center; color: var(--teal-11); background: var(--color-surface); border: 1px solid var(--teal-6); border-radius: 12px; }
+.cooking-loading { display: flex; align-items: center; gap: var(--space-4); margin: var(--space-5) 0; padding: var(--space-4) var(--space-5); color: var(--color-ink); background: var(--color-lavender); border: 1.5px solid var(--color-border); border-radius: var(--radius-card); }
+.cooking-loading-icon { display: grid; width: 42px; height: 42px; flex: 0 0 auto; place-items: center; color: var(--color-ube-dark); background: var(--color-surface); border: 1.5px solid var(--color-ube); border-radius: 12px; }
 .loading-spinner { animation: spin 1s linear infinite; }
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 .cooking-loading strong { display: block; font-family: var(--font-display); font-size: 15px; color: var(--color-ink); }
@@ -397,9 +397,9 @@ p { line-height: 1.6; }
 .recipe-description, .recipe-match { min-height: 44px; margin: 0; color: var(--color-muted); font-size: 13.5px; line-height: 1.45; }
 
 .recipe-metrics { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0; }
-.recipe-metrics span { font-size: 12px; font-weight: 700; color: var(--color-ink); background: var(--sand-2); border: 1px solid var(--slate-a3); padding: 4px 8px; border-radius: 6px; }
-.recipe-metrics .metric-price { color: var(--teal-11); background: var(--teal-2); border-color: var(--teal-6); font-weight: 800; }
-.recipe-metrics .metric-match { color: var(--green-11); background: var(--green-2); border-color: var(--green-6); font-weight: 800; }
+.recipe-metrics span { font-size: 12px; font-weight: 700; color: var(--color-ink); background: var(--sand-2); border: 1px solid var(--color-border); padding: 4px 8px; border-radius: 6px; }
+.recipe-metrics .metric-price { color: var(--color-ube-dark); background: var(--color-lavender); border-color: var(--color-ube); font-weight: 800; }
+.recipe-metrics .metric-match { color: var(--color-calamansi); background: var(--color-success-bg); border-color: var(--color-success-border); font-weight: 800; }
 
 .recipe-metrics-large { display: flex; flex-wrap: wrap; gap: 8px; margin: var(--space-4) 0; }
 .recipe-metrics-large span { font-size: 13.5px; font-weight: 700; color: var(--color-ink); background: var(--sand-2); border: 1px solid var(--color-border-strong); padding: 6px 12px; border-radius: 8px; }
@@ -410,9 +410,9 @@ p { line-height: 1.6; }
 .ingredient-summary div { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; font-size: 11px; }
 .ingredient-summary strong { width: 100%; color: var(--color-muted); font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 2px; }
 .ingredient-summary span { padding: 3px 8px; color: var(--color-ink); background: var(--color-success-bg); border: 1.5px solid var(--color-success-border); border-radius: 6px; font-size: 11.5px; font-weight: 700; }
-.ingredient-summary div:last-child span { color: var(--color-ink); background: var(--color-error-bg); border: 1.5px solid var(--color-error-border); }
-.ingredient-summary .chip-meron { color: #14532D; background: var(--green-2); border: 1.5px solid var(--green-7); font-weight: 800; }
-.ingredient-summary .chip-kulang { color: #7F1D1D; background: var(--tomato-2); border: 1.5px solid var(--tomato-7); font-weight: 800; }
+.ingredient-summary div:last-child span { color: #991B1B; background: #FEF2F2; border: 1.5px solid #FCA5A5; }
+.ingredient-summary .chip-meron { color: var(--color-calamansi); background: var(--color-success-bg); border: 1.5px solid var(--color-success-border); font-weight: 800; }
+.ingredient-summary .chip-kulang { color: #991B1B; background: #FEF2F2; border: 1.5px solid #FCA5A5; font-weight: 800; }
 
 .card-action { margin-top: 6px; color: var(--color-ube); font-size: 13px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; transition: gap 150ms ease, color 150ms ease; }
 .recipe-card:hover .card-action { color: var(--color-ube-dark); gap: 8px; }
@@ -866,9 +866,9 @@ p { line-height: 1.6; }
 }
 
 .shelf-item-chip.item-active {
-  background: var(--green-2);
-  color: #14532D;
-  border: 1.5px solid var(--green-7);
+  background: var(--color-success-bg);
+  color: var(--color-calamansi);
+  border: 1.5px solid var(--color-success-border);
   box-shadow: 0 2px 8px var(--color-shadow-subtle);
 }
 

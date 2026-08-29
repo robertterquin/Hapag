@@ -22,7 +22,7 @@
   --color-ube: var(--orange-9);
   --color-ube-dark: var(--orange-10);
   --color-mango: var(--amber-9);
-  --color-calamansi: var(--green-9);
+  --color-calamansi: #1B6B38;
   --color-tomato: var(--tomato-9);
 
   /* Warm Soy Glaze, Peppercorn & Earth Tones */
@@ -33,8 +33,9 @@
   --color-border-strong: var(--sand-8);
   --color-focus: var(--orange-9);
 
-  /* Status Colors */
-  --color-success-bg: var(--green-2);
+  /* Status Colors (Fresh Calamansi Lime) */
+  --color-success-bg: #EAF7EE;
+  --color-success-border: #A3E2B0;
   --color-warning-bg: var(--amber-2);
   --color-error-bg: var(--tomato-2);
 
@@ -46,7 +47,6 @@
   --color-card-focus: var(--orange-a5);
   --color-focus-ring: var(--orange-a4);
   --color-surface-translucent: var(--white-a10);
-  --color-success-border: var(--green-a7);
   --color-warning-border: var(--amber-a7);
   --color-error-border: var(--tomato-a7);
 
