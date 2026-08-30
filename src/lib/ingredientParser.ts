@@ -922,6 +922,39 @@ export function formatIngredientInput(items: NormalizedIngredient[]) {
   return items.map((item) => item.quantity === 1 && item.unit === 'piece' ? item.name : `${item.quantity} ${item.unit} ${item.name}`).join(', ')
 }
 
+export function getAutocompleteSuggestions(query: string, limit = 8) {
+  const norm = normalizeKey(query)
+  if (!norm) return []
+
+  const matches = Object.keys(aliases).filter((alias) => alias.includes(norm))
+  matches.sort((a, b) => {
+    const aStarts = a.startsWith(norm)
+    const bStarts = b.startsWith(norm)
+    if (aStarts && !bStarts) return -1
+    if (!aStarts && bStarts) return 1
+    return a.length - b.length
+  })
+
+  const results: { canonical: string; display: string; alias: string }[] = []
+  const seenCanonical = new Set<string>()
+
+  for (const alias of matches) {
+    const canonical = aliases[alias]
+    if (seenCanonical.has(canonical)) continue
+
+    seenCanonical.add(canonical)
+    results.push({
+      canonical,
+      display: displayNames[canonical] ?? canonical,
+      alias
+    })
+
+    if (results.length >= limit) break
+  }
+
+  return results
+}
+
 export function isIngredientInputUnit(value: string | null | undefined): value is IngredientInputUnit {
   return Boolean(value && ingredientInputUnits.includes(value as IngredientInputUnit))
 }

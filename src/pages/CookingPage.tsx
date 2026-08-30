@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { ResultsSkeleton } from '../components/Skeletons.tsx'
 import { useRecipe } from '../hooks/useRecipe.ts'
@@ -29,6 +29,9 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
   const [timerSeconds, setTimerSeconds] = useState(0)
   const [timerRunning, setTimerRunning] = useState(false)
   const [timerFinished, setTimerFinished] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [showCompletion, setShowCompletion] = useState(false)
+  const cookingStartTime = useRef(Date.now())
   const [soundEnabled, setSoundEnabled] = useState(() => {
     if (typeof window === 'undefined') return true
     return localStorage.getItem('hapag_sound_enabled') !== 'false'
@@ -76,6 +79,16 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
 
     setTimerRunning((prev) => !prev)
   }, [timerFinished, timerRunning, timerSeconds, defaultDurationSeconds])
+
+  const handleTimerAdjust = (deltaSeconds: number) => {
+    soundManager.unlock()
+    setTimerSeconds((prev) => {
+      const base = prev > 0 ? prev : defaultDurationSeconds
+      const next = Math.max(10, base + deltaSeconds)
+      return next
+    })
+    setTimerFinished(false)
+  }
 
   const handleTimerReset = useCallback(() => {
     setTimerRunning(false)
@@ -140,7 +153,7 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
         if (stepIndex < (recipe?.steps.length ?? 0) - 1) {
           handleStepChange(stepIndex + 1)
         } else if (stepIndex === (recipe?.steps.length ?? 0) - 1) {
-          onFinish()
+          setShowCompletion(true)
         }
       } else if (e.key === 'ArrowLeft' || e.key === 'k' || e.key === 'K') {
         e.preventDefault()
@@ -292,6 +305,15 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
             </div>
 
             <div className="timer-controls-cluster">
+              <button
+                className="timer-adjust-button"
+                type="button"
+                onClick={() => handleTimerAdjust(-60)}
+                aria-label="Bawasan ng 1 minuto"
+                title="Bawasan ng 1 minuto"
+              >
+                −1m
+              </button>
               <motion.button
                 className={`timer-button ${
                   timerFinished
@@ -320,6 +342,15 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
                     : `Simulan ang timer: ${formattedDefault}`}
                 </span>
               </motion.button>
+              <button
+                className="timer-adjust-button"
+                type="button"
+                onClick={() => handleTimerAdjust(60)}
+                aria-label="Dagdagan ng 1 minuto"
+                title="Dagdagan ng 1 minuto"
+              >
+                +1m
+              </button>
 
               {(timerRunning || timerSeconds > 0 || timerFinished) && (
                 <button
@@ -348,6 +379,11 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
         </AnimatePresence>
       </section>
 
+      <button className="cooking-ingredients-fab" type="button" onClick={() => setDrawerOpen(true)}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 5H2v7l6.29 6.29c.94.94 2.48.94 3.42 0l3.58-3.58c.94-.94.94-2.48 0-3.42L9 5Z"/><path d="M6 9.01V9"/></svg>
+        Mga Sangkap
+      </button>
+
       <div className="cooking-controls">
         <button
           className="button button-secondary"
@@ -360,7 +396,7 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
         <button
           className="button button-primary"
           type="button"
-          onClick={() => (stepIndex === recipe.steps.length - 1 ? onFinish() : handleStepChange(stepIndex + 1))}
+          onClick={() => (stepIndex === recipe.steps.length - 1 ? setShowCompletion(true) : handleStepChange(stepIndex + 1))}
         >
           {stepIndex === recipe.steps.length - 1 ? 'Tapos na' : 'Susunod →'}
         </button>
@@ -369,6 +405,52 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
       <p className="cooking-note">
         Ilagay sa malapit ang iyong telepono at gamitin ang iyong pinakamahusay na pagpapasya para sa pagkakaluto at kaligtasan ng pagkain.
       </p>
+
+      <AnimatePresence>
+        {drawerOpen && (
+          <>
+            <motion.div className="drawer-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setDrawerOpen(false)} />
+            <motion.div className="ingredients-drawer" initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={{ type: 'spring', damping: 28, stiffness: 300 }}>
+              <div className="drawer-handle" />
+              <div className="drawer-header">
+                <h3>Mga Sangkap</h3>
+                <span className="drawer-serving-note">{recipe.servings} na serving</span>
+                <button className="drawer-close-button" type="button" onClick={() => setDrawerOpen(false)}>Isara</button>
+              </div>
+              <ul className="drawer-ingredient-list">
+                {recipe.ingredients.map((ing) => (
+                  <li key={ing.id} className={`drawer-ingredient-item ${ing.available ? 'ingredient-available' : 'ingredient-missing'}`}>
+                    <span className="drawer-ingredient-name">{ing.name}</span>
+                    <span className="drawer-ingredient-qty">{ing.quantity} {ing.unit}</span>
+                    <span className={`drawer-ingredient-status ${ing.available ? 'status-meron' : 'status-kulang'}`}>
+                      {ing.available ? 'Meron' : 'Kulang'}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showCompletion && (
+          <motion.div className="completion-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <motion.div className="completion-card" initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring', damping: 20, stiffness: 300 }}>
+              <div className="completion-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#1B6B38" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <h2 className="completion-title">Nakatapos ka na!</h2>
+              <p className="completion-dish">{recipe.title}</p>
+              <p className="completion-time">Natapos sa {Math.round((Date.now() - cookingStartTime.current) / 60000)} minuto</p>
+              <div className="completion-actions">
+                <button className="button button-primary" type="button" onClick={onFinish}>I-save at bumalik</button>
+                <button className="button button-secondary" type="button" onClick={() => { setShowCompletion(false); handleStepChange(0) }}>Ulitin mula sa simula</button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

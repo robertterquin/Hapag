@@ -888,3 +888,365 @@ p { line-height: 1.6; }
   height: 16px;
 }
 
+
+/* -- Cooking: Ingredients Drawer -- */
+.cooking-ingredients-fab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 auto 16px;
+  padding: 8px 18px;
+  background: var(--white-a11, rgba(255,255,255,0.95));
+  border: 1.5px solid var(--sand-6, #d4cfc4);
+  border-radius: 100px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--deep-soy-glaze, #20130E);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.cooking-ingredients-fab:hover {
+  border-color: var(--palayok-terracotta, #C84B31);
+  color: var(--palayok-terracotta, #C84B31);
+  box-shadow: 0 4px 12px rgba(200,75,49,0.12);
+}
+
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(32, 19, 14, 0.45);
+  z-index: 200;
+}
+
+.ingredients-drawer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #FFFFFF;
+  border-radius: 20px 20px 0 0;
+  padding: 0 0 env(safe-area-inset-bottom, 16px);
+  max-height: 70vh;
+  overflow-y: auto;
+  z-index: 201;
+  box-shadow: 0 -8px 32px rgba(0,0,0,0.15);
+}
+
+.drawer-handle {
+  width: 36px;
+  height: 4px;
+  background: var(--sand-6, #d4cfc4);
+  border-radius: 100px;
+  margin: 10px auto 0;
+}
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--sand-4, #eae6de);
+}
+.drawer-header h3 {
+  font-family: 'Fraunces', serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--deep-soy-glaze, #20130E);
+  margin: 0;
+  flex: 1;
+}
+.drawer-serving-note {
+  font-size: 0.82rem;
+  color: var(--sand-9, #868175);
+}
+.drawer-close-button {
+  background: none;
+  border: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--palayok-terracotta, #C84B31);
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.drawer-ingredient-list {
+  list-style: none;
+  padding: 8px 20px 16px;
+  margin: 0;
+}
+.drawer-ingredient-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--sand-3, #f2efe8);
+  font-size: 0.9rem;
+}
+.drawer-ingredient-item:last-child { border-bottom: none; }
+.drawer-ingredient-name {
+  flex: 1;
+  font-weight: 600;
+  color: var(--deep-soy-glaze, #20130E);
+}
+.drawer-ingredient-qty {
+  font-size: 0.82rem;
+  color: var(--sand-9, #868175);
+  min-width: 70px;
+  text-align: right;
+}
+.drawer-ingredient-status {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+.status-meron {
+  background: var(--calamansi-bg, #EAF7EE);
+  color: var(--calamansi-text, #1B6B38);
+}
+.status-kulang {
+  background: var(--tomato-3, #FFE5E0);
+  color: var(--tomato-9, #DC3D43);
+}
+
+/* -- Cooking: Completion Summary -- */
+.completion-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(32, 19, 14, 0.6);
+  z-index: 300;
+  padding: 24px;
+}
+
+.completion-card {
+  background: #FFFFFF;
+  border-radius: 20px;
+  padding: 40px 32px 32px;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.18);
+}
+
+.completion-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+.completion-icon svg {
+  background: var(--calamansi-bg, #EAF7EE);
+  border-radius: 50%;
+  padding: 14px;
+  width: 76px;
+  height: 76px;
+}
+
+.completion-title {
+  font-family: 'Fraunces', serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--deep-soy-glaze, #20130E);
+  margin: 0 0 8px;
+}
+
+.completion-dish {
+  font-size: 1.05rem;
+  color: var(--palayok-terracotta, #C84B31);
+  font-weight: 600;
+  margin: 0 0 6px;
+}
+
+.completion-time {
+  font-size: 0.88rem;
+  color: var(--sand-9, #868175);
+  margin: 0 0 28px;
+}
+
+.completion-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ── Ingredient Autocomplete ── */
+.input-with-autocomplete {
+  position: relative;
+  width: 100%;
+}
+
+.autocomplete-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.autocomplete-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background: #FFFFFF;
+  border: 1.5px solid var(--sand-6, #d4cfc4);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(32, 19, 14, 0.12);
+  max-height: 260px;
+  overflow-y: auto;
+  z-index: 100;
+  padding: 4px 0;
+}
+
+.autocomplete-item {
+  padding: 10px 16px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.92rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  transition: background 0.1s ease;
+}
+
+.autocomplete-item:hover,
+.autocomplete-item.active {
+  background: var(--pandesal-cream, #FAF6EE);
+}
+
+.autocomplete-item-name {
+  font-weight: 600;
+  color: var(--deep-soy-glaze, #20130E);
+}
+
+.autocomplete-item-canonical {
+  font-size: 0.82rem;
+  color: var(--sand-9, #868175);
+  opacity: 0.75;
+}
+
+/* ── Ulam: Collapsible Constraints Panel ── */
+.constraints-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.constraints-toggle-left {
+  flex: 1;
+}
+
+.constraints-toggle-left h2 {
+  margin: 0;
+}
+
+.constraints-chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--sand-3, #f2efe8);
+  color: var(--sand-9, #868175);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), background 0.15s ease;
+  flex-shrink: 0;
+}
+
+.constraints-toggle:hover .constraints-chevron {
+  background: var(--sand-4, #eae6de);
+  color: var(--deep-soy-glaze, #20130E);
+}
+
+.constraints-chevron.chevron-open {
+  transform: rotate(180deg);
+}
+
+.constraints-summary-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.constraint-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 100px;
+  background: var(--pandesal-cream, #FAF6EE);
+  border: 1px solid var(--sand-5, #e0dbd0);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--sand-11, #5b554b);
+}
+
+/* ── Ulam: Live Match Counter & CTA ── */
+.ulam-cta-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.match-counter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 18px;
+  background: var(--calamansi-bg, #EAF7EE);
+  border: 1px solid var(--calamansi-border, #A3E2B0);
+  border-radius: 100px;
+  font-size: 0.86rem;
+  color: var(--calamansi-text, #1B6B38);
+  box-shadow: 0 2px 8px rgba(27, 107, 56, 0.08);
+}
+
+.match-counter strong {
+  font-weight: 700;
+}
+
+.match-counter svg {
+  flex-shrink: 0;
+}
+
+/* ── Cooking: Timer Adjust Buttons ── */
+.timer-adjust-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 14px;
+  border-radius: 100px;
+  border: 1.5px solid var(--sand-6, #d4cfc4);
+  background: #FFFFFF;
+  color: var(--deep-soy-glaze, #20130E);
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.timer-adjust-button:hover {
+  border-color: var(--palayok-terracotta, #C84B31);
+  color: var(--palayok-terracotta, #C84B31);
+  box-shadow: 0 3px 10px rgba(200, 75, 49, 0.12);
+}
+
+.timer-adjust-button:active {
+  transform: scale(0.96);
+}
+

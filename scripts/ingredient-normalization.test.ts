@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { normalizeIngredientInput, normalizeIngredientName } from '../src/lib/ingredientParser.ts'
+import { getAutocompleteSuggestions, normalizeIngredientInput, normalizeIngredientName } from '../src/lib/ingredientParser.ts'
 
 test('Tagalog and English aliases share catalog-aligned canonical names', () => {
   const cases = [
@@ -86,3 +86,20 @@ test('expanded aliases preserve quantity and unit parsing', () => {
   assert.equal(ingredient.unit, 'pack')
   assert.equal(normalizeIngredientInput('3 piraso ng repolyo')[0].canonicalName, 'cabbage')
 })
+
+test('getAutocompleteSuggestions returns prefix and fuzzy matches with display names', () => {
+  assert.deepEqual(getAutocompleteSuggestions(''), [])
+  const tilapiaMatches = getAutocompleteSuggestions('tila')
+  assert.ok(tilapiaMatches.length >= 1)
+  assert.equal(tilapiaMatches[0].canonical, 'tilapia')
+  assert.equal(tilapiaMatches[0].display, 'tilapia')
+
+  const manokMatches = getAutocompleteSuggestions('manok')
+  assert.ok(manokMatches.length >= 1)
+  assert.equal(manokMatches[0].canonical, 'chicken')
+  assert.equal(manokMatches[0].display, 'manok')
+
+  const suggestions = getAutocompleteSuggestions('a', 5)
+  assert.ok(suggestions.length <= 5)
+})
+

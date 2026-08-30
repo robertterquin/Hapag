@@ -146,3 +146,21 @@ export function matchRecipeCatalog(
       return publicMatch
     })
 }
+
+export function countRecipeMatches(
+  ingredients: NormalizedIngredient[],
+  catalog: FilipinoRecipeCatalogEntry[] = filipinoRecipeCatalog,
+) {
+  if (ingredients.length === 0) return 0
+  const available = getCanonicalIngredients(ingredients)
+  const ingredientFrequency = new Map<string, number>()
+  for (const dish of catalog) {
+    for (const ingredient of canonicalizeCatalogIngredients(dish.requiredIngredients)) {
+      ingredientFrequency.set(ingredient, (ingredientFrequency.get(ingredient) ?? 0) + 1)
+    }
+  }
+  return catalog
+    .map((dish) => scoreDish(dish, available, ingredientFrequency))
+    .filter((match) => match.score >= MINIMUM_MATCH_SCORE)
+    .length
+}

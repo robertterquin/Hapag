@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { normalizeIngredientInput } from '../src/lib/ingredientParser.ts'
-import { matchRecipeCatalog } from '../src/services/recipeMatcher.ts'
+import { countRecipeMatches, matchRecipeCatalog } from '../src/services/recipeMatcher.ts'
 import { getIngredientGroup } from '../src/data/ingredientGroups.ts'
 
 test('matcher ranks Chicken Adobo for matching chicken ingredients', () => {
@@ -143,3 +143,11 @@ test('ingredient groups and explicit substitutions are conservative', () => {
     note: 'Pork creates a home-style Kare-Kare variation.',
   }])
 })
+
+test('countRecipeMatches returns total eligible dishes for current ingredients', () => {
+  assert.equal(countRecipeMatches([]), 0)
+  const adoboCount = countRecipeMatches(normalizeIngredientInput('manok, bawang, toyo, suka'))
+  assert.ok(adoboCount >= 1)
+  assert.ok(typeof adoboCount === 'number')
+})
+
