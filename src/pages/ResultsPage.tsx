@@ -23,7 +23,15 @@ export interface ResultsPageProps {
 
 export function ResultsPage({ session, status, suggestions, error, savedError, savedIds, feedback, onOpen, onToggleSave, onFeedback, onRetry, onEdit }: ResultsPageProps) {
   if (status === 'loading') {
-    return <div className="page-shell"><span className="eyebrow">Mga resulta ng recipe</span><h1>Naghahanap ng ulam…</h1><p className="page-intro">Tinitingnan namin kung ano ang puwedeng lutuin gamit ang mga sangkap mo.</p><CookingLoadingState /><ResultsSkeleton /></div>
+    return (
+      <div className="page-shell">
+        <span className="eyebrow">Mga resulta ng recipe</span>
+        <h1>Naghahanap ng ulam…</h1>
+        <p className="page-intro">Tinitingnan namin kung ano ang puwedeng lutuin gamit ang mga sangkap mo.</p>
+        <CookingLoadingState ingredients={session.ingredients} rawInput={session.rawInput} />
+        <ResultsSkeleton />
+      </div>
+    )
   }
 
   if (status === 'error') {
