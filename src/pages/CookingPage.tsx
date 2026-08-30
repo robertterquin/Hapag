@@ -29,7 +29,6 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
   const [timerSeconds, setTimerSeconds] = useState(0)
   const [timerRunning, setTimerRunning] = useState(false)
   const [timerFinished, setTimerFinished] = useState(false)
-  const [drawerOpen, setDrawerOpen] = useState(false)
   const [showCompletion, setShowCompletion] = useState(false)
   const cookingStartTime = useRef(Date.now())
   const [soundEnabled, setSoundEnabled] = useState(() => {
@@ -379,11 +378,6 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
         </AnimatePresence>
       </section>
 
-      <button className="cooking-ingredients-fab" type="button" onClick={() => setDrawerOpen(true)}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 5H2v7l6.29 6.29c.94.94 2.48.94 3.42 0l3.58-3.58c.94-.94.94-2.48 0-3.42L9 5Z"/><path d="M6 9.01V9"/></svg>
-        Mga Sangkap
-      </button>
-
       <div className="cooking-controls">
         <button
           className="button button-secondary"
@@ -405,33 +399,6 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
       <p className="cooking-note">
         Ilagay sa malapit ang iyong telepono at gamitin ang iyong pinakamahusay na pagpapasya para sa pagkakaluto at kaligtasan ng pagkain.
       </p>
-
-      <AnimatePresence>
-        {drawerOpen && (
-          <>
-            <motion.div className="drawer-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setDrawerOpen(false)} />
-            <motion.div className="ingredients-drawer" initial={{ y: '100%' }} animate={{ y: 0 }} exit={{ y: '100%' }} transition={{ type: 'spring', damping: 28, stiffness: 300 }}>
-              <div className="drawer-handle" />
-              <div className="drawer-header">
-                <h3>Mga Sangkap</h3>
-                <span className="drawer-serving-note">{recipe.servings} na serving</span>
-                <button className="drawer-close-button" type="button" onClick={() => setDrawerOpen(false)}>Isara</button>
-              </div>
-              <ul className="drawer-ingredient-list">
-                {recipe.ingredients.map((ing) => (
-                  <li key={ing.id} className={`drawer-ingredient-item ${ing.available ? 'ingredient-available' : 'ingredient-missing'}`}>
-                    <span className="drawer-ingredient-name">{ing.name}</span>
-                    <span className="drawer-ingredient-qty">{ing.quantity} {ing.unit}</span>
-                    <span className={`drawer-ingredient-status ${ing.available ? 'status-meron' : 'status-kulang'}`}>
-                      {ing.available ? 'Meron' : 'Kulang'}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
 
       <AnimatePresence>
         {showCompletion && (
