@@ -21,11 +21,11 @@ export const dishMatchingRules: Record<string, DishMatchingRule> = {
     preferredIngredients: ['garlic'],
   },
   'adobong-pusit': {
-    requiredAny: [['soy sauce', 'vinegar'], ['squid', 'shrimp']],
+    requiredAny: [['soy sauce', 'vinegar'], ['squid']],
     preferredIngredients: ['garlic'],
   },
   'adobong-tahong': {
-    requiredAny: [['soy sauce', 'vinegar'], ['mussels', 'squid']],
+    requiredAny: [['soy sauce', 'vinegar'], ['mussels']],
     preferredIngredients: ['garlic'],
   },
   'adobong-manok-sa-gata': {
@@ -41,15 +41,15 @@ export const dishMatchingRules: Record<string, DishMatchingRule> = {
     preferredIngredients: ['garlic'],
   },
   'sinigang-na-baboy': {
-    requiredAny: [['tamarind', 'calamansi', 'lemon']],
+    requiredAny: [['pork'], ['tamarind', 'calamansi', 'lemon']],
     preferredIngredients: ['tomato', 'onion'],
   },
   'sinigang-na-hipon': {
-    requiredAny: [['tamarind', 'calamansi', 'lemon']],
+    requiredAny: [['shrimp'], ['tamarind', 'calamansi', 'lemon']],
     preferredIngredients: ['tomato', 'onion'],
   },
   'sinigang-na-isda': {
-    requiredAny: [['tamarind', 'calamansi', 'lemon']],
+    requiredAny: [['fish', 'tilapia', 'milkfish'], ['tamarind', 'calamansi', 'lemon']],
     preferredIngredients: ['tomato', 'onion'],
   },
   'sinigang-na-manok': {
@@ -184,5 +184,45 @@ export const dishMatchingRules: Record<string, DishMatchingRule> = {
   'garlic-butter-shrimp': {
     requiredAny: [['shrimp'], ['butter']],
     preferredIngredients: ['garlic'],
+  },
+  'ginataang-hipon': {
+    requiredAny: [['shrimp'], ['coconut milk']],
+    preferredIngredients: ['garlic', 'chili'],
+  },
+  'ginataang-pusit': {
+    requiredAny: [['squid'], ['coconut milk']],
+    preferredIngredients: ['garlic', 'chili'],
+  },
+  'ginataang-tahong': {
+    requiredAny: [['mussels'], ['coconut milk']],
+    preferredIngredients: ['garlic', 'chili'],
+  },
+  'ginataang-tilapia': {
+    requiredAny: [['tilapia', 'milkfish', 'fish'], ['coconut milk']],
+    preferredIngredients: ['ginger', 'garlic'],
+  },
+  'ginataang-manok': {
+    requiredAny: [['chicken', 'pork'], ['coconut milk']],
+    preferredIngredients: ['ginger', 'garlic'],
+  },
+  'halabos-na-hipon': {
+    requiredAny: [['shrimp']],
+    preferredIngredients: ['garlic'],
+  },
+  'camaron-rebosado': {
+    requiredAny: [['shrimp']],
+    preferredIngredients: ['egg', 'flour'],
+  },
+  'inihaw-na-pusit': {
+    requiredAny: [['squid']],
+    preferredIngredients: ['garlic', 'calamansi'],
+  },
+  'fish-kilawin': {
+    requiredAny: [['fish', 'tilapia', 'milkfish'], ['vinegar', 'calamansi']],
+    preferredIngredients: ['onion', 'ginger'],
+  },
+  'sinuglaw': {
+    requiredAny: [['pork belly', 'pork'], ['fish', 'tilapia', 'milkfish'], ['vinegar', 'calamansi']],
+    preferredIngredients: ['onion', 'ginger'],
   },
 }

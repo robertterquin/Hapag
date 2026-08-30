@@ -151,3 +151,12 @@ test('countRecipeMatches returns total eligible dishes for current ingredients',
   assert.ok(typeof adoboCount === 'number')
 })
 
+test('shrimp input matches shrimp dishes and rejects squid or mussel dishes', () => {
+  const ingredients = normalizeIngredientInput('hipon, gata')
+  const matches = matchRecipeCatalog(ingredients)
+  assert.ok(matches.some((match) => match.dish.id === 'ginataang-hipon'))
+  assert.ok(!matches.some((match) => match.dish.id === 'ginataang-pusit'))
+  assert.ok(!matches.some((match) => match.dish.id === 'ginataang-tahong'))
+})
+
+
