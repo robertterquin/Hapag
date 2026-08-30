@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import type { NormalizedIngredient } from '../types/domain.ts'
 import { getMascotLoadingBanter } from '../lib/mascotBanter.ts'
@@ -9,8 +9,18 @@ interface CookingLoadingStateProps {
   rawInput?: string
 }
 
+function getStirFeedback(count: number): { text: string; sub: string } {
+  if (count === 0) return { text: 'Pindutin para haluin!', sub: 'Tap ang palayok habang naghihintay' }
+  if (count === 1) return { text: '1x nahalo! May mabangong usok...', sub: 'Sumisingaw na ang sarap!' }
+  if (count <= 3) return { text: `${count}x nahalo! Tuloy-tuloy lang!`, sub: 'Amoy lutong-bahay na dito...' }
+  if (count <= 6) return { text: `${count}x nahalo! Ang sarap ng timpla!`, sub: 'Kumukulo na ang palayok!' }
+  if (count <= 9) return { text: `${count}x nahalo! Bihasang kusinero!`, sub: 'Swabe ang kulo ng sabaw!' }
+  return { text: `${count}x nahalo! Master Chef Kalabaw!`, sub: 'Handang-handa na ang lutuin mo!' }
+}
+
 export function CookingLoadingState({ ingredients = [], rawInput = '' }: CookingLoadingStateProps) {
   const [banterIndex, setBanterIndex] = useState(0)
+  const [stirCount, setStirCount] = useState(0)
 
   const banters = useMemo(() => {
     return getMascotLoadingBanter(ingredients, rawInput)
@@ -24,12 +34,33 @@ export function CookingLoadingState({ ingredients = [], rawInput = '' }: Cooking
     return () => window.clearInterval(timer)
   }, [banters])
 
+  const handleStir = () => {
+    setStirCount((prev) => prev + 1)
+    if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
+      navigator.vibrate(25)
+    }
+  }
+
   const activeBanter = banters[banterIndex] || banters[0]
+  const stirFeedback = getStirFeedback(stirCount)
 
   return (
     <section className="cooking-loading-mascot-card" aria-live="polite">
       <div className="mascot-avatar-area">
-        <ChefKalabaw size={150} />
+        <ChefKalabaw size={150} onStir={handleStir} stirCount={stirCount} />
+        
+        {/* Interactive "Tap to Stir" prompt & counter */}
+        <motion.button
+          type="button"
+          className={`mascot-stir-pill ${stirCount > 0 ? 'stir-active' : ''}`}
+          onClick={handleStir}
+          whileTap={{ scale: 0.94 }}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+          </svg>
+          <span>{stirFeedback.text}</span>
+        </motion.button>
       </div>
 
       <div className="mascot-dialogue-area">
@@ -72,3 +103,4 @@ export function CookingLoadingState({ ingredients = [], rawInput = '' }: Cooking
     </section>
   )
 }
+
