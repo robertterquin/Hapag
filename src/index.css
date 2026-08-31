@@ -14,18 +14,16 @@
 @import "@radix-ui/colors/white-alpha.css";
 
 :root {
-  /* Warm Pandesal Cream & Pure Porcelain Surfaces */
+
   --color-cream: var(--sand-1);
   --color-surface: #ffffff;
 
-  /* Primary Culinary Accents: Palayok Terracotta & Golden Mango */
   --color-ube: var(--orange-9);
   --color-ube-dark: var(--orange-10);
   --color-mango: var(--amber-9);
   --color-calamansi: #1B6B38;
   --color-tomato: var(--tomato-9);
 
-  /* Warm Soy Glaze, Peppercorn & Earth Tones */
   --color-ink: #20130E;
   --color-muted: #523E36;
   --color-lavender: var(--orange-2);
@@ -33,13 +31,11 @@
   --color-border-strong: var(--sand-8);
   --color-focus: var(--orange-9);
 
-  /* Status Colors (Fresh Calamansi Lime) */
   --color-success-bg: #EAF7EE;
   --color-success-border: #A3E2B0;
   --color-warning-bg: var(--amber-2);
   --color-error-bg: var(--tomato-2);
 
-  /* Warm Shadows */
   --color-shadow-subtle: var(--brown-a3);
   --color-shadow-soft: var(--brown-a4);
   --color-shadow: var(--brown-a5);
@@ -50,7 +46,6 @@
   --color-warning-border: var(--amber-a7);
   --color-error-border: var(--tomato-a7);
 
-  /* Warm Editorial + High-Legibility Typography */
   --font-display: "Fraunces", Georgia, serif;
   --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
 

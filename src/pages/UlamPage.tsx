@@ -28,7 +28,6 @@ export function UlamPage({ session, onAddIngredients, onReset, onUpdateConstrain
       <h1>Start with what you have.</h1>
       <p className="page-intro">Tell Hapag what ingredients you have in your kitchen, then discover authentic recipes.</p>
 
-      {/* Manual Input Form */}
       <IngredientAddForm
         idPrefix="ulam-add"
         label="Add ingredients"
@@ -38,7 +37,6 @@ export function UlamPage({ session, onAddIngredients, onReset, onUpdateConstrain
         onSubmit={async (input) => { onAddIngredients(input) }}
       />
 
-      {/* 1-Tap Kusina Shelf (Smart Nearby Ingredient Picker) */}
       <KusinaShelf
         activeIngredients={session.ingredients}
         onToggle={handleKusinaToggle}
@@ -50,7 +48,6 @@ export function UlamPage({ session, onAddIngredients, onReset, onUpdateConstrain
         </button>
       ) : null}
 
-      {/* Active Ingredients Review */}
       <section className="review-panel" aria-labelledby="review-heading">
         <div className="section-heading-row">
           <div>
@@ -65,7 +62,6 @@ export function UlamPage({ session, onAddIngredients, onReset, onUpdateConstrain
         ) : null}
       </section>
 
-      {/* Constraints Panel */}
       <section className="constraints-panel" aria-labelledby="constraints-heading">
         <div className="section-heading-row">
           <div>

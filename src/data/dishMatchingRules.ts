@@ -1,9 +1,9 @@
 export interface DishMatchingRule {
-  /** Each group must have at least one available ingredient or approved substitute. */
+
   requiredAny?: string[][]
-  /** Ingredients that make this candidate incompatible with the supplied dish identity. */
+
   excludedIfPresent?: string[]
-  /** Supporting ingredients used only to break close ranking ties. */
+
   preferredIngredients?: string[]
 }
 

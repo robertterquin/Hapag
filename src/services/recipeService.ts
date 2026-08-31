@@ -92,7 +92,7 @@ export const recipeService: RecipeService = {
   },
 
   async generateSuggestions(request, accessToken) {
-    // When AI configuration is absent, use relevant fixtures; this keeps the existing using curated Hapag fixtures fallback for local development without unrelated recipes.
+
     if (!hasRecipeGenerationConfig) return mockRecipeService.generateSuggestions(request)
 
     return generateWithOpenAI(request, accessToken)

@@ -5,13 +5,13 @@ import { generateDishCulinaryInsight } from '../lib/culinaryInsights.ts'
 export function cleanDishTitle(title: string): string {
   if (!title || typeof title !== 'string') return ''
   const cleaned = title
-    // Strip leading prefixes like "Hapag ", "Home-Style ", "Quick ", "Authentic "
+
     .replace(/^(?:hapag|home-style|quick|authentic)(?:\s+|-|:)\s*/i, '')
-    // Strip artificial descriptive suffixes like "na may inihaw-style na bawang", "style na..."
+
     .replace(/\s+(?:na\s+may|may)\s+[a-z0-9\s-]+style(?:\s+na)?\s+[\w\s]+$/i, '')
-    // Strip artificial aromatic compound suffixes like "sa sibuyas at paminta", "sa bawang at sibuyas"
+
     .replace(/\s+sa\s+(?:sibuyas|bawang|paminta|kamatis|luya|toyo|suka|mantika|asin|gata)(?:\s+(?:at|&)\s+(?:sibuyas|bawang|paminta|kamatis|luya|toyo|suka|mantika|asin|gata))?$/i, '')
-    // Strip "with [ingredient] and [ingredient]"
+
     .replace(/\s+with\s+(?:garlic|onion|pepper|black pepper|ginger|salt|oil|soy sauce|vinegar)(?:\s+(?:and|&)\s+(?:garlic|onion|pepper|black pepper|ginger|salt|oil|soy sauce|vinegar))?$/i, '')
     .trim()
 
@@ -90,7 +90,6 @@ export function specializeDishTitle(title: string, ingredients: IngredientLike[]
     if (ing.name) availableCanonical.add(ing.name.toLowerCase().trim())
   }
 
-  // 1. Check for specific fish species
   let matchedFish: string | undefined
   for (const [key, displayName] of Object.entries(SPECIFIC_FISH_MAP)) {
     if (availableCanonical.has(key)) {
@@ -102,11 +101,10 @@ export function specializeDishTitle(title: string, ingredients: IngredientLike[]
   let specialized = title
 
   if (matchedFish) {
-    // Replace "... na Isda" / "... na Fish" -> "... na [Fish]"
+
     specialized = specialized.replace(/\b(sinigang|paksiw|inihaw|tinola|pesa|daing|kilawin|pritong|bistek|sweet and sour)\s+na\s+isda\b/gi, `$1 na ${matchedFish}`)
     specialized = specialized.replace(/\b(sinigang|paksiw|inihaw|tinola|pesa|daing|kilawin|pritong|bistek|sweet and sour)\s+na\s+fish\b/gi, `$1 na ${matchedFish}`)
 
-    // Replace specific generic names
     specialized = specialized.replace(/\bsarciadong\s+isda\b/gi, `Sarciadong ${matchedFish}`)
     specialized = specialized.replace(/\bescabecheng\s+isda\b/gi, `Escabecheng ${matchedFish}`)
     specialized = specialized.replace(/^escabeche$/i, `Escabecheng ${matchedFish}`)
@@ -116,13 +114,11 @@ export function specializeDishTitle(title: string, ingredients: IngredientLike[]
     specialized = specialized.replace(/\bpesang\s+isda\b/gi, `Pesang ${matchedFish}`)
     specialized = specialized.replace(/\bdaing\s+na\s+isda\b/gi, `Daing na ${matchedFish}`)
 
-    // Replace English patterns
     specialized = specialized.replace(/\bfish\s+(sarciado|paksiw|sinigang|tinola|escabeche|kilawin|pesa)\b/gi, `${matchedFish} $1`)
     specialized = specialized.replace(/\b(grilled|fried|steamed|sweet and sour|crispy)\s+fish\b/gi, `$1 ${matchedFish}`)
     specialized = specialized.replace(/\bfish\s+in\s+coconut\s+milk\b/gi, `${matchedFish} in Coconut Milk`)
   }
 
-  // 2. Check for specific vegetable
   let matchedVeg: string | undefined
   for (const [key, displayName] of Object.entries(SPECIFIC_VEG_MAP)) {
     if (availableCanonical.has(key)) {
@@ -149,7 +145,6 @@ export function specializeDishTitle(title: string, ingredients: IngredientLike[]
     }
   }
 
-  // 3. Check for pork belly / liempo
   if (availableCanonical.has('pork belly') || availableCanonical.has('liempo')) {
     specialized = specialized.replace(/\binihaw\s+na\s+baboy\b/gi, 'Inihaw na Liempo')
     specialized = specialized.replace(/\bgrilled\s+pork\b/gi, 'Grilled Pork Belly (Inihaw na Liempo)')

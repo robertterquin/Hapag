@@ -1,7 +1,6 @@
 class SoundManager {
   private audioCtx: AudioContext | null = null
 
-  // Ensure AudioContext is created and unlocked on user gesture
   unlock(): void {
     if (typeof window === 'undefined') return
     try {
@@ -17,7 +16,7 @@ class SoundManager {
         void this.audioCtx.resume()
       }
     } catch {
-      // Ignore
+
     }
   }
 
@@ -48,7 +47,7 @@ class SoundManager {
       osc.start(now)
       osc.stop(now + 0.3)
     } catch {
-      // Audio playback fails gracefully
+
     }
   }
 
@@ -82,7 +81,7 @@ class SoundManager {
         osc.stop(now + note.start + note.duration + 0.05)
       }
     } catch {
-      // Audio playback fails gracefully if policy blocked
+
     }
   }
 }

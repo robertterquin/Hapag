@@ -25,7 +25,7 @@ export function useWakeLock(): WakeLockState {
         setIsLocked(false)
       })
     } catch {
-      // Graceful fallback if wake lock is denied or unsupported on low battery
+
       setIsLocked(false)
     }
   }, [])
@@ -38,7 +38,7 @@ export function useWakeLock(): WakeLockState {
         setIsLocked(false)
       }
     } catch {
-      // Ignored
+
     }
   }, [])
 

@@ -12,7 +12,7 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
   const [selectedCategory, setSelectedCategory] = useState<KusinaCategory['id']>('all')
 
   const activeCanonicalMap = useMemo(() => {
-    const map = new Map<string, string>() // canonicalName -> id
+    const map = new Map<string, string>()
     for (const item of activeIngredients) {
       map.set(item.canonicalName.toLowerCase(), item.id)
       map.set(item.name.toLowerCase(), item.id)
@@ -43,7 +43,6 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
         <span className="shelf-hint">Tap to add or remove</span>
       </div>
 
-      {/* Dynamic Smart Pairings */}
       <AnimatePresence>
         {smartPairings.length > 0 && (
           <motion.div
@@ -77,7 +76,6 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
         )}
       </AnimatePresence>
 
-      {/* Category Tabs */}
       <div className="shelf-tabs" role="tablist" aria-label="Kitchen Shelf Categories">
         {kusinaCategories.map((cat) => {
           const isSelected = selectedCategory === cat.id
@@ -96,7 +94,6 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
         })}
       </div>
 
-      {/* Shelf Grid / Chips */}
       <motion.div layout className="shelf-grid">
         {filteredItems.map((item) => {
           const existingId = activeCanonicalMap.get(item.canonicalName.toLowerCase()) || activeCanonicalMap.get(item.localName.toLowerCase()) || activeCanonicalMap.get(item.name.toLowerCase())

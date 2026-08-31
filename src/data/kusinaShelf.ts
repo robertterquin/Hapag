@@ -19,7 +19,7 @@ export const kusinaCategories: readonly KusinaCategory[] = [
 ] as const
 
 export const kusinaPantryItems: readonly KusinaItem[] = [
-  // Protina
+
   { name: 'Chicken', localName: 'Manok', canonicalName: 'chicken', category: 'protina' },
   { name: 'Pork', localName: 'Baboy', canonicalName: 'pork', category: 'protina' },
   { name: 'Egg', localName: 'Itlog', canonicalName: 'egg', category: 'protina' },
@@ -30,7 +30,6 @@ export const kusinaPantryItems: readonly KusinaItem[] = [
   { name: 'Shrimp', localName: 'Hipon', canonicalName: 'shrimp', category: 'protina' },
   { name: 'Corned Beef', localName: 'Corned Beef', canonicalName: 'corned beef', category: 'protina' },
 
-  // Gulay
   { name: 'Pechay', localName: 'Pechay', canonicalName: 'pechay', category: 'gulay' },
   { name: 'Kangkong', localName: 'Kangkong', canonicalName: 'kangkong', category: 'gulay' },
   { name: 'Eggplant', localName: 'Talong', canonicalName: 'eggplant', category: 'gulay' },
@@ -41,7 +40,6 @@ export const kusinaPantryItems: readonly KusinaItem[] = [
   { name: 'String Beans', localName: 'Sitaw', canonicalName: 'string beans', category: 'gulay' },
   { name: 'Squash', localName: 'Kalabasa', canonicalName: 'squash', category: 'gulay' },
 
-  // Pampalasa
   { name: 'Garlic', localName: 'Bawang', canonicalName: 'garlic', category: 'pampalasa' },
   { name: 'Onion', localName: 'Sibuyas', canonicalName: 'onion', category: 'pampalasa' },
   { name: 'Ginger', localName: 'Luya', canonicalName: 'luya', category: 'pampalasa' },
@@ -82,14 +80,14 @@ const pairingRules: Record<string, { name: string; localName: string }[]> = {
     { name: 'Eggplant', localName: 'Talong' },
     { name: 'Sardines', localName: 'Sardinas' },
   ],
-  // Bangus (Milkfish) pairings — classic Filipino flavors
+
   milkfish: [
     { name: 'Ginger', localName: 'Luya' },
     { name: 'Tomato', localName: 'Kamatis' },
     { name: 'Garlic', localName: 'Bawang' },
     { name: 'Vinegar', localName: 'Suka' },
   ],
-  // Tilapia pairings — popular freshwater fish
+
   tilapia: [
     { name: 'Ginger', localName: 'Luya' },
     { name: 'Garlic', localName: 'Bawang' },

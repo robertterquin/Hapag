@@ -26,7 +26,6 @@ export const ingredientGroups: Record<IngredientGroup, readonly string[]> = {
   'rice-and-grains': ['cooked rice', 'uncooked rice', 'rice flour', 'glutinous rice'],
 }
 
-// Shared group membership alone never makes an ingredient a substitution.
 export const ingredientSubstitutionRules: readonly IngredientSubstitutionRule[] = [
   { ingredient: 'tamarind', substitute: 'calamansi', group: 'souring-agents', note: 'Calamansi supplies a bright sour flavor.' },
   { ingredient: 'tamarind', substitute: 'lemon', group: 'souring-agents', note: 'Lemon can provide comparable acidity.' },

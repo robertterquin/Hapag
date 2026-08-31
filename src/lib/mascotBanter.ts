@@ -16,7 +16,6 @@ export function getMascotLoadingBanter(ingredients: NormalizedIngredient[] = [],
 
   const banters: MascotBanter[] = []
 
-  // 1. Adobo Profiles (Chicken/Pork + Soy Sauce / Vinegar / Garlic)
   if (hasAny('chicken', 'pork', 'pork belly', 'pork shoulder', 'manok', 'baboy') && hasAny('soy sauce', 'vinegar', 'toyo', 'suka', 'garlic', 'bawang')) {
     banters.push({
       tag: 'Adobo Vibe',
@@ -32,7 +31,6 @@ export function getMascotLoadingBanter(ingredients: NormalizedIngredient[] = [],
     })
   }
 
-  // 2. Fish & Tomato / Sarciado / Escabeche / Paksiw Profiles
   if (hasAny('fish', 'tilapia', 'milkfish', 'bangus', 'isda') && (hasAny('tomato', 'kamatis', 'onion', 'sibuyas', 'egg', 'itlog') || has('vinegar') || has('suka'))) {
     banters.push({
       tag: 'Fresh Catch',
@@ -47,7 +45,6 @@ export function getMascotLoadingBanter(ingredients: NormalizedIngredient[] = [],
     })
   }
 
-  // 3. Sour Soup / Sinigang Profiles
   if (hasAny('tamarind', 'sampalok', 'sinigang mix', 'calamansi', 'kamias') || (hasAny('shrimp', 'pork', 'milkfish', 'bangus', 'tilapia') && hasAny('kangkong', 'radish', 'labanos', 'gabi', 'taro'))) {
     banters.push({
       tag: 'Sour Soup',
@@ -62,7 +59,6 @@ export function getMascotLoadingBanter(ingredients: NormalizedIngredient[] = [],
     })
   }
 
-  // 4. Coconut Milk / Ginataan / Bicol Express Profiles
   if (hasAny('coconut milk', 'gata', 'niyog', 'coconut cream') || (hasAny('chili', 'sili', 'siling haba', 'siling labuyo') && hasAny('pork', 'squash', 'kalabasa', 'sitaw', 'shrimp'))) {
     banters.push({
       tag: 'Creamy Ginataan',
@@ -77,7 +73,6 @@ export function getMascotLoadingBanter(ingredients: NormalizedIngredient[] = [],
     })
   }
 
-  // 5. Canned Goods Upgrades (Sardines, Corned Beef, Tuna)
   if (hasAny('sardines', 'sardinas', 'corned beef', 'tuna', 'canned meat', 'luncheon meat', 'spam')) {
     banters.push({
       tag: 'Pantry Upgrade',
@@ -92,7 +87,6 @@ export function getMascotLoadingBanter(ingredients: NormalizedIngredient[] = [],
     })
   }
 
-  // 6. Tomato Braises / Stews (Afritada, Menudo, Mechado, Caldereta)
   if (hasAny('tomato sauce', 'tomato paste', 'liver spread', 'cheese') || (hasAny('pork', 'beef', 'chicken') && hasAny('potato', 'patatas', 'carrot', 'carrots', 'bell pepper', 'peas'))) {
     banters.push({
       tag: 'Savory Stew',
@@ -107,7 +101,6 @@ export function getMascotLoadingBanter(ingredients: NormalizedIngredient[] = [],
     })
   }
 
-  // 7. Pancit & Noodle Profiles
   if (hasAny('bihon', 'canton noodles', 'flour noodles', 'egg noodles', 'miki', 'sotanghon', 'glass noodles', 'macaroni')) {
     banters.push({
       tag: 'Pancit Special',
@@ -117,7 +110,6 @@ export function getMascotLoadingBanter(ingredients: NormalizedIngredient[] = [],
     })
   }
 
-  // 8. Ginger & Comfort Broths (Tinola, Pesang Isda, Arroz Caldo)
   if (hasAny('ginger', 'luya', 'chayote', 'sayote', 'green papaya', 'papaya', 'malunggay', 'rice', 'glutinous rice')) {
     banters.push({
       tag: 'Ginger Broth',
@@ -127,7 +119,6 @@ export function getMascotLoadingBanter(ingredients: NormalizedIngredient[] = [],
     })
   }
 
-  // 9. Egg / Torta Profiles
   if (has('egg') || has('itlog')) {
     if (hasAny('eggplant', 'talong', 'ground pork', 'giniling', 'potato', 'patatas')) {
       banters.push({
@@ -139,7 +130,6 @@ export function getMascotLoadingBanter(ingredients: NormalizedIngredient[] = [],
     }
   }
 
-  // 10. Tofu / Healthy Veggies
   if (hasAny('tofu', 'tokwa', 'kangkong', 'sitaw', 'pechay', 'bok choy', 'repolyo', 'cabbage', 'okra', 'ampalaya')) {
     banters.push({
       tag: 'Fresh Greens',
@@ -149,7 +139,6 @@ export function getMascotLoadingBanter(ingredients: NormalizedIngredient[] = [],
     })
   }
 
-  // Fallback general messages if no specific banter triggered
   if (banters.length === 0) {
     const firstItemName = ingredients[0]?.name ?? 'your ingredients'
     banters.push({
@@ -165,7 +154,6 @@ export function getMascotLoadingBanter(ingredients: NormalizedIngredient[] = [],
     })
   }
 
-  // Always append a closing reassuring banter
   banters.push({
     tag: 'Almost Ready',
     headline: 'Finalizing 3 delicious recipe choices for your table!',

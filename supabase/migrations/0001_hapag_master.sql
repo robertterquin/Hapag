@@ -1,5 +1,4 @@
--- Hapag Phase 11 master schema.
--- Apply with the Supabase SQL editor or: npx supabase db push
+
 
 create extension if not exists pgcrypto;
 

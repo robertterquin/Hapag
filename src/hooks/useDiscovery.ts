@@ -123,10 +123,7 @@ export function useDiscovery() {
         substitutedIngredients,
       }))
       setCandidateDishes(candidateDishes)
-      // Catalog matches improve authenticity, but a partial or unfamiliar
-      // combination may still be useful. In that case the Edge Function asks
-      // the AI for a clearly labelled Hapag adaptation grounded in the user's
-      // ingredients instead of blocking generation.
+
       const result = await recipeService.generateSuggestions({ rawInput: session.rawInput, ingredients: session.ingredients, constraints: session.constraints, candidateDishes }, accessToken)
       setSuggestions(result)
       setGenerationStatus('success')

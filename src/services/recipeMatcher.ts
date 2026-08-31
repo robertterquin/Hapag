@@ -9,7 +9,6 @@ import { specializeDishTitle } from '../schemas/recipeAdapter.ts'
 
 export type RecipeMatchKind = 'strong-match' | 'partial-match' | 'adaptation-candidate'
 
-
 export interface RecipeMatch {
   dish: FilipinoRecipeCatalogEntry
   score: number
@@ -24,9 +23,6 @@ export interface RecipeMatch {
   }>
 }
 
-// A catalog result needs meaningful evidence before it is sent to the AI.
-// Keeping this threshold here makes the matcher safe for both the UI and the
-// server-side generation prompt without changing their public interfaces.
 export const MINIMUM_MATCH_SCORE = 20
 
 function unique(values: string[]) {
@@ -86,10 +82,6 @@ function scoreDish(dish: FilipinoRecipeCatalogEntry, available: Set<string>, ing
   const missingRequired = required.filter((ingredient) => !available.has(ingredient) && !substitutedRequired.has(ingredient))
   const availableOptional = optional.filter((ingredient) => available.has(ingredient))
 
-  // A single ingredient is never enough evidence for a catalog match. The
-  // second piece of evidence must be another required ingredient or an
-  // explicitly accepted substitution; unrelated ingredients must not rescue a
-  // weak candidate.
   const hasDistinctiveRequired = availableRequired.some((ingredient) => (ingredientFrequency.get(ingredient) ?? 0) <= 2)
   const evidenceCount = availableRequired.length + substitutedIngredients.length
   const hasMinimumEvidence = evidenceCount >= 2
@@ -97,7 +89,7 @@ function scoreDish(dish: FilipinoRecipeCatalogEntry, available: Set<string>, ing
   const hasPrimaryEssentialEvidence = primaryEssential
     ? available.has(primaryEssential) || substitutedRequired.has(primaryEssential)
     : false
-  // Required ingredients drive the score; optional ingredients provide a small tie-breaker.
+
   const passesRules = passesIdentityRules(dish, available)
   const requiredScore = !hasMinimumEvidence || !hasPrimaryEssentialEvidence || !passesRules || required.length === 0 ? 0 : ((availableRequired.length + substitutedIngredients.length * 0.15) / required.length) * 80
   const optionalScore = !hasMinimumEvidence || !hasPrimaryEssentialEvidence || !passesRules || optional.length === 0 ? 0 : (availableOptional.length / optional.length) * 20
@@ -160,7 +152,6 @@ export function matchRecipeCatalog(
       }
     })
 }
-
 
 export function countRecipeMatches(
   ingredients: NormalizedIngredient[],

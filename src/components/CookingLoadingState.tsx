@@ -48,8 +48,7 @@ export function CookingLoadingState({ ingredients = [], rawInput = '' }: Cooking
     <section className="cooking-loading-mascot-card" aria-live="polite">
       <div className="mascot-avatar-area">
         <ChefKalabaw size={150} onStir={handleStir} stirCount={stirCount} />
-        
-        {/* Interactive "Tap to Stir" prompt & counter */}
+
         <motion.button
           type="button"
           className={`mascot-stir-pill ${stirCount > 0 ? 'stir-active' : ''}`}

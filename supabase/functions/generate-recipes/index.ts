@@ -440,7 +440,6 @@ function cleanGeneratedRecipeTitles(recipes: JsonRecord[]) {
   })
 }
 
-
 function validateResultComposition(recipes: JsonRecord[], candidateDishes: unknown) {
   const adaptationCount = recipes.filter((recipe) => recipe.authenticity === 'hapag-adaptation').length
   const strongCatalogMatches = Array.isArray(candidateDishes)
@@ -450,9 +449,6 @@ function validateResultComposition(recipes: JsonRecord[], candidateDishes: unkno
       && candidate.score >= 60).length
     : 0
 
-  // Strong catalog matches should not be replaced by several invented
-  // variations. Allow one clearly labelled adaptation only when fewer than
-  // two strong catalog matches are available.
   const hasCatalogCandidates = Array.isArray(candidateDishes) && candidateDishes.length > 0
   const maximumAdaptations = strongCatalogMatches >= 2 ? 0 : hasCatalogCandidates ? 1 : 3
   return adaptationCount <= maximumAdaptations
@@ -531,9 +527,7 @@ function validateRecipeGrounding(recipes: JsonRecord[], payload: JsonRecord) {
       return canonical ? [canonical] : []
     }))
     : new Set<string>()
-  // Catalog-required ingredients must remain in every suggestion. For a
-  // no-match custom adaptation, require overlap with the user's ingredients
-  // without forcing every variation to use every ingredient in the same way.
+
   const requiredIngredients = groundedIngredients
 
   return recipes.every((recipe) => {

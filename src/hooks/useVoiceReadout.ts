@@ -9,10 +9,6 @@ export interface VoiceReadoutState {
   toggle: (text: string, staticAudioPath?: string) => void
 }
 
-// ---------------------------------------------------------------------------
-// Browser SpeechSynthesis helpers (fallback for non-pre-rendered recipes)
-// ---------------------------------------------------------------------------
-
 const TAGALOG_MARKERS =
   /\b(ang|ng|mga|sa|para|igisa|ilagay|haluin|lutuin|pakuluan|ihalo|patatas|sibuyas|bawang|manok|baboy|isda|sabaw|kutsara|minuto|hakbang|gawin|meron|kulang|pamalit|mantika|kamatis)\b/gi
 
@@ -51,18 +47,6 @@ function selectBestVoice(voices: SpeechSynthesisVoice[], lang: 'tl-PH' | 'en-US'
   return english ?? voices[0] ?? null
 }
 
-// ---------------------------------------------------------------------------
-// Hook
-// ---------------------------------------------------------------------------
-
-/**
- * React hook for cooking step voice readout.
- *
- * Audio pipeline:
- *   1. Pre-rendered static MP3 (studio Blessica voice)
- *   2. Cached / Edge Function synthesis
- *   3. Browser SpeechSynthesis (fallback)
- */
 export function useVoiceReadout(): VoiceReadoutState {
   const [isSpeaking, setIsSpeaking] = useState(false)
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([])
@@ -70,7 +54,6 @@ export function useVoiceReadout(): VoiceReadoutState {
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null)
   const pendingRef = useRef(0)
 
-  // Load browser voices for fallback
   useEffect(() => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return undefined
     const load = () => setVoices(window.speechSynthesis.getVoices())
@@ -128,7 +111,6 @@ export function useVoiceReadout(): VoiceReadoutState {
 
       if (requestId !== pendingRef.current) return
 
-      // If no audio URL resolved, fall back to browser SpeechSynthesis
       if (!url) {
         speakWithSynthesis(text)
         return

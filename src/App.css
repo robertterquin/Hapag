@@ -23,7 +23,6 @@ html::-webkit-scrollbar {
 .app-background::before { position: absolute; inset: 0; content: ''; background: radial-gradient(circle at 50% 18%, var(--orange-a1), transparent 42%); pointer-events: none; }
 .app-background::after { position: absolute; inset: 0; content: ''; opacity: .18; background-image: radial-gradient(var(--brown-a3) .6px, transparent .6px); background-size: 18px 18px; pointer-events: none; }
 
-/* Each primary flow gets a warm culinary atmosphere while keeping content readable. */
 .app-shell-home .app-background { background: radial-gradient(circle at 10% 18%, var(--amber-a2), transparent 32%), radial-gradient(circle at 88% 18%, var(--orange-a2), transparent 32%), radial-gradient(circle at 78% 88%, var(--green-a2), transparent 34%); }
 .app-shell-ulam .app-background { background: radial-gradient(circle at 14% 18%, var(--orange-a2), transparent 32%), radial-gradient(circle at 88% 72%, var(--green-a1), transparent 34%), var(--color-cream); }
 .app-shell-results .app-background { background: radial-gradient(circle at 12% 18%, var(--amber-a1), transparent 30%), radial-gradient(circle at 86% 20%, var(--orange-a2), transparent 34%), radial-gradient(circle at 76% 88%, var(--brown-a1), transparent 32%); }
@@ -245,7 +244,6 @@ p { line-height: 1.6; }
 .home-cta-content p { margin: 0; color: var(--color-muted); font-size: clamp(14.5px, 1.6vw, 17px); line-height: 1.6; margin-bottom: 8px; }
 .home-cta-content .button { justify-self: start; min-height: 56px; padding: 0 clamp(24px, 4vw, 44px); font-size: clamp(16px, 1.8vw, 19px); border-radius: 16px; }
 
-/* Product Preview Styles - Stacked Card Deck */
 .hero-preview-wrapper { position: relative; display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 620px; margin: 0 auto; padding-top: 34px; }
 .card-stack-container { display: grid; grid-template-columns: 1fr; align-items: start; width: 100%; position: relative; cursor: pointer; user-select: none; }
 .card-stack-item { grid-area: 1 / 1; width: 100%; will-change: transform, opacity; }
@@ -584,7 +582,7 @@ p { line-height: 1.6; }
   .mobile-nav-item { display: grid; min-height: 54px; place-items: center; gap: 2px; border-radius: 12px; font-size: 19px; cursor: pointer; }
   .mobile-nav-item small { font-size: 11px; font-weight: 700; }
   .mobile-nav-item-active { color: var(--color-ube-dark); background: var(--color-lavender); }
-  
+
   .results-header { align-items: start; flex-direction: column; }
   .results-header .button { width: 100%; }
   .detail-layout { grid-template-columns: 1fr; }
@@ -640,7 +638,6 @@ p { line-height: 1.6; }
   .placeholder-page { min-height: 400px; padding: 24px 16px; border-radius: 20px; }
   .hero-preview-wrapper { padding-top: 26px; }
 
-  /* Hero preview card compact styles */
   .hero-preview-card { padding: 20px 16px 18px; border-radius: 20px; }
   .hero-preview-topline { margin-bottom: 12px; gap: 8px; }
   .hero-preview-tags { gap: 6px; }
@@ -657,26 +654,22 @@ p { line-height: 1.6; }
   .hero-preview-sub-tip { padding: 8px 12px; font-size: 12.5px; gap: 8px; }
   .sub-tip-badge { font-size: 10.5px; padding: 2px 6px; }
 
-  /* Recipe Card compact styling */
   .recipe-card { padding: 16px 14px 14px; border-radius: 16px; }
   .recipe-card-image { width: calc(100% + 28px); margin: -16px -14px 12px -14px; }
   .recipe-card-image-placeholder { width: calc(100% + 28px); margin: -16px -14px 12px -14px; }
   .recipe-card-main h2 { font-size: 18px; }
   .recipe-description, .recipe-match { font-size: 13px; min-height: auto; }
 
-  /* Recipe detail page compact styling */
   .recipe-hero { padding: 18px 14px; border-radius: 18px; }
   .recipe-hero h1 { font-size: 24px; }
   .detail-description { font-size: 14px; margin: 8px 0 12px; }
   .match-callout { padding: 12px 14px; font-size: 13px; border-radius: 10px; }
   .detail-section, .cost-panel { padding: 16px 14px; border-radius: 18px; }
 
-  /* Cooking step card compact styling */
   .cooking-step-card { min-height: 280px; padding: 24px 14px; border-radius: 20px; }
   .cooking-step-card h1 { font-size: 22px; margin: 12px 0; }
   .timer-button { width: 100%; min-height: 46px; }
 
-  /* Auth card compact styling */
   .auth-card { padding: 22px 16px; border-radius: 20px; }
   .auth-card h1 { font-size: 26px; }
 }
@@ -702,9 +695,6 @@ p { line-height: 1.6; }
   .recipe-card:hover .recipe-card-image, .recipe-card:focus-within .recipe-card-image { transform: none; }
 }
 
-/* =============================================================================
-   Kusina Shelf (1-Tap Smart Ingredient Picker)
-   ============================================================================= */
 .kusina-shelf {
   margin-top: var(--space-4);
   padding: var(--space-4) var(--space-5);
@@ -745,7 +735,6 @@ p { line-height: 1.6; }
   font-weight: 600;
 }
 
-/* Smart Pairings Bar */
 .smart-pairings-bar {
   margin-bottom: var(--space-3);
   padding: 10px 14px;
@@ -798,7 +787,6 @@ p { line-height: 1.6; }
   font-weight: 800;
 }
 
-/* Shelf Tabs */
 .shelf-tabs {
   display: flex;
   gap: 6px;
@@ -834,7 +822,6 @@ p { line-height: 1.6; }
   box-shadow: 0 2px 6px var(--color-shadow-subtle);
 }
 
-/* Shelf Item Grid & Chips */
 .shelf-grid {
   display: flex;
   flex-wrap: wrap;
@@ -888,8 +875,6 @@ p { line-height: 1.6; }
   height: 16px;
 }
 
-
-/* -- Cooking: Completion Summary -- */
 .completion-overlay {
   position: fixed;
   inset: 0;
@@ -951,7 +936,6 @@ p { line-height: 1.6; }
   gap: 10px;
 }
 
-/* ── Ingredient Autocomplete ── */
 .input-with-autocomplete {
   position: relative;
   width: 100%;
@@ -1005,7 +989,6 @@ p { line-height: 1.6; }
   opacity: 0.75;
 }
 
-/* ── Cooking: Timer Adjust Buttons ── */
 .timer-adjust-button {
   display: inline-flex;
   align-items: center;
@@ -1033,7 +1016,6 @@ p { line-height: 1.6; }
   transform: scale(0.96);
 }
 
-/* ── Mascot Loading State: Chef Kalabaw & Speech Bubble ── */
 .cooking-loading-mascot-card {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -1233,5 +1215,4 @@ p { line-height: 1.6; }
   background: linear-gradient(90deg, var(--palayok-terracotta, #C84B31), var(--golden-mango, #F39C12));
   border-radius: 100px;
 }
-
 

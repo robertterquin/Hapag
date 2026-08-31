@@ -1,4 +1,4 @@
--- Pantry quantity support. Existing rows are backfilled before constraints are added.
+
 
 update public.pantry_items
 set quantity = 1

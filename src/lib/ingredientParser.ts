@@ -18,7 +18,7 @@ export const ingredientInputUnitLabels: Record<IngredientInputUnit, string> = {
 }
 
 const aliases: Record<string, string> = {
-  // ── Eggs ──
+
   itlog: 'egg',
   itlogg: 'egg',
   eggs: 'egg',
@@ -33,7 +33,6 @@ const aliases: Record<string, string> = {
   'itlog na maalat': 'salted egg',
   'itlog maalat': 'salted egg',
 
-  // ── Common vegetables ──
   kamatis: 'tomato',
   kamatises: 'tomato',
   tomatoes: 'tomato',
@@ -122,7 +121,6 @@ const aliases: Record<string, string> = {
   pipino: 'cucumber',
   cucumbers: 'cucumber',
 
-  // ── Leafy greens & herbs ──
   'chili leaves': 'chili leaves',
   'dahon ng sili': 'chili leaves',
   gabi: 'taro leaves',
@@ -148,7 +146,6 @@ const aliases: Record<string, string> = {
   'spring onions': 'spring onion',
   leeks: 'spring onion',
 
-  // ── Beans, sprouts & legumes ──
   monggo: 'mung beans',
   'mung bean': 'mung beans',
   'mung beans': 'mung beans',
@@ -173,7 +170,6 @@ const aliases: Record<string, string> = {
   'kidney beans': 'red beans',
   'red kidney beans': 'red beans',
 
-  // ── Gourds & tropical vegetables ──
   'bottle gourd': 'bottle gourd',
   upo: 'bottle gourd',
   'sponge gourd': 'sponge gourd',
@@ -188,7 +184,6 @@ const aliases: Record<string, string> = {
   'banana flower': 'banana blossom',
   'banana heart': 'banana blossom',
 
-  // ── Aromatics & seasonings ──
   bawang: 'garlic',
   garlic: 'garlic',
   'garlic cloves': 'garlic',
@@ -228,7 +223,6 @@ const aliases: Record<string, string> = {
   safflower: 'safflower',
   kasubha: 'safflower',
 
-  // ── Sauces, condiments & pastes ──
   suka: 'vinegar',
   vinegar: 'vinegar',
   'white vinegar': 'vinegar',
@@ -264,7 +258,6 @@ const aliases: Record<string, string> = {
   miso: 'miso',
   'miso paste': 'miso',
 
-  // ── Seasonings & pantry basics ──
   asin: 'salt',
   salt: 'salt',
   'sea salt': 'salt',
@@ -296,7 +289,6 @@ const aliases: Record<string, string> = {
   'salted butter': 'butter',
   'margarine': 'butter',
 
-  // ── Dairy & milk ──
   gatas: 'milk',
   milk: 'milk',
   'fresh milk': 'milk',
@@ -320,7 +312,6 @@ const aliases: Record<string, string> = {
   mayonnaise: 'mayonnaise',
   mayo: 'mayonnaise',
 
-  // ── Coconut products ──
   gata: 'coconut milk',
   'coconut milk': 'coconut milk',
   'kakang gata': 'coconut milk',
@@ -336,7 +327,6 @@ const aliases: Record<string, string> = {
   'young coconut': 'young coconut',
   'buko': 'young coconut',
 
-  // ── Proteins — poultry ──
   manok: 'chicken',
   chicken: 'chicken',
   'chicken breast': 'chicken',
@@ -352,7 +342,6 @@ const aliases: Record<string, string> = {
   'chicken liver': 'chicken liver',
   'atay ng manok': 'chicken liver',
 
-  // ── Proteins — pork ──
   baboy: 'pork',
   pork: 'pork',
   'pork chop': 'pork',
@@ -392,7 +381,6 @@ const aliases: Record<string, string> = {
   isaw: 'intestine',
   'pork intestine': 'intestine',
 
-  // ── Proteins — beef ──
   baka: 'beef',
   beef: 'beef',
   'beef steak': 'beef',
@@ -420,13 +408,11 @@ const aliases: Record<string, string> = {
   'goto': 'beef tripe',
   'tuwalya ng baka': 'beef tripe',
 
-  // ── Proteins — goat ──
   goat: 'goat',
   kambing: 'goat',
   'goat meat': 'goat',
   'chevon': 'goat',
 
-  // ── Proteins — processed meats ──
   hotdog: 'hotdog',
   'hot dog': 'hotdog',
   'hotdogs': 'hotdog',
@@ -462,7 +448,6 @@ const aliases: Record<string, string> = {
   'lunchon meat': 'luncheon meat',
   gravy: 'gravy',
 
-  // ── Seafood ──
   hipon: 'shrimp',
   shrimp: 'shrimp',
   shrimps: 'shrimp',
@@ -513,7 +498,6 @@ const aliases: Record<string, string> = {
   'squid balls': 'squid balls',
   'squid ball': 'squid balls',
 
-  // ── Tofu & soy products ──
   tofu: 'tofu',
   tokwa: 'tofu',
   'firm tofu': 'tofu',
@@ -521,7 +505,6 @@ const aliases: Record<string, string> = {
   'silken tofu': 'tofu',
   'taho': 'tofu',
 
-  // ── Noodles & pasta ──
   noodles: 'flour noodles',
   canton: 'flour noodles',
   'pancit canton': 'flour noodles',
@@ -560,7 +543,6 @@ const aliases: Record<string, string> = {
   'elbow macaroni': 'macaroni',
   'macaroni pasta': 'macaroni',
 
-  // ── Rice & grains ──
   'cooked rice': 'cooked rice',
   kanin: 'cooked rice',
   'leftover rice': 'cooked rice',
@@ -578,7 +560,6 @@ const aliases: Record<string, string> = {
   'sweet rice': 'glutinous rice',
   'malagkit rice': 'glutinous rice',
 
-  // ── Flours & starches ──
   harina: 'flour',
   flour: 'flour',
   'all purpose flour': 'flour',
@@ -591,7 +572,6 @@ const aliases: Record<string, string> = {
   'corn starch': 'cornstarch',
   'cornflour': 'cornstarch',
 
-  // ── Wrappers ──
   'lumpia wrapper': 'lumpia wrapper',
   'lumpia wrappers': 'lumpia wrapper',
   'balat ng lumpia': 'lumpia wrapper',
@@ -601,7 +581,6 @@ const aliases: Record<string, string> = {
   'wonton wrapper': 'wonton wrapper',
   'wonton wrappers': 'wonton wrapper',
 
-  // ── Fruits ──
   'green mango': 'green mango',
   'manggang hilaw': 'green mango',
   'unripe mango': 'green mango',
@@ -632,7 +611,6 @@ const aliases: Record<string, string> = {
   lime: 'lime',
   'dayap': 'lime',
 
-  // ── Roots & tubers ──
   kamote: 'sweet potato',
   'sweet potato': 'sweet potato',
   'camote': 'sweet potato',
@@ -640,7 +618,6 @@ const aliases: Record<string, string> = {
   'taro': 'taro',
   'gabi root': 'taro',
 
-  // ── Dried, canned & preserved ──
   sardinas: 'sardines',
   sardine: 'sardines',
   sardines: 'sardines',
@@ -656,7 +633,6 @@ const aliases: Record<string, string> = {
   atsara: 'pickle',
   'pickled papaya': 'pickle',
 
-  // ── Nuts & peanut products ──
   'peanut butter': 'peanut butter',
   peanut: 'peanut',
   mani: 'peanut',
@@ -666,7 +642,6 @@ const aliases: Record<string, string> = {
   'cashews': 'cashew',
   'kasuy': 'cashew',
 
-  // ── Tamarind & souring agents ──
   sampalok: 'tamarind',
   tamarind: 'tamarind',
   'sinigang mix': 'tamarind',
@@ -678,7 +653,6 @@ const aliases: Record<string, string> = {
   'tamarind leaves': 'tamarind leaves',
   'dahon ng sampalok': 'tamarind leaves',
 
-  // ── Sweet & dessert ingredients ──
   cocoa: 'cocoa',
   tableya: 'cocoa',
   'cocoa powder': 'cocoa',
@@ -690,7 +664,6 @@ const aliases: Record<string, string> = {
   'nata de coco': 'nata de coco',
   'shaved ice': 'shaved ice',
 
-  // ── Mushrooms ──
   mushroom: 'mushroom',
   mushrooms: 'mushroom',
   kabute: 'mushroom',
@@ -700,7 +673,6 @@ const aliases: Record<string, string> = {
   'button mushroom': 'mushroom',
   'enoki': 'mushroom',
 
-  // ── Water & liquids ──
   tubig: 'water',
   water: 'water',
   'lye water': 'lye water',
@@ -709,7 +681,6 @@ const aliases: Record<string, string> = {
   'water chestnuts': 'water chestnut',
   'apulid': 'water chestnut',
 
-  // ── Baking & bread ──
   'bread crumbs': 'bread crumbs',
   breadcrumbs: 'bread crumbs',
   'panko': 'bread crumbs',
@@ -725,7 +696,6 @@ const aliases: Record<string, string> = {
   'baking soda': 'baking soda',
   'yeast': 'yeast',
 
-  // ── Common user inputs that alias to existing ──
   'cooking wine': 'cooking wine',
   'rice wine': 'cooking wine',
   'sake': 'cooking wine',

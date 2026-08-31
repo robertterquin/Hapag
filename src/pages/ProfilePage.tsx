@@ -8,16 +8,15 @@ export function ProfilePage({ session, preferences, status, error, onSave, onSig
   const [draft, setDraft] = useState(preferences)
   const [saved, setSaved] = useState(false)
   const preferencesKey = `${preferences.language}-${preferences.default_servings}-${preferences.dietary_preference}-${preferences.spice_level}-${preferences.allergies.join('|')}`
-  // The parent preference hook loads asynchronously; sync the form when that external value arrives.
-  /* eslint-disable react-hooks/exhaustive-deps */
+
   useEffect(() => {
     if (JSON.stringify(draft) !== JSON.stringify(preferences)) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+
       setDraft(preferences)
       setSaved(false)
     }
   }, [preferencesKey])
-  /* eslint-enable react-hooks/exhaustive-deps */
+
   if (!session) return <div className="page-shell narrow-page"><span className="eyebrow">Profile and preferences</span><h1>Make Hapag fit your kitchen.</h1><p className="page-intro">Sign in to keep your preferences and saved cooking decisions private to you.</p><button className="button button-primary" type="button" onClick={onSignIn}>Sign in</button></div>
   return (
     <div className="page-shell narrow-page">
