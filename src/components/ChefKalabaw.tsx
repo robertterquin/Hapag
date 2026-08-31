@@ -227,29 +227,96 @@ export function ChefKalabaw({ size = 180, className = '', onStir, stirCount = 0 
             <path d="M126 30 C124 26 120 24 117 25" stroke="#967258" strokeWidth="1.2" strokeLinecap="round" opacity="0.7" />
           </g>
 
-          {/* 2. Ears with inner ear depth */}
+          {/* 2. Ears with lifelike ear twitches */}
           <g className="ears">
             {/* Left Ear */}
-            <ellipse cx="44" cy="86" rx="14" ry="7.5" transform="rotate(-20 44 86)" fill="#443D36" stroke="#2B2620" strokeWidth="1" />
-            <ellipse cx="44" cy="86" rx="9" ry="4.5" transform="rotate(-20 44 86)" fill="#C28A62" opacity="0.75" />
-            <path d="M38 88 Q44 86 50 84" stroke="#8A5A38" strokeWidth="1" transform="rotate(-20 44 86)" opacity="0.6" />
+            <motion.g
+              animate={
+                wobbleKey > 0
+                  ? { rotate: [-26, -14, -20] }
+                  : { rotate: [-22, -18, -22] }
+              }
+              transition={
+                wobbleKey > 0
+                  ? { type: 'spring', stiffness: 450, damping: 10 }
+                  : { duration: 2.6, repeat: Infinity, ease: 'easeInOut' }
+              }
+              style={{ transformOrigin: '44px 86px' }}
+            >
+              <ellipse cx="44" cy="86" rx="14" ry="7.5" transform="rotate(-20 44 86)" fill="#443D36" stroke="#2B2620" strokeWidth="1" />
+              <ellipse cx="44" cy="86" rx="9" ry="4.5" transform="rotate(-20 44 86)" fill="#C28A62" opacity="0.75" />
+              <path d="M38 88 Q44 86 50 84" stroke="#8A5A38" strokeWidth="1" transform="rotate(-20 44 86)" opacity="0.6" />
+            </motion.g>
 
             {/* Right Ear */}
-            <ellipse cx="116" cy="86" rx="14" ry="7.5" transform="rotate(20 116 86)" fill="#443D36" stroke="#2B2620" strokeWidth="1" />
-            <ellipse cx="116" cy="86" rx="9" ry="4.5" transform="rotate(20 116 86)" fill="#C28A62" opacity="0.75" />
-            <path d="M110 88 Q116 86 122 84" stroke="#8A5A38" strokeWidth="1" transform="rotate(20 116 86)" opacity="0.6" />
+            <motion.g
+              animate={
+                wobbleKey > 0
+                  ? { rotate: [26, 14, 20] }
+                  : { rotate: [22, 18, 22] }
+              }
+              transition={
+                wobbleKey > 0
+                  ? { type: 'spring', stiffness: 450, damping: 10 }
+                  : { duration: 2.6, repeat: Infinity, ease: 'easeInOut', delay: 0.2 }
+              }
+              style={{ transformOrigin: '116px 86px' }}
+            >
+              <ellipse cx="116" cy="86" rx="14" ry="7.5" transform="rotate(20 116 86)" fill="#443D36" stroke="#2B2620" strokeWidth="1" />
+              <ellipse cx="116" cy="86" rx="9" ry="4.5" transform="rotate(20 116 86)" fill="#C28A62" opacity="0.75" />
+              <path d="M110 88 Q116 86 122 84" stroke="#8A5A38" strokeWidth="1" transform="rotate(20 116 86)" opacity="0.6" />
+            </motion.g>
           </g>
 
-          {/* 3. Shoulders & Body */}
-          <path
+          {/* 3. Shoulders & Torso with subtle breathing animation */}
+          <motion.path
             d="M38 152 C38 124 54 110 80 110 C106 110 122 124 122 152 Z"
             fill="url(#kalabawHeadGrad)"
             stroke="#26221C"
             strokeWidth="1"
+            animate={{ y: [0, -1.5, 0] }}
+            transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
           />
 
-          {/* 4. Canvas Apron with subtle banana-leaf green accent trim */}
-          <g className="chef-apron">
+          {/* 4. Left Arm (Gently holding the side of the pot) */}
+          <motion.g
+            className="left-arm-group"
+            animate={
+              wobbleKey > 0
+                ? { rotate: [-6, 6, -2, 0], y: [0, -2, 0] }
+                : { rotate: [-1.5, 1.5, -1.5], y: [0, -0.8, 0] }
+            }
+            transition={
+              wobbleKey > 0
+                ? { type: 'spring', stiffness: 450, damping: 14 }
+                : { duration: 2.8, repeat: Infinity, ease: 'easeInOut' }
+            }
+            style={{ transformOrigin: '44px 120px' }}
+          >
+            {/* Left Upper Arm & Forearm */}
+            <path
+              d="M44 118 C32 126 32 142 46 146 C56 148 68 140 70 132 C70 126 62 122 52 120 Z"
+              fill="url(#kalabawHeadGrad)"
+              stroke="#26221C"
+              strokeWidth="1"
+            />
+            {/* Left Hoof resting on the pot's left handle */}
+            <path
+              d="M58 138 C64 142 72 138 72 132 C68 128 62 130 58 138 Z"
+              fill="#261E18"
+              stroke="#18130F"
+              strokeWidth="0.8"
+            />
+            {/* Hoof cleft line */}
+            <path d="M65 133 L67 139" stroke="#483B30" strokeWidth="0.8" />
+          </motion.g>
+
+          {/* 5. Canvas Apron with subtle banana-leaf green accent trim */}
+          <motion.g
+            className="chef-apron"
+            animate={{ y: [0, -1, 0] }}
+            transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
+          >
             {/* Main Apron Canvas */}
             <path
               d="M54 120 L106 120 L112 152 L48 152 Z"
@@ -262,9 +329,9 @@ export function ChefKalabaw({ size = 180, className = '', onStir, stirCount = 0 
             {/* Apron Pocket */}
             <rect x="68" y="134" width="24" height="15" rx="2.5" fill="#EFE8D8" stroke="#D1C7B2" strokeWidth="1" />
             <path d="M72 134 L88 134" stroke="#2D6A4F" strokeWidth="1.2" />
-          </g>
+          </motion.g>
 
-          {/* 5. Silk Red Neckerchief (Bandana) */}
+          {/* 6. Silk Red Neckerchief (Bandana) */}
           <g className="neckerchief">
             <path
               d="M66 113 L94 113 L80 129 Z"
@@ -278,86 +345,101 @@ export function ChefKalabaw({ size = 180, className = '', onStir, stirCount = 0 
             <circle cx="79.2" cy="114.2" r="1" fill="#FFF2A3" />
           </g>
 
-          {/* 6. Sculpted Head Base */}
-          <ellipse cx="80" cy="87" rx="29" ry="25" fill="url(#kalabawHeadGrad)" stroke="#26221C" strokeWidth="1" />
-
-          {/* 7. Cheerful Muzzle / Snout with skin gradient */}
-          <g className="muzzle">
-            <ellipse cx="80" cy="98" rx="21" ry="14.5" fill="url(#kalabawMuzzleGrad)" stroke="#38322B" strokeWidth="1" />
-            
-            {/* Nostrils */}
-            <ellipse cx="71.5" cy="97.5" rx="3.8" ry="4.8" fill="#1C1814" />
-            <ellipse cx="70.8" cy="96.5" rx="1.2" ry="1.8" fill="#3D362F" />
-            <ellipse cx="88.5" cy="97.5" rx="3.8" ry="4.8" fill="#1C1814" />
-            <ellipse cx="87.8" cy="96.5" rx="1.2" ry="1.8" fill="#3D362F" />
-            
-            {/* Friendly smiling mouth curve under nose ring */}
-            <path d="M73 105 Q80 109 87 105" stroke="#2B241E" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-
-            {/* Polished Metallic 18k Golden Nose Ring */}
-            <path
-              d="M73 102 C73 113 87 113 87 102"
-              stroke="url(#goldRingGrad)"
-              strokeWidth="2.8"
-              strokeLinecap="round"
-              fill="none"
-            />
-            {/* Nose ring light gleam / specular reflection */}
-            <circle cx="80" cy="111" r="1" fill="#FFFFFF" />
-          </g>
-
-          {/* 8. Expressive Eyes with Deep Highlights & Sparkle */}
-          <g className="eyes">
-            {/* Left Eye */}
-            <circle cx="67.5" cy="81" r="4.8" fill="#15120F" />
-            <circle cx="66" cy="79.5" r="1.8" fill="#FFFFFF" />
-            <circle cx="69.2" cy="82.5" r="0.8" fill="#FFFFFF" opacity="0.8" />
-            {/* Eyebrow */}
-            <path d="M63 74 Q68 71 73 74" stroke="#2A241E" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-
-            {/* Right Eye (Normal vs Winking on high stir count) */}
-            {stirCount >= 5 ? (
-              <g className="winking-eye">
-                <path d="M86 81 Q92 75 98 81" stroke="#15120F" strokeWidth="2.6" strokeLinecap="round" fill="none" />
-                <path d="M87 73 Q92 70 97 73" stroke="#2A241E" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-              </g>
-            ) : (
-              <g className="normal-right-eye">
-                <circle cx="92.5" cy="81" r="4.8" fill="#15120F" />
-                <circle cx="91" cy="79.5" r="1.8" fill="#FFFFFF" />
-                <circle cx="94.2" cy="82.5" r="0.8" fill="#FFFFFF" opacity="0.8" />
-                {/* Eyebrow */}
-                <path d="M87 74 Q92 71 97 74" stroke="#2A241E" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-              </g>
-            )}
-
-            {/* Rosy Cheeks Blush */}
-            <ellipse cx="58.5" cy="91" rx="5" ry="2.8" fill="#E2725B" opacity="0.55" />
-            <ellipse cx="101.5" cy="91" rx="5" ry="2.8" fill="#E2725B" opacity="0.55" />
-          </g>
-
-          {/* 9. Pleated Cotton Chef's Toque (Hat) */}
+          {/* 7. Sculpted Head Base & Face with Breathing Bobbing Motion */}
           <motion.g
-            animate={wobbleKey > 0 ? { y: [-2, -6, -2], rotate: [-4, 4, 0] } : {}}
-            transition={{ duration: 0.35, ease: 'easeOut' }}
-            style={{ transformOrigin: '80px 58px' }}
+            className="head-group"
+            animate={
+              wobbleKey > 0
+                ? { y: [0, -4, 0], rotate: [-2, 2, 0] }
+                : { y: [0, -1.8, 0], rotate: [-0.8, 0.8, -0.8] }
+            }
+            transition={
+              wobbleKey > 0
+                ? { type: 'spring', stiffness: 400, damping: 15 }
+                : { duration: 2.8, repeat: Infinity, ease: 'easeInOut' }
+            }
+            style={{ transformOrigin: '80px 105px' }}
           >
-            {/* Hat base headband with structured stitching */}
-            <rect x="60" y="56" width="40" height="9" rx="3" fill="#FFFFFF" stroke="#D1C8B8" strokeWidth="1.4" />
-            <path d="M63 60.5 L97 60.5" stroke="#E5DEC9" strokeWidth="1" strokeDasharray="3 2" />
+            <ellipse cx="80" cy="87" rx="29" ry="25" fill="url(#kalabawHeadGrad)" stroke="#26221C" strokeWidth="1" />
 
-            {/* Puffy pleated crown with soft cotton shading */}
-            <path
-              d="M60 56 C54 46 58 34 70 34 C73 26 87 26 90 34 C102 34 106 46 100 56 Z"
-              fill="url(#toqueGrad)"
-              stroke="#C9C0AF"
-              strokeWidth="1.4"
-              strokeLinejoin="round"
-            />
-            {/* Pleat shadows */}
-            <path d="M71 40 L72 52" stroke="#D8D0BE" strokeWidth="1.5" strokeLinecap="round" />
-            <path d="M80 34 L80 50" stroke="#D8D0BE" strokeWidth="1.5" strokeLinecap="round" />
-            <path d="M89 40 L88 52" stroke="#D8D0BE" strokeWidth="1.5" strokeLinecap="round" />
+            {/* Cheerful Muzzle / Snout with skin gradient */}
+            <g className="muzzle">
+              <ellipse cx="80" cy="98" rx="21" ry="14.5" fill="url(#kalabawMuzzleGrad)" stroke="#38322B" strokeWidth="1" />
+              
+              {/* Nostrils */}
+              <ellipse cx="71.5" cy="97.5" rx="3.8" ry="4.8" fill="#1C1814" />
+              <ellipse cx="70.8" cy="96.5" rx="1.2" ry="1.8" fill="#3D362F" />
+              <ellipse cx="88.5" cy="97.5" rx="3.8" ry="4.8" fill="#1C1814" />
+              <ellipse cx="87.8" cy="96.5" rx="1.2" ry="1.8" fill="#3D362F" />
+              
+              {/* Friendly smiling mouth curve under nose ring */}
+              <path d="M73 105 Q80 109 87 105" stroke="#2B241E" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+
+              {/* Polished Metallic 18k Golden Nose Ring */}
+              <path
+                d="M73 102 C73 113 87 113 87 102"
+                stroke="url(#goldRingGrad)"
+                strokeWidth="2.8"
+                strokeLinecap="round"
+                fill="none"
+              />
+              {/* Nose ring light gleam / specular reflection */}
+              <circle cx="80" cy="111" r="1" fill="#FFFFFF" />
+            </g>
+
+            {/* Expressive Eyes with Deep Highlights & Sparkle */}
+            <g className="eyes">
+              {/* Left Eye */}
+              <circle cx="67.5" cy="81" r="4.8" fill="#15120F" />
+              <circle cx="66" cy="79.5" r="1.8" fill="#FFFFFF" />
+              <circle cx="69.2" cy="82.5" r="0.8" fill="#FFFFFF" opacity="0.8" />
+              {/* Eyebrow */}
+              <path d="M63 74 Q68 71 73 74" stroke="#2A241E" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+
+              {/* Right Eye (Normal vs Winking on high stir count) */}
+              {stirCount >= 5 ? (
+                <g className="winking-eye">
+                  <path d="M86 81 Q92 75 98 81" stroke="#15120F" strokeWidth="2.6" strokeLinecap="round" fill="none" />
+                  <path d="M87 73 Q92 70 97 73" stroke="#2A241E" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+                </g>
+              ) : (
+                <g className="normal-right-eye">
+                  <circle cx="92.5" cy="81" r="4.8" fill="#15120F" />
+                  <circle cx="91" cy="79.5" r="1.8" fill="#FFFFFF" />
+                  <circle cx="94.2" cy="82.5" r="0.8" fill="#FFFFFF" opacity="0.8" />
+                  {/* Eyebrow */}
+                  <path d="M87 74 Q92 71 97 74" stroke="#2A241E" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+                </g>
+              )}
+
+              {/* Rosy Cheeks Blush */}
+              <ellipse cx="58.5" cy="91" rx="5" ry="2.8" fill="#E2725B" opacity="0.55" />
+              <ellipse cx="101.5" cy="91" rx="5" ry="2.8" fill="#E2725B" opacity="0.55" />
+            </g>
+
+            {/* Pleated Cotton Chef's Toque (Hat) with secondary jiggle */}
+            <motion.g
+              animate={wobbleKey > 0 ? { y: [-2, -7, -2], rotate: [-5, 5, 0] } : { y: [0, -1, 0] }}
+              transition={{ duration: 0.35, ease: 'easeOut' }}
+              style={{ transformOrigin: '80px 58px' }}
+            >
+              {/* Hat base headband with structured stitching */}
+              <rect x="60" y="56" width="40" height="9" rx="3" fill="#FFFFFF" stroke="#D1C8B8" strokeWidth="1.4" />
+              <path d="M63 60.5 L97 60.5" stroke="#E5DEC9" strokeWidth="1" strokeDasharray="3 2" />
+
+              {/* Puffy pleated crown with soft cotton shading */}
+              <path
+                d="M60 56 C54 46 58 34 70 34 C73 26 87 26 90 34 C102 34 106 46 100 56 Z"
+                fill="url(#toqueGrad)"
+                stroke="#C9C0AF"
+                strokeWidth="1.4"
+                strokeLinejoin="round"
+              />
+              {/* Pleat shadows */}
+              <path d="M71 40 L72 52" stroke="#D8D0BE" strokeWidth="1.5" strokeLinecap="round" />
+              <path d="M80 34 L80 50" stroke="#D8D0BE" strokeWidth="1.5" strokeLinecap="round" />
+              <path d="M89 40 L88 52" stroke="#D8D0BE" strokeWidth="1.5" strokeLinecap="round" />
+            </motion.g>
           </motion.g>
         </g>
 
@@ -427,40 +509,68 @@ export function ChefKalabaw({ size = 180, className = '', onStir, stirCount = 0 
             animate={{ scale: [0.6, 1.3, 0.6], opacity: [0.5, 0.9, 0.5] }}
             transition={{ duration: 0.9, repeat: Infinity, delay: 0.4 }}
           />
+        </motion.g>
 
-          {/* Handcrafted Wooden Sandok (Ladle) stirring in stew */}
-          <motion.g
-            animate={
-              wobbleKey > 0
-                ? { rotate: [-20, 20, -12, 8, 0] }
-                : { rotate: [-6, 6, -6] }
-            }
-            transition={
-              wobbleKey > 0
-                ? { type: 'spring', stiffness: 500, damping: 10 }
-                : { duration: 1.8, repeat: Infinity, ease: 'easeInOut' }
-            }
-            style={{ transformOrigin: '98px 116px' }}
-          >
-            {/* Wooden Handle with Kamagong Grain */}
-            <path
-              d="M74 84 L98 116"
-              stroke="url(#sandokWoodGrad)"
-              strokeWidth="4.2"
-              strokeLinecap="round"
-            />
-            {/* Handle wood grain highlight line */}
-            <path
-              d="M74.8 84.8 L97 114.5"
-              stroke="#F2D6B3"
-              strokeWidth="0.8"
-              strokeLinecap="round"
-              opacity="0.6"
-            />
-            {/* Scooped Wooden Ladle Head */}
-            <ellipse cx="98" cy="116.8" rx="6" ry="3.8" fill="url(#sandokWoodGrad)" stroke="#543315" strokeWidth="0.8" />
-            <ellipse cx="97.5" cy="116.5" rx="4.2" ry="2.2" fill="#543315" opacity="0.4" />
-          </motion.g>
+        {/* ── 8. RIGHT ARM & WOODEN SANDOK (COORDINATED STIRRING ARM) ── */}
+        <motion.g
+          className="right-arm-and-sandok-group"
+          animate={
+            wobbleKey > 0
+              ? {
+                  rotate: [-24, 24, -14, 8, 0],
+                  x: [-3, 3, -1, 0],
+                  y: [-2, 2, -1, 0],
+                  scale: [1, 1.08, 0.95, 1],
+                }
+              : {
+                  rotate: [-7, 7, -7],
+                  x: [-1.5, 2, -1.5],
+                  y: [-1, 1.5, -1],
+                }
+          }
+          transition={
+            wobbleKey > 0
+              ? { type: 'spring', stiffness: 480, damping: 11 }
+              : { duration: 2.0, repeat: Infinity, ease: 'easeInOut' }
+          }
+          style={{ transformOrigin: '143px 127px' }}
+        >
+          {/* Right Upper Arm reaching out from shoulder */}
+          <path
+            d="M102 120 C114 116 124 104 126 94 C120 90 108 100 98 114 Z"
+            fill="url(#kalabawHeadGrad)"
+            stroke="#26221C"
+            strokeWidth="1"
+          />
+
+          {/* Wooden Sandok (Ladle Handle) */}
+          <path
+            d="M118 84 L143 126"
+            stroke="url(#sandokWoodGrad)"
+            strokeWidth="4.2"
+            strokeLinecap="round"
+          />
+          {/* Wood grain highlight */}
+          <path
+            d="M118.8 84.8 L142 124.5"
+            stroke="#F2D6B3"
+            strokeWidth="0.8"
+            strokeLinecap="round"
+            opacity="0.6"
+          />
+          {/* Scooped Wooden Ladle Head inside broth */}
+          <ellipse cx="143" cy="126.8" rx="6.5" ry="4" fill="url(#sandokWoodGrad)" stroke="#543315" strokeWidth="0.8" />
+          <ellipse cx="142.5" cy="126.5" rx="4.5" ry="2.4" fill="#543315" opacity="0.4" />
+
+          {/* Right Forearm & Hoof gripping around the Sandok Handle */}
+          <path
+            d="M110 98 C116 92 126 90 128 96 C128 104 118 108 110 102 Z"
+            fill="#261E18"
+            stroke="#18130F"
+            strokeWidth="0.8"
+          />
+          {/* Hoof knuckle cleft */}
+          <path d="M120 93 L122 100" stroke="#483B30" strokeWidth="0.8" />
         </motion.g>
 
         {/* ── BURST PARTICLES ENGINE (BAY LEAF, CHILI, GARLIC, SPARKLES) ── */}
