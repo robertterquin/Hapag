@@ -28,46 +28,46 @@ const PREVIEW_CARDS: PreviewCardData[] = [
     title: 'Classic Chicken Adobo',
     localName: 'Adobong Manok na may Patatas',
     description: 'Classic Filipino chicken braised in savory soy sauce and vinegar with crisp garlic and potatoes.',
-    badge: 'Classic Ulam',
-    authenticity: 'Lutong Bahay',
+    badge: 'Classic Dish',
+    authenticity: 'Home-style',
     matchScore: 96,
     time: '35 mins',
     difficulty: 'Easy',
     price: '₱140 – ₱190',
     servings: '4 servings',
-    available: ['Manok', 'Patatas', 'Bawang', 'Toyo'],
-    missing: ['Suka'],
+    available: ['Chicken', 'Potatoes', 'Garlic', 'Soy Sauce'],
+    missing: ['Vinegar'],
     subTip: 'Can substitute Potatoes with Tofu',
   },
   {
     id: 'sinigang',
-    title: 'Sinigang na Baboy',
+    title: 'Pork Sinigang',
     localName: 'Sinigang sa Sampalok',
     description: 'Pork belly simmered in a tangy tamarind broth with fresh kangkong and crisp vegetables.',
-    badge: 'Classic Ulam',
-    authenticity: 'May Sabaw',
+    badge: 'Classic Dish',
+    authenticity: 'Sour Soup',
     matchScore: 88,
     time: '50 mins',
     difficulty: 'Medium',
     price: '₱220 – ₱300',
     servings: '4 servings',
-    available: ['Liempo', 'Kangkong', 'Kamatis', 'Sibuyas'],
-    missing: ['Sampalok', 'Labanos'],
-    subTip: 'Can substitute Sampalok with Calamansi',
+    available: ['Pork Belly', 'Kangkong', 'Tomatoes', 'Onion'],
+    missing: ['Tamarind', 'Radish'],
+    subTip: 'Can substitute Tamarind with Calamansi',
   },
   {
     id: 'torta',
     title: 'Tortang Talong',
     localName: 'Torta ng Talong',
     description: 'Charred smoky eggplant dipped in savory beaten egg and pan-fried until golden crisp.',
-    badge: 'Classic Ulam',
-    authenticity: 'Pritong Ulam',
+    badge: 'Classic Dish',
+    authenticity: 'Pan-fried',
     matchScore: 100,
     time: '20 mins',
     difficulty: 'Easy',
     price: '₱60 – ₱90',
     servings: '2 servings',
-    available: ['Talong', 'Itlog', 'Bawang', 'Asin'],
+    available: ['Eggplant', 'Eggs', 'Garlic', 'Salt'],
     missing: [],
     subTip: 'Add ground pork or onion for extra flavor',
   },
@@ -76,16 +76,16 @@ const PREVIEW_CARDS: PreviewCardData[] = [
     title: 'Chicken Tinola',
     localName: 'Tinolang Manok na may Sayote',
     description: 'Traditional ginger chicken soup simmered with fresh chayote and tender chili leaves.',
-    badge: 'Classic Ulam',
-    authenticity: 'May Sabaw',
+    badge: 'Classic Dish',
+    authenticity: 'Ginger Soup',
     matchScore: 92,
     time: '40 mins',
     difficulty: 'Easy',
     price: '₱160 – ₱220',
     servings: '4 servings',
-    available: ['Manok', 'Luya', 'Bawang', 'Sibuyas'],
-    missing: ['Sayote', 'Dahon ng Sili'],
-    subTip: 'Can substitute Chili Leaves with Malunggay',
+    available: ['Chicken', 'Ginger', 'Garlic', 'Onion'],
+    missing: ['Chayote', 'Chili Leaves'],
+    subTip: 'Can substitute Chili Leaves with Malunggay / Moringa',
   },
 ]
 
@@ -101,13 +101,13 @@ export function HomePage({ onStart }: HomePageProps) {
       <section className="hero-panel">
         <div className="hero-copy">
           <span className="eyebrow">Filipino meal assistant</span>
-          <h1>May sangkap ka? May maluluto tayo.</h1>
-          <p className="hero-subtitle">Mula sa kusina mo, hanap tayo ng ulam.</p>
-          <p className="hero-description">Ilagay ang mga sangkap na meron ka, suriin ang nakita ni Hapag, at iangkop ang mga ideya sa budget, servings, at panlasang gusto mo.</p>
+          <h1>Got ingredients? Let's cook something delicious.</h1>
+          <p className="hero-subtitle">From your kitchen pantry to the dinner table.</p>
+          <p className="hero-description">Enter whatever ingredients you have on hand. Hapag analyzes them to find authentic Filipino recipes, complete with price estimates, smart substitutions, and step-by-step guidance.</p>
           <div className="home-cta-content">
-            <strong>Tuklasin ang ulam na bagay sa iyo.</strong>
-            <p>Sa Ulam AI, ilalagay mo ang mga sangkap mo, pipili ng preferences, at makakakita ng tatlong praktikal na ideya.</p>
-            <button className="button button-primary" type="button" onClick={() => onStart('')}>Simulan sa Ulam AI <span aria-hidden="true">→</span></button>
+            <strong>Discover dishes tailored to you.</strong>
+            <p>With Ulam AI, input your available ingredients, set preferences, and explore 3 practical meal options.</p>
+            <button className="button button-primary" type="button" onClick={() => onStart('')}>Start with Ulam AI <span aria-hidden="true">→</span></button>
           </div>
         </div>
 
@@ -123,7 +123,7 @@ export function HomePage({ onStart }: HomePageProps) {
                 handleShuffle()
               }
             }}
-            aria-label="I-click para mag-shuffle ng recipe card"
+            aria-label="Click to shuffle recipe card"
           >
             {cards.slice(0, 3).map((dish, index) => {
               const isTop = index === 0
@@ -172,7 +172,7 @@ export function HomePage({ onStart }: HomePageProps) {
 
                     <div className="hero-preview-ingredients">
                       <div className="hero-preview-group">
-                        <span className="hero-preview-group-label meron">Meron ka na ({dish.available.length})</span>
+                        <span className="hero-preview-group-label meron">You Have ({dish.available.length})</span>
                         <div className="hero-preview-chips">
                           {dish.available.map((item) => (
                             <span key={item} className="chip-meron">{item}</span>
@@ -182,7 +182,7 @@ export function HomePage({ onStart }: HomePageProps) {
 
                       {dish.missing.length > 0 && (
                         <div className="hero-preview-group">
-                          <span className="hero-preview-group-label kulang">Kulang pa ({dish.missing.length})</span>
+                          <span className="hero-preview-group-label kulang">Missing ({dish.missing.length})</span>
                           <div className="hero-preview-chips">
                             {dish.missing.map((item) => (
                               <span key={item} className="chip-kulang">{item}</span>
@@ -194,7 +194,7 @@ export function HomePage({ onStart }: HomePageProps) {
 
                     {dish.subTip && (
                       <div className="hero-preview-sub-tip">
-                        <span className="sub-tip-badge">Pamalit</span>
+                        <span className="sub-tip-badge">Substitution</span>
                         <span className="sub-tip-text">{dish.subTip}</span>
                       </div>
                     )}
@@ -208,4 +208,5 @@ export function HomePage({ onStart }: HomePageProps) {
     </div>
   )
 }
+
 

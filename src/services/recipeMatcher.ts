@@ -5,7 +5,10 @@ import { normalizeIngredientName } from '../lib/ingredientParser.ts'
 import { ingredientSubstitutionRules } from '../data/ingredientGroups.ts'
 import { dishMatchingRules } from '../data/dishMatchingRules.ts'
 
+import { specializeDishTitle } from '../schemas/recipeAdapter.ts'
+
 export type RecipeMatchKind = 'strong-match' | 'partial-match' | 'adaptation-candidate'
+
 
 export interface RecipeMatch {
   dish: FilipinoRecipeCatalogEntry
@@ -143,9 +146,21 @@ export function matchRecipeCatalog(
     .map((match) => {
       const { weightedScore, ...publicMatch } = match
       void weightedScore
-      return publicMatch
+      const specializedName = specializeDishTitle(publicMatch.dish.name, ingredients)
+      const specializedLocalName = publicMatch.dish.localName
+        ? specializeDishTitle(publicMatch.dish.localName, ingredients)
+        : publicMatch.dish.localName
+      return {
+        ...publicMatch,
+        dish: {
+          ...publicMatch.dish,
+          name: specializedName,
+          localName: specializedLocalName,
+        },
+      }
     })
 }
+
 
 export function countRecipeMatches(
   ingredients: NormalizedIngredient[],

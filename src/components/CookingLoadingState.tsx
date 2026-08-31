@@ -10,12 +10,12 @@ interface CookingLoadingStateProps {
 }
 
 function getStirFeedback(count: number): { text: string; sub: string } {
-  if (count === 0) return { text: 'Pindutin para haluin!', sub: 'Tap ang palayok habang naghihintay' }
-  if (count === 1) return { text: '1x nahalo! May mabangong usok...', sub: 'Sumisingaw na ang sarap!' }
-  if (count <= 3) return { text: `${count}x nahalo! Tuloy-tuloy lang!`, sub: 'Amoy lutong-bahay na dito...' }
-  if (count <= 6) return { text: `${count}x nahalo! Ang sarap ng timpla!`, sub: 'Kumukulo na ang palayok!' }
-  if (count <= 9) return { text: `${count}x nahalo! Bihasang kusinero!`, sub: 'Swabe ang kulo ng sabaw!' }
-  return { text: `${count}x nahalo! Master Chef Kalabaw!`, sub: 'Handang-handa na ang lutuin mo!' }
+  if (count === 0) return { text: 'Tap to stir the pot!', sub: 'Give Chef Kalabaw a hand while waiting' }
+  if (count === 1) return { text: '1x stirred! Smells delicious...', sub: 'Aromatic steam rising!' }
+  if (count <= 3) return { text: `${count}x stirred! Keep it up!`, sub: 'Home-cooked aroma in the kitchen...' }
+  if (count <= 6) return { text: `${count}x stirred! Perfect seasoning!`, sub: 'The clay pot is simmering!' }
+  if (count <= 9) return { text: `${count}x stirred! Seasoned chef!`, sub: 'Broth is simmering smoothly!' }
+  return { text: `${count}x stirred! Master Chef level unlocked!`, sub: 'Your meal is almost ready!' }
 }
 
 export function CookingLoadingState({ ingredients = [], rawInput = '' }: CookingLoadingStateProps) {

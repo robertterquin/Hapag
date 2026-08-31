@@ -5,5 +5,15 @@ export interface NotFoundPageProps {
 }
 
 export function NotFoundPage({ onBack }: NotFoundPageProps) {
-  return <StatePanel tone="empty" icon="?" title="Walang laman ang page na ito." description="Hindi pa umiiral ang route na ito." actionLabel="Bumalik sa Home" onAction={onBack} />
+  return (
+    <StatePanel
+      tone="empty"
+      icon="?"
+      title="Page not found"
+      description="The requested page could not be found."
+      actionLabel="Back to Home"
+      onAction={onBack}
+    />
+  )
 }
+

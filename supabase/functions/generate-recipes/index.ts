@@ -297,13 +297,149 @@ function cleanDishTitle(title: string): string {
   return cleaned || title
 }
 
+const SPECIFIC_FISH_MAP: Record<string, string> = {
+  tilapia: 'Tilapia',
+  milkfish: 'Bangus',
+  bangus: 'Bangus',
+  galunggong: 'Galunggong',
+  'round scad': 'Galunggong',
+  tulingan: 'Tulingan',
+  'mackerel tuna': 'Tulingan',
+  tanigue: 'Tanigue',
+  'spanish mackerel': 'Tanigue',
+  salmon: 'Salmon',
+  'salmon head': 'Salmon Head',
+  pampano: 'Pampano',
+  pompano: 'Pampano',
+  'maya-maya': 'Maya-maya',
+  'red snapper': 'Maya-maya',
+  hito: 'Hito',
+  catfish: 'Hito',
+  'dalagang bukid': 'Dalagang Bukid',
+  'yellowtail fusilier': 'Dalagang Bukid',
+  'lapu-lapu': 'Lapu-Lapu',
+  grouper: 'Lapu-Lapu',
+  tambakol: 'Tambakol',
+  'yellowfin tuna': 'Tambakol',
+  tuna: 'Tuna',
+}
+
+const SPECIFIC_VEG_MAP: Record<string, string> = {
+  pechay: 'Pechay',
+  'bok choy': 'Pechay',
+  kangkong: 'Kangkong',
+  'water spinach': 'Kangkong',
+  sayote: 'Sayote',
+  chayote: 'Sayote',
+  upo: 'Upo',
+  'bottle gourd': 'Upo',
+  patola: 'Patola',
+  'sponge gourd': 'Patola',
+  ampalaya: 'Ampalaya',
+  'bitter melon': 'Ampalaya',
+  repolyo: 'Repolyo',
+  cabbage: 'Repolyo',
+  togue: 'Togue',
+  'bean sprouts': 'Togue',
+  sitaw: 'Sitaw',
+  'string beans': 'Sitaw',
+  'long beans': 'Sitaw',
+  talong: 'Talong',
+  eggplant: 'Talong',
+  langka: 'Langka',
+  jackfruit: 'Langka',
+  'green jackfruit': 'Langka',
+  'banana blossom': 'Puso ng Saging',
+  'puso ng saging': 'Puso ng Saging',
+  kalabasa: 'Kalabasa',
+  squash: 'Kalabasa',
+}
+
+function specializeDishTitle(title: string, ingredients: JsonRecord[] = []): string {
+  if (!title || typeof title !== 'string') return ''
+
+  const availableCanonical = new Set<string>()
+  for (const ing of ingredients) {
+    if (typeof ing.canonicalName === 'string') availableCanonical.add(ing.canonicalName.toLowerCase().trim())
+    if (typeof ing.name === 'string') availableCanonical.add(ing.name.toLowerCase().trim())
+  }
+
+  let matchedFish: string | undefined
+  for (const [key, displayName] of Object.entries(SPECIFIC_FISH_MAP)) {
+    if (availableCanonical.has(key)) {
+      matchedFish = displayName
+      break
+    }
+  }
+
+  let specialized = title
+
+  if (matchedFish) {
+    specialized = specialized.replace(/\b(sinigang|paksiw|inihaw|tinola|pesa|daing|kilawin|pritong|bistek|sweet and sour)\s+na\s+isda\b/gi, `$1 na ${matchedFish}`)
+    specialized = specialized.replace(/\b(sinigang|paksiw|inihaw|tinola|pesa|daing|kilawin|pritong|bistek|sweet and sour)\s+na\s+fish\b/gi, `$1 na ${matchedFish}`)
+    specialized = specialized.replace(/\bsarciadong\s+isda\b/gi, `Sarciadong ${matchedFish}`)
+    specialized = specialized.replace(/\bescabecheng\s+isda\b/gi, `Escabecheng ${matchedFish}`)
+    specialized = specialized.replace(/^escabeche$/i, `Escabecheng ${matchedFish}`)
+    specialized = specialized.replace(/\bginataang\s+isda\b/gi, `Ginataang ${matchedFish}`)
+    specialized = specialized.replace(/\bkilawing\s+isda\b/gi, `Kilawing ${matchedFish}`)
+    specialized = specialized.replace(/\btinolang\s+isda\b/gi, `Tinolang ${matchedFish}`)
+    specialized = specialized.replace(/\bpesang\s+isda\b/gi, `Pesang ${matchedFish}`)
+    specialized = specialized.replace(/\bdaing\s+na\s+isda\b/gi, `Daing na ${matchedFish}`)
+    specialized = specialized.replace(/\bfish\s+(sarciado|paksiw|sinigang|tinola|escabeche|kilawin|pesa)\b/gi, `${matchedFish} $1`)
+    specialized = specialized.replace(/\b(grilled|fried|steamed|sweet and sour|crispy)\s+fish\b/gi, `$1 ${matchedFish}`)
+    specialized = specialized.replace(/\bfish\s+in\s+coconut\s+milk\b/gi, `${matchedFish} in Coconut Milk`)
+  }
+
+  let matchedVeg: string | undefined
+  for (const [key, displayName] of Object.entries(SPECIFIC_VEG_MAP)) {
+    if (availableCanonical.has(key)) {
+      matchedVeg = displayName
+      break
+    }
+  }
+
+  if (matchedVeg) {
+    specialized = specialized.replace(/\bginisang\s+gulay\b/gi, `Ginisang ${matchedVeg}`)
+    specialized = specialized.replace(/\bsaut[eé]ed\s+vegetables?\b/gi, `Sautéed ${matchedVeg}`)
+    specialized = specialized.replace(/\badobong\s+gulay\b/gi, `Adobong ${matchedVeg}`)
+
+    if (/\bginataang\s+gulay\b/i.test(specialized) || /\bvegetables?\s+in\s+coconut\s+milk\b/i.test(specialized)) {
+      if (availableCanonical.has('langka') || availableCanonical.has('jackfruit') || availableCanonical.has('green jackfruit')) {
+        specialized = 'Ginataang Langka'
+      } else if (availableCanonical.has('banana blossom') || availableCanonical.has('puso ng saging')) {
+        specialized = 'Ginataang Puso ng Saging'
+      } else if ((availableCanonical.has('kalabasa') || availableCanonical.has('squash')) && (availableCanonical.has('sitaw') || availableCanonical.has('string beans') || availableCanonical.has('long beans'))) {
+        specialized = 'Ginataang Kalabasa at Sitaw'
+      } else {
+        specialized = `Ginataang ${matchedVeg}`
+      }
+    }
+  }
+
+  if (availableCanonical.has('pork belly') || availableCanonical.has('liempo')) {
+    specialized = specialized.replace(/\binihaw\s+na\s+baboy\b/gi, 'Inihaw na Liempo')
+    specialized = specialized.replace(/\bgrilled\s+pork\b/gi, 'Grilled Pork Belly (Inihaw na Liempo)')
+    specialized = specialized.replace(/\bsinugba\s+na\s+baboy\b/gi, 'Sinugba na Liempo')
+  }
+
+  return specialized
+}
+
 function cleanGeneratedRecipeTitles(recipes: JsonRecord[]) {
   return recipes.map((recipe) => {
-    const title = typeof recipe.title === 'string' ? cleanDishTitle(recipe.title) : recipe.title
-    const localTitle = typeof recipe.localTitle === 'string' ? cleanDishTitle(recipe.localTitle) : recipe.localTitle
+    const rawIngredients = Array.isArray(recipe.ingredients) ? recipe.ingredients.filter(isRecord) : []
+    const cleanedTitle = typeof recipe.title === 'string' ? cleanDishTitle(recipe.title) : recipe.title
+    const title = typeof cleanedTitle === 'string' ? specializeDishTitle(cleanedTitle, rawIngredients) : cleanedTitle
+
+    let localTitle = recipe.localTitle
+    if (typeof recipe.localTitle === 'string') {
+      const cleanedLocal = cleanDishTitle(recipe.localTitle)
+      localTitle = specializeDishTitle(cleanedLocal, rawIngredients)
+    }
     return { ...recipe, title, localTitle }
   })
 }
+
 
 function validateResultComposition(recipes: JsonRecord[], candidateDishes: unknown) {
   const adaptationCount = recipes.filter((recipe) => recipe.authenticity === 'hapag-adaptation').length
@@ -471,7 +607,8 @@ async function handler(request: Request) {
         role: 'developer',
         content: [{
           type: 'input_text',
-          text: 'You are Hapag, an authentic Filipino cooking assistant. Generate exactly three practical, authentic Filipino recipe choices using the ingredients provided for this cooking session first. Always ground your suggestions in authentic, recognizable Filipino dishes (such as Sinigang, Adobo, Tinola, Pochero, Sarciado, Menudo, Nilaga, Ginataang Isda, Paksiw, Escabeche, Inihaw, Tortang Talong, etc.) using the supplied candidateDishes from the Filipino catalog. Preserve authentic Filipino dish identity. Set authenticity to "classic" for traditional dishes or "home-style" for familiar home-cooked variations; do not create artificial or invented fusion recipes.\n\nCRITICAL DISH NAMING & MATCHING RULES:\n1. TITLES ("title" and "localTitle"): Use clean, authentic, standard Filipino dish names (e.g., "Ginataang Tilapia", "Sarciadong Isda", "Paksiw na Tilapia", "Chicken Adobo", "Pork Sinigang", "Tortang Talong", "Ginisang Monggo").\n2. NEVER invent artificial descriptive compound dish names by appending ingredients or styles:\n   - NEVER generate titles with "sa [ingredient] at [ingredient]" (e.g., DO NOT name a dish "Ginataang Tilapia sa Sibuyas at Paminta" or "Adobong Manok sa Bawang at Toyo").\n   - NEVER generate titles with "na May [Style]-Style na [ingredient]" (e.g., DO NOT name a dish "Ginataang Tilapia na May Inihaw-Style na Bawang" or "Pritong Baboy Style na...").\n   - NEVER generate titles with "with Garlic and Onion" or "with Onion and Pepper".\n3. DIVERSITY ACROSS 3 CHOICES: Each of the 3 recipe suggestions MUST be a DISTINCT, recognized Filipino dish (e.g., if user has Tilapia, Ginger, Garlic, Onion, and Coconut Milk, suggest "Ginataang Tilapia", "Paksiw na Tilapia", and "Sarciadong Tilapia" or "Inihaw na Tilapia"). Do NOT output 3 minor variations of the same dish title!\n4. PROTEIN ACCURACY: NEVER name a dish after a meat or seafood species that was not provided (e.g., if the user provided shrimp/hipon, NEVER name suggestions "Ginataang Pusit" or "Ginataang Tahong" adapted with shrimp! Suggest authentic shrimp dishes like "Ginataang Hipon", "Garlic Butter Shrimp", "Halabos na Hipon", "Sinigang na Hipon", or "Ginataang Kalabasa at Sitaw").\n5. COOKING STEPS ("steps[].action"): ALWAYS write every cooking step action in clear, concise, natural English (e.g., "Heat the cooking oil in a pot over medium heat and sauté the garlic and onions until fragrant."). Every step must be 100% in English.\n6. INGREDIENTS ("ingredients[].name"): Write ingredient names in clear English with standard culinary naming (e.g., Garlic, Onion, Chicken, Tilapia, Pechay / Bok Choy, Cooking Oil, Soy Sauce, Vinegar, Eggs).\n7. SUBSTITUTIONS ("substitutions[].tradeoff"): Write the tradeoff explanation in clear English.\n8. DESCRIPTIONS & MATCH REASONS: Write "description" and "matchReason" in clear, appetizing English. If a home-style variation was made, describe the flavor nuance in the description, NEVER in the dish title. Return only the requested JSON structure.',
+          text: 'You are Hapag, an authentic Filipino cooking assistant. Generate exactly three practical, authentic Filipino recipe choices using the ingredients provided for this cooking session first. Always ground your suggestions in authentic, recognizable Filipino dishes (such as Sinigang, Adobo, Tinola, Pochero, Sarciado, Menudo, Nilaga, Paksiw, Escabeche, Inihaw, Tortang Talong, etc.) using the supplied candidateDishes from the Filipino catalog. Preserve authentic Filipino dish identity. Set authenticity to "classic" for traditional dishes or "home-style" for familiar home-cooked variations; do not create artificial or invented fusion recipes.\n\nCRITICAL DISH NAMING & MATCHING RULES:\n1. TITLES ("title" and "localTitle"): Use clean, authentic, standard Filipino dish names (e.g., "Ginataang Tilapia", "Sarciadong Tilapia", "Paksiw na Tilapia", "Chicken Adobo", "Pork Sinigang", "Tortang Talong", "Ginisang Monggo").\n2. PROTEIN & INGREDIENT SPECIFICITY IN TITLES: ALWAYS use the specific protein, fish species, or vegetable name in the dish title instead of generic words like "Isda", "Fish", or "Gulay":\n   - If the user provided Tilapia: ALWAYS name dishes "Sarciadong Tilapia", "Paksiw na Tilapia", "Inihaw na Tilapia", "Sinigang na Tilapia", "Ginataang Tilapia", "Escabecheng Tilapia", "Tinolang Tilapia". NEVER name a dish "Sarciadong Isda", "Paksiw na Isda", "Inihaw na Isda", or "Sinigang na Isda" when Tilapia is provided!\n   - If the user provided Bangus / Milkfish: "Sinigang na Bangus", "Paksiw na Bangus", "Inihaw na Bangus", "Daing na Bangus", "Sarciadong Bangus".\n   - If the user provided Galunggong: "Pritong Galunggong", "Paksiw na Galunggong", "Sarciadong Galunggong".\n   - If the user provided Salmon: "Sinigang na Salmon Head", "Paksiw na Salmon", "Inihaw na Salmon".\n   - If the user provided specific vegetables (Pechay, Sayote, Upo, Ampalaya, Sitaw, Kangkong): name dishes "Ginisang Pechay", "Ginisang Sayote", "Ginisang Upo", "Ginisang Ampalaya", "Adobong Kangkong", NEVER generic "Ginisang Gulay".\n   - NEVER name a dish after a meat or seafood species that was not provided (e.g., if user provided shrimp/hipon, NEVER name suggestions "Ginataang Pusit" or "Ginataang Tahong").\n3. NEVER invent artificial descriptive compound dish names by appending ingredients or styles:\n   - NEVER generate titles with "sa [ingredient] at [ingredient]" (e.g., DO NOT name a dish "Ginataang Tilapia sa Sibuyas at Paminta" or "Adobong Manok sa Bawang at Toyo").\n   - NEVER generate titles with "na May [Style]-Style na [ingredient]" (e.g., DO NOT name a dish "Ginataang Tilapia na May Inihaw-Style na Bawang" or "Pritong Baboy Style na...").\n   - NEVER generate titles with "with Garlic and Onion" or "with Onion and Pepper".\n4. DIVERSITY ACROSS 3 CHOICES: Each of the 3 recipe suggestions MUST be a DISTINCT, recognized Filipino dish (e.g., if user has Tilapia, Ginger, Garlic, Onion, and Coconut Milk, suggest "Ginataang Tilapia", "Paksiw na Tilapia", and "Sarciadong Tilapia" or "Inihaw na Tilapia"). Do NOT output 3 minor variations of the same dish title!\n5. COOKING STEPS ("steps[].action"): ALWAYS write every cooking step action in clear, concise, natural English (e.g., "Heat the cooking oil in a pot over medium heat and sauté the garlic and onions until fragrant."). Every step must be 100% in English.\n6. INGREDIENTS ("ingredients[].name"): Write ingredient names in clear English with standard culinary naming (e.g., Garlic, Onion, Chicken, Tilapia, Pechay / Bok Choy, Cooking Oil, Soy Sauce, Vinegar, Eggs).\n7. SUBSTITUTIONS ("substitutions[].tradeoff"): Write the tradeoff explanation in clear English.\n8. DESCRIPTIONS & MATCH REASONS: Write "description" and "matchReason" in clear, appetizing English. If a home-style variation was made, describe the flavor nuance in the description, NEVER in the dish title. Return only the requested JSON structure.',
+
         }],
       },
       {

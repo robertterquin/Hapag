@@ -54,7 +54,7 @@ export function ChefKalabaw({ size = 180, className = '', onStir, stirCount = 0 
       role={onStir ? 'button' : undefined}
       tabIndex={onStir ? 0 : undefined}
       onKeyDown={onStir ? (e) => (e.key === 'Enter' || e.key === ' ' ? handlePotClick() : null) : undefined}
-      aria-label={onStir ? 'Haluin ang palayok' : 'Chef Kalabaw Mascot'}
+      aria-label={onStir ? 'Stir the cooking pot' : 'Chef Kalabaw Mascot'}
     >
       <svg
         viewBox="0 0 200 190"

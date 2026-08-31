@@ -132,11 +132,11 @@ export function useDiscovery() {
       setGenerationStatus('success')
     } catch (error) {
       if (error instanceof RecipeGenerationError && error.status === 429) {
-        setGenerationError('Naabot na ang limit ng AI generation. Subukan ulit pagkalipas ng ilang minuto.')
+        setGenerationError('AI generation limit reached. Please try again in a few minutes.')
       } else if (error instanceof RecipeGenerationError && error.status === 503) {
-        setGenerationError('Hindi available ang AI service ngayon. Suriin ang OpenAI at Upstash secrets sa Supabase Edge Function, pagkatapos ay subukan ulit.')
+        setGenerationError('AI service is temporarily unavailable. Please check your Supabase Edge Function secrets and try again.')
       } else {
-        setGenerationError('Hindi nabuo ang mga recipe. Puwede kang mag-retry o bumalik para mag-edit.')
+        setGenerationError('Could not generate recipes. You can try again or edit your ingredients.')
       }
       setGenerationStatus('error')
     }

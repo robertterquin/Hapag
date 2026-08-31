@@ -43,15 +43,15 @@ const rawRecipeFixtures = [
     servings: 3,
     timeMinutes: 20,
     difficulty: 'Easy',
-    estimatedCost: { currency: 'PHP', min: 50, max: 85, confidence: 'low', note: 'Tantya lang ang presyo; nagbabago depende sa lugar at brand.' },
+    estimatedCost: { currency: 'PHP', min: 50, max: 85, confidence: 'low', note: 'Price estimate; varies by location and brand.' },
     costBreakdown: [
       { ingredient: 'Sardines', estimatedCost: 30, available: true },
-      { ingredient: 'Itlog', estimatedCost: 24, available: true },
+      { ingredient: 'Eggs', estimatedCost: 24, available: true },
       { ingredient: 'Pechay', estimatedCost: 20, available: true },
       { ingredient: 'Pantry staples', estimatedCost: 10, available: false },
     ],
     substitutions: [
-      { id: 'pechay-kangkong', original: 'Pechay', substitute: 'Kangkong', tradeoff: 'Mas madahon at mas mabilis lumambot.' },
+      { id: 'pechay-kangkong', original: 'Pechay', substitute: 'Kangkong', tradeoff: 'Leafier texture and wilts faster.' },
     ],
     tags: ['budget meal', 'quick', 'baon'],
     dietaryNotes: ['Contains fish and egg.'],
@@ -81,7 +81,7 @@ const rawRecipeFixtures = [
     servings: 2,
     timeMinutes: 15,
     difficulty: 'Easy',
-    estimatedCost: { currency: 'PHP', min: 35, max: 70, confidence: 'low', note: 'Estimate lang; hindi live market price.' },
+    estimatedCost: { currency: 'PHP', min: 35, max: 70, confidence: 'low', note: 'Estimated cost; not a live market price.' },
     costBreakdown: [
       { ingredient: 'Pechay', estimatedCost: 20, available: true },
       { ingredient: 'Kamatis', estimatedCost: 15, available: true },
@@ -89,7 +89,7 @@ const rawRecipeFixtures = [
       { ingredient: 'Sibuyas at mantika', estimatedCost: 10, available: false },
     ],
     substitutions: [
-      { id: 'pechay-kangkong-2', original: 'Pechay', substitute: 'Kangkong', tradeoff: 'Mas chewy ang dahon; idagdag nang mas maaga kung makapal ang tangkay.' },
+      { id: 'pechay-kangkong-2', original: 'Pechay', substitute: 'Kangkong', tradeoff: 'Chewier leaves; add earlier if stems are thick.' },
     ],
     tags: ['vegetable', 'quick', 'budget meal'],
     dietaryNotes: ['Vegetarian if cooked without fish sauce.'],
@@ -119,7 +119,7 @@ const rawRecipeFixtures = [
     servings: 3,
     timeMinutes: 18,
     difficulty: 'Easy',
-    estimatedCost: { currency: 'PHP', min: 45, max: 80, confidence: 'low', note: 'Tantya lang ang presyo at hindi kasama ang full package purchase cost.' },
+    estimatedCost: { currency: 'PHP', min: 45, max: 80, confidence: 'low', note: 'Price estimate; does not reflect bulk packaging.' },
     costBreakdown: [
       { ingredient: 'Itlog', estimatedCost: 36, available: true },
       { ingredient: 'Sardinas', estimatedCost: 30, available: true },
@@ -127,7 +127,7 @@ const rawRecipeFixtures = [
       { ingredient: 'Mantika at paminta', estimatedCost: 8, available: false },
     ],
     substitutions: [
-      { id: 'sardines-tofu', original: 'Sardinas', substitute: 'Tofu', tradeoff: 'Vegetarian na bersyon, pero magbabago ang lasa at texture.' },
+      { id: 'sardines-tofu', original: 'Sardinas', substitute: 'Tofu', tradeoff: 'Vegetarian alternative with a milder flavor and firmer texture.' },
     ],
     tags: ['quick', 'baon', 'budget meal'],
     dietaryNotes: ['Contains fish and egg.'],

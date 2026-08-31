@@ -34,13 +34,13 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
   }, [selectedCategory])
 
   return (
-    <section className="kusina-shelf" aria-label="Sangkap sa Kusina Quick-Add Shelf">
+    <section className="kusina-shelf" aria-label="Kitchen Pantry Quick-Add Shelf">
       <div className="shelf-header">
         <div className="shelf-title-group">
-          <span className="shelf-kicker">Mabilisang Pagpili</span>
-          <h2 className="shelf-title">Sangkap sa Kusina</h2>
+          <span className="shelf-kicker">Quick Pick</span>
+          <h2 className="shelf-title">Kitchen Pantry</h2>
         </div>
-        <span className="shelf-hint">I-tap para idagdag o alisin</span>
+        <span className="shelf-hint">Tap to add or remove</span>
       </div>
 
       {/* Dynamic Smart Pairings */}
@@ -58,7 +58,7 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
                 <circle cx="12" cy="12" r="10" />
                 <path d="m9 12 2 2 4-4" />
               </svg>
-              Bagay isahog kasama nito:
+              Pairs well with this:
             </span>
             <div className="pairings-list">
               {smartPairings.map((pair) => (
@@ -66,10 +66,10 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
                   key={pair.localName}
                   className="pairing-chip"
                   type="button"
-                  onClick={() => onToggle(pair.localName, false)}
-                  title={`Idagdag ang ${pair.localName}`}
+                  onClick={() => onToggle(pair.name, false)}
+                  title={`Add ${pair.name}`}
                 >
-                  <span className="plus-glyph">+</span> {pair.localName}
+                  <span className="plus-glyph">+</span> {pair.name}
                 </button>
               ))}
             </div>
@@ -78,7 +78,7 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
       </AnimatePresence>
 
       {/* Category Tabs */}
-      <div className="shelf-tabs" role="tablist" aria-label="Kusina Shelf Categories">
+      <div className="shelf-tabs" role="tablist" aria-label="Kitchen Shelf Categories">
         {kusinaCategories.map((cat) => {
           const isSelected = selectedCategory === cat.id
           return (
@@ -99,18 +99,18 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
       {/* Shelf Grid / Chips */}
       <motion.div layout className="shelf-grid">
         {filteredItems.map((item) => {
-          const existingId = activeCanonicalMap.get(item.canonicalName.toLowerCase()) || activeCanonicalMap.get(item.localName.toLowerCase())
+          const existingId = activeCanonicalMap.get(item.canonicalName.toLowerCase()) || activeCanonicalMap.get(item.localName.toLowerCase()) || activeCanonicalMap.get(item.name.toLowerCase())
           const isActive = Boolean(existingId)
 
           return (
             <motion.button
               layout
-              key={item.localName}
+              key={item.name}
               className={`shelf-item-chip ${isActive ? 'item-active' : 'item-inactive'}`}
               type="button"
-              onClick={() => onToggle(item.localName, isActive, existingId)}
+              onClick={() => onToggle(item.name, isActive, existingId)}
               aria-pressed={isActive}
-              title={isActive ? `Alisin ang ${item.localName}` : `Idagdag ang ${item.localName}`}
+              title={isActive ? `Remove ${item.name}` : `Add ${item.name}`}
               whileTap={{ scale: 0.95 }}
             >
               <span className="chip-indicator" aria-hidden="true">
@@ -125,7 +125,7 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
                   </svg>
                 )}
               </span>
-              <span className="item-name">{item.localName}</span>
+              <span className="item-name">{item.name}</span>
             </motion.button>
           )
         })}
@@ -133,3 +133,4 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
     </section>
   )
 }
+

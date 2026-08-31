@@ -69,12 +69,33 @@ export const dishMatchingRules: Record<string, DishMatchingRule> = {
     preferredIngredients: ['tomato', 'onion'],
   },
   'sinigang-na-bangus': {
-    requiredAny: [['tamarind', 'calamansi', 'lemon']],
+    requiredAny: [['milkfish', 'bangus'], ['tamarind', 'calamansi', 'lemon']],
     preferredIngredients: ['tomato', 'onion'],
   },
   'pork-sinigang-sa-miso': {
-    requiredAny: [['tamarind', 'calamansi', 'lemon']],
+    requiredAny: [['pork', 'pork belly'], ['tamarind', 'calamansi', 'lemon']],
     preferredIngredients: ['miso', 'tomato'],
+  },
+  'daing-na-bangus': {
+    requiredAny: [['milkfish', 'bangus'], ['vinegar']],
+    preferredIngredients: ['garlic'],
+  },
+  'bangsilog': {
+    requiredAny: [['milkfish', 'bangus'], ['egg'], ['rice', 'cooked rice']],
+  },
+  'daing-na-bangus-silog': {
+    requiredAny: [['milkfish', 'bangus'], ['egg'], ['rice', 'cooked rice']],
+  },
+  'rellenong-bangus': {
+    requiredAny: [['milkfish', 'bangus']],
+  },
+  'inihaw-na-bangus': {
+    requiredAny: [['milkfish', 'bangus']],
+    preferredIngredients: ['tomato', 'onion'],
+  },
+  'inihaw-na-tilapia': {
+    requiredAny: [['tilapia']],
+    preferredIngredients: ['garlic', 'calamansi'],
   },
   'tinolang-manok': {
     requiredAny: [['chicken'], ['ginger']],
@@ -121,13 +142,14 @@ export const dishMatchingRules: Record<string, DishMatchingRule> = {
     preferredIngredients: ['soy sauce', 'garlic'],
   },
   'paksiw-na-bangus': {
-    requiredAny: [['vinegar'], ['milkfish', 'tilapia']],
+    requiredAny: [['vinegar'], ['milkfish', 'bangus']],
     preferredIngredients: ['garlic', 'ginger'],
   },
   'laing': {
     requiredAny: [['taro leaves'], ['coconut milk']],
     preferredIngredients: ['shrimp paste', 'chili'],
   },
+
   'pinakbet': {
     requiredAny: [['bitter melon', 'eggplant', 'long beans', 'squash'], ['shrimp paste']],
     preferredIngredients: ['tomato', 'okra'],

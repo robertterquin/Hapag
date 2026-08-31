@@ -12,12 +12,12 @@ export interface CookingPageProps {
   onBack: () => void
 }
 
-function formatHeatTagalog(heat?: 'low' | 'medium' | 'high' | 'none' | null): string {
+function formatHeat(heat?: 'low' | 'medium' | 'high' | 'none' | null): string {
   switch (heat) {
-    case 'low': return 'Mahinang init'
-    case 'medium': return 'Katamtamang init'
-    case 'high': return 'Malakas na init'
-    default: return 'Paghahanda'
+    case 'low': return 'Low heat'
+    case 'medium': return 'Medium heat'
+    case 'high': return 'High heat'
+    default: return 'Preparation'
   }
 }
 
@@ -194,10 +194,10 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
     <div className="cooking-page">
       <div className="cooking-topbar">
         <button className="cooking-back-button" type="button" onClick={onBack}>
-          ← Bumalik sa recipe
+          ← Back to recipe
         </button>
         <div className="cooking-dish-header">
-          <span className="cooking-mode-kicker">Paraan ng pagluluto</span>
+          <span className="cooking-mode-kicker">Cooking Mode</span>
           <h2 className="cooking-dish-title">{recipe.title}</h2>
         </div>
         <div className="cooking-topbar-actions">
@@ -205,8 +205,8 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
             className={`cooking-sound-toggle ${soundEnabled ? 'sound-active' : 'sound-muted'}`}
             type="button"
             onClick={toggleSound}
-            aria-label={soundEnabled ? 'I-mute ang tunog ng timer' : 'I-on ang tunog ng timer'}
-            title={soundEnabled ? 'Tunog: Naka-on' : 'Tunog: Naka-mute'}
+            aria-label={soundEnabled ? 'Mute timer sound' : 'Turn on timer sound'}
+            title={soundEnabled ? 'Sound: On' : 'Sound: Muted'}
           >
             <svg className="sound-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               {soundEnabled ? (
@@ -223,16 +223,16 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
                 </>
               )}
             </svg>
-            <span className="sound-toggle-text">{soundEnabled ? 'Tunog' : 'Muted'}</span>
+            <span className="sound-toggle-text">{soundEnabled ? 'Sound' : 'Muted'}</span>
           </button>
           <div className="cooking-step-badge">
-            <span>Hakbang {step.order} / {recipe.steps.length}</span>
+            <span>Step {step.order} / {recipe.steps.length}</span>
           </div>
         </div>
       </div>
 
       <div className="cooking-progress-header">
-        <span>Hakbang {step.order} sa {recipe.steps.length}</span>
+        <span>Step {step.order} of {recipe.steps.length}</span>
         <strong>{Math.round(progress)}%</strong>
       </div>
       <div className="progress-track">
@@ -256,7 +256,7 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
             transition={{ duration: 0.2, ease: 'easeOut' }}
           >
             <div className="cooking-step-header-row">
-              <span className="step-kicker">Gawin ito ngayon</span>
+              <span className="step-kicker">Do this now</span>
               {isVoiceSupported && (
                 <button
                   className={`cooking-voice-button ${isSpeaking ? 'voice-speaking' : ''}`}
@@ -268,8 +268,8 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
                     const audioUrl = `/audio/steps/${recipe.id}-step-${step.order}.mp3`
                     toggleVoice(spokenText, audioUrl)
                   }}
-                  aria-label={isSpeaking ? 'Itigil ang pagbasa ng boses' : 'Pakinggan ang hakbang sa boses'}
-                  title={isSpeaking ? 'Itigil ang boses' : 'Basahin ang hakbang'}
+                  aria-label={isSpeaking ? 'Stop voice readout' : 'Listen to step instructions'}
+                  title={isSpeaking ? 'Stop Voice' : 'Listen'}
                 >
                   <svg className="voice-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     {isSpeaking ? (
@@ -285,7 +285,7 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
                       </>
                     )}
                   </svg>
-                  <span>{isSpeaking ? 'Itigil ang Boses' : 'Pakinggan'}</span>
+                  <span>{isSpeaking ? 'Stop Voice' : 'Listen'}</span>
                   {isSpeaking && (
                     <span className="voice-waveform" aria-hidden="true">
                       <span className="wave-bar" />
@@ -299,8 +299,8 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
 
             <h1>{step.action}</h1>
             <div className="step-details">
-              <span>{step.durationMinutes ? `Humigit-kumulang ${step.durationMinutes} minuto` : 'Hanggang maluto'}</span>
-              <span>{formatHeatTagalog(step.heat)}</span>
+              <span>{step.durationMinutes ? `Approx. ${step.durationMinutes} min` : 'Until cooked'}</span>
+              <span>{formatHeat(step.heat)}</span>
             </div>
 
             <div className="timer-controls-cluster">
@@ -308,8 +308,8 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
                 className="timer-adjust-button"
                 type="button"
                 onClick={() => handleTimerAdjust(-60)}
-                aria-label="Bawasan ng 1 minuto"
-                title="Bawasan ng 1 minuto"
+                aria-label="Decrease by 1 minute"
+                title="Decrease by 1 minute"
               >
                 −1m
               </button>
@@ -333,20 +333,20 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
                 </span>
                 <span>
                   {timerFinished
-                    ? 'Tapos na ang oras! (Ulitin)'
+                    ? "Time's up! (Restart)"
                     : timerRunning
-                    ? `I-pause: ${formattedCountdown}`
+                    ? `Pause: ${formattedCountdown}`
                     : timerSeconds > 0
-                    ? `Ipagpatuloy: ${formattedCountdown}`
-                    : `Simulan ang timer: ${formattedDefault}`}
+                    ? `Resume: ${formattedCountdown}`
+                    : `Start timer: ${formattedDefault}`}
                 </span>
               </motion.button>
               <button
                 className="timer-adjust-button"
                 type="button"
                 onClick={() => handleTimerAdjust(60)}
-                aria-label="Dagdagan ng 1 minuto"
-                title="Dagdagan ng 1 minuto"
+                aria-label="Add 1 minute"
+                title="Add 1 minute"
               >
                 +1m
               </button>
@@ -356,10 +356,10 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
                   className="timer-reset-button"
                   type="button"
                   onClick={handleTimerReset}
-                  aria-label="I-reset ang timer"
-                  title="I-reset ang timer"
+                  aria-label="Reset timer"
+                  title="Reset timer"
                 >
-                  <span aria-hidden="true">↺</span> I-reset
+                  <span aria-hidden="true">↺</span> Reset
                 </button>
               )}
             </div>
@@ -371,7 +371,7 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.2 }}
               >
-                <span>Tapos na ang hakbang na ito. Handa ka na sa susunod!</span>
+                <span>Step completed! You're ready for the next step.</span>
               </motion.div>
             )}
           </motion.div>
@@ -385,19 +385,19 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
           disabled={stepIndex === 0}
           onClick={() => handleStepChange(Math.max(0, stepIndex - 1))}
         >
-          ← Nakaraan
+          ← Previous
         </button>
         <button
           className="button button-primary"
           type="button"
           onClick={() => (stepIndex === recipe.steps.length - 1 ? setShowCompletion(true) : handleStepChange(stepIndex + 1))}
         >
-          {stepIndex === recipe.steps.length - 1 ? 'Tapos na' : 'Susunod →'}
+          {stepIndex === recipe.steps.length - 1 ? 'Finish' : 'Next →'}
         </button>
       </div>
 
       <p className="cooking-note">
-        Ilagay sa malapit ang iyong telepono at gamitin ang iyong pinakamahusay na pagpapasya para sa pagkakaluto at kaligtasan ng pagkain.
+        Keep your phone nearby and use your best culinary judgment for cooking time and food safety.
       </p>
 
       <AnimatePresence>
@@ -407,12 +407,12 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
               <div className="completion-icon">
                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#1B6B38" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
               </div>
-              <h2 className="completion-title">Nakatapos ka na!</h2>
+              <h2 className="completion-title">Cooking Complete!</h2>
               <p className="completion-dish">{recipe.title}</p>
-              <p className="completion-time">Natapos sa {Math.round((Date.now() - cookingStartTime.current) / 60000)} minuto</p>
+              <p className="completion-time">Finished in {Math.round((Date.now() - cookingStartTime.current) / 60000)} minutes</p>
               <div className="completion-actions">
-                <button className="button button-primary" type="button" onClick={onFinish}>I-save at bumalik</button>
-                <button className="button button-secondary" type="button" onClick={() => { setShowCompletion(false); handleStepChange(0) }}>Ulitin mula sa simula</button>
+                <button className="button button-primary" type="button" onClick={onFinish}>Save & Return</button>
+                <button className="button button-secondary" type="button" onClick={() => { setShowCompletion(false); handleStepChange(0) }}>Start Over</button>
               </div>
             </motion.div>
           </motion.div>
@@ -421,3 +421,4 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
     </div>
   )
 }
+

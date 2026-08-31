@@ -12,10 +12,10 @@ export interface KusinaCategory {
 }
 
 export const kusinaCategories: readonly KusinaCategory[] = [
-  { id: 'all', label: 'Lahat', sublabel: 'Pangunahing sangkap' },
-  { id: 'protina', label: 'Protina at Karne', sublabel: 'Manok, Baboy, Bangus, Itlog' },
-  { id: 'gulay', label: 'Sariwang Gulay', sublabel: 'Pechay, Kangkong, Talong' },
-  { id: 'pampalasa', label: 'Pampalasa at Sahog', sublabel: 'Bawang, Sibuyas, Toyo, Suka' },
+  { id: 'all', label: 'All', sublabel: 'Essential ingredients' },
+  { id: 'protina', label: 'Proteins & Meat', sublabel: 'Chicken, Pork, Fish, Eggs' },
+  { id: 'gulay', label: 'Fresh Vegetables', sublabel: 'Bok Choy, Kangkong, Eggplant' },
+  { id: 'pampalasa', label: 'Spices & Seasonings', sublabel: 'Garlic, Onion, Soy Sauce, Vinegar' },
 ] as const
 
 export const kusinaPantryItems: readonly KusinaItem[] = [

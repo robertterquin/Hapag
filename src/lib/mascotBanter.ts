@@ -20,110 +20,110 @@ export function getMascotLoadingBanter(ingredients: NormalizedIngredient[] = [],
   if (hasAny('chicken', 'pork', 'pork belly', 'pork shoulder', 'manok', 'baboy') && hasAny('soy sauce', 'vinegar', 'toyo', 'suka', 'garlic', 'bawang')) {
     banters.push({
       tag: 'Adobo Vibe',
-      headline: 'Amoy Adobo na dito ah!',
-      subline: 'Sinasangag na ni Chef Kalabaw ang bawang at toyo para sa malinamnam na glaze.',
-      tip: 'Tip ni Chef: Huwag munang haluin ang suka kapag kakalagay pa lang para hindi mag-asim nang hilaw.',
+      headline: 'Smells like savory Adobo in here!',
+      subline: 'Chef Kalabaw is searing garlic and soy sauce for a rich, savory glaze.',
+      tip: "Chef's Tip: Don't stir the vinegar immediately after adding it to let the acidity mellow naturally.",
     })
     banters.push({
-      tag: 'Tantiyang Pinoy',
-      headline: 'Tinatantya ang tamang timpla ng toyo at suka…',
-      subline: 'Sinusuri kung bagay sa may sabaw o tuyo-style na adobo.',
-      tip: 'Mas masarap ang adobo kapag napatagal nang bahagya sa mahinang apoy!',
+      tag: 'Filipino Seasoning',
+      headline: 'Balancing the soy sauce and vinegar ratio…',
+      subline: 'Checking whether a saucy or dry-style adobo works best for your ingredients.',
+      tip: 'Adobo tastes even deeper when allowed to simmer gently on low heat!',
     })
   }
 
-  // 2. Fish & Tomato / Sarciado / Escabeche / Paksiw Profiles (checked before general tomato)
+  // 2. Fish & Tomato / Sarciado / Escabeche / Paksiw Profiles
   if (hasAny('fish', 'tilapia', 'milkfish', 'bangus', 'isda') && (hasAny('tomato', 'kamatis', 'onion', 'sibuyas', 'egg', 'itlog') || has('vinegar') || has('suka'))) {
     banters.push({
-      tag: 'Sariwang Huli',
-      headline: 'Sariwang isda at kamatis? Sarciado o Paksiw kaya?',
-      subline: 'Ginagawan natin ng paraan para manatiling makatas at malinamnam ang isda.',
-      tip: 'Tip ni Chef: Iprito muna nang bahagya ang isda bago isarsa para hindi magkadurog-durog.',
+      tag: 'Fresh Catch',
+      headline: 'Fresh fish and tomatoes? Sarciado or Paksiw coming right up!',
+      subline: 'Creating a recipe that keeps the fish tender, juicy, and full of flavor.',
+      tip: "Chef's Tip: Lightly fry the fish first before simmering in sauce so it doesn't break apart.",
     })
     banters.push({
-      tag: 'Linamnam ng Dagat',
-      headline: 'Ginigisa na ang mga aromatics para sa isda…',
-      subline: 'Inaayos ang sarsa para kumapit nang husto sa laman.',
+      tag: 'Seafood Savory',
+      headline: 'Sautéing fresh aromatics for the fish…',
+      subline: 'Reducing the tomato sauce to coat the fish perfectly.',
     })
   }
 
   // 3. Sour Soup / Sinigang Profiles
   if (hasAny('tamarind', 'sampalok', 'sinigang mix', 'calamansi', 'kamias') || (hasAny('shrimp', 'pork', 'milkfish', 'bangus', 'tilapia') && hasAny('kangkong', 'radish', 'labanos', 'gabi', 'taro'))) {
     banters.push({
-      tag: 'Asim-Kilig Sabaw',
-      headline: 'Maasim-asim na sabaw ang paborito ng pamilya!',
-      subline: 'Kumukulo na ang palayok! Binabalanse ang asim at linamnam para swak sa mainit na kanin.',
-      tip: 'Tip ni Chef: Ilagay ang dahon tulad ng kangkong sa huling minuto bago patayin ang apoy para manatiling sariwa.',
+      tag: 'Sour Soup',
+      headline: 'Tamarind sour broth—a classic family favorite!',
+      subline: 'The clay pot is boiling! Balancing the tangy tamarind broth with savory aromatics.',
+      tip: "Chef's Tip: Add leafy greens like water spinach in the final minute so they stay bright and crisp.",
     })
     banters.push({
-      tag: 'Kusina Sinsay',
-      headline: 'Pampagising na asim ang inihahanda…',
-      subline: 'Tinitingnan ang pinakamasarap na kombinasyon ng gulay at protina para sa sabaw.',
+      tag: 'Kitchen Comfort',
+      headline: 'Preparing a comforting, tangy broth…',
+      subline: 'Matching the best vegetable and protein balance for a hearty soup.',
     })
   }
 
   // 4. Coconut Milk / Ginataan / Bicol Express Profiles
   if (hasAny('coconut milk', 'gata', 'niyog', 'coconut cream') || (hasAny('chili', 'sili', 'siling haba', 'siling labuyo') && hasAny('pork', 'squash', 'kalabasa', 'sitaw', 'shrimp'))) {
     banters.push({
-      tag: 'Ginataang Linamnam',
-      headline: 'May creamy at malinamnam tayong niluluto!',
-      subline: 'Dahan-dahang pinapakulo ang gata kasama ng mga pampalasa para lumabas ang mantika nito.',
-      tip: 'Tip ni Chef: Katamtamang init lang para hindi magbuo-buo o mag-langis ang gata nang maaga.',
+      tag: 'Creamy Ginataan',
+      headline: 'Rich and creamy coconut stew in progress!',
+      subline: 'Simmering fresh coconut milk with aromatics to render its natural oil.',
+      tip: "Chef's Tip: Keep heat on medium-low and stir gently to prevent coconut milk from curdling.",
     })
     banters.push({
       tag: 'Bicolano Heat',
-      headline: 'Tinitimplahan ang creamy sauce na may banayad na anghang…',
-      subline: 'Perpektong kapares sa bagong saing na kanin!',
+      headline: 'Infusing creamy coconut sauce with subtle chili warmth…',
+      subline: 'The perfect pairing for hot steamed rice!',
     })
   }
 
   // 5. Canned Goods Upgrades (Sardines, Corned Beef, Tuna)
   if (hasAny('sardines', 'sardinas', 'corned beef', 'tuna', 'canned meat', 'luncheon meat', 'spam')) {
     banters.push({
-      tag: 'Kusina Diskarte',
-      headline: 'Pang-budget meal na gagawing pang-espesyal!',
-      subline: 'Gigisahin ni Chef Kalabaw sa maraming bawang, sibuyas, at gulay para mas masustansya.',
-      tip: 'Tip ni Chef: Lagyan ng kaunting piga ng kalamansi o siling labuyo ang delata para lumabas ang tunay na linamnam.',
+      tag: 'Pantry Upgrade',
+      headline: 'Turning quick pantry staples into a gourmet home meal!',
+      subline: 'Chef Kalabaw is sautéing with garlic, onions, and greens for extra nutrition.',
+      tip: "Chef's Tip: Squeeze a touch of calamansi or add sliced chili to brighten canned goods instantly.",
     })
     banters.push({
-      tag: 'Mabilisang Lutuin',
-      headline: 'Level-up na lutong-bahay mula sa delata…',
-      subline: 'Sinusukat ang tamang halo para mabilis pero napakasarap!',
+      tag: 'Quick Cooking',
+      headline: 'Upgrading your pantry staples with fresh sautéed aromatics…',
+      subline: 'Crafting a fast, delicious, and budget-friendly meal!',
     })
   }
 
   // 6. Tomato Braises / Stews (Afritada, Menudo, Mechado, Caldereta)
   if (hasAny('tomato sauce', 'tomato paste', 'liver spread', 'cheese') || (hasAny('pork', 'beef', 'chicken') && hasAny('potato', 'patatas', 'carrot', 'carrots', 'bell pepper', 'peas'))) {
     banters.push({
-      tag: 'Pang-Piyesta Stew',
-      headline: 'May masaganang sarsa tayong inihahanda!',
-      subline: 'Pinagpapasensyahan ang dahan-dahang paglambot ng karne kasama ang patatas at karot.',
-      tip: 'Tip ni Chef: Ang patatas ang natural na nagpapalapot sa sarsa habang kumukulo.',
+      tag: 'Savory Stew',
+      headline: 'Simmering a rich, celebratory tomato stew!',
+      subline: 'Gently braising tender meat with potatoes, carrots, and sweet bell peppers.',
+      tip: "Chef's Tip: Simmering potatoes in the stew naturally thickens the sauce to velvety perfection.",
     })
     banters.push({
-      tag: 'Sarsang Masagana',
-      headline: 'Pinagpapakulo ang mayaman at malinamnam na sarsa…',
-      subline: 'Sinusuri kung Menudo, Afritada, o Mechado ang pinakabagay sa sangkap mo.',
+      tag: 'Rich Braise',
+      headline: 'Simmering a deep and savory stew sauce…',
+      subline: 'Evaluating whether Menudo, Afritada, or Mechado best suits your pantry.',
     })
   }
 
   // 7. Pancit & Noodle Profiles
   if (hasAny('bihon', 'canton noodles', 'flour noodles', 'egg noodles', 'miki', 'sotanghon', 'glass noodles', 'macaroni')) {
     banters.push({
-      tag: 'Pansit Paborito',
-      headline: 'May pansit tayong bubuuin! Hinihiwa na ang mga gulay…',
-      subline: 'Hahayaan nating sipsipin ng noodles ang lahat ng linamnam ng ginisang sangkap.',
-      tip: 'Tip ni Chef: Huwag sosobrahan ang sabaw para hindi maging matubig ang pansit.',
+      tag: 'Pancit Special',
+      headline: 'Stir-frying savory noodles with crisp vegetables!',
+      subline: 'Letting the noodles absorb every drop of the seasoned broth.',
+      tip: "Chef's Tip: Do not oversaturate with liquid—let noodles cook through absorption for the best bite.",
     })
   }
 
   // 8. Ginger & Comfort Broths (Tinola, Pesang Isda, Arroz Caldo)
   if (hasAny('ginger', 'luya', 'chayote', 'sayote', 'green papaya', 'papaya', 'malunggay', 'rice', 'glutinous rice')) {
     banters.push({
-      tag: 'Mainit na Sabaw',
-      headline: 'Amoy luya at bawang! Mainit at nakakapreskong sabaw ang parating…',
-      subline: 'Pampawis at pampaginhawa sa pakiramdam ang niluluto ni Chef Kalabaw.',
-      tip: 'Tip ni Chef: Bahagyang dikdikin ang luya bago igisa para sumabog ang bango nito sa sabaw.',
+      tag: 'Ginger Broth',
+      headline: 'Fragrant ginger and garlic broth simmering on the stove!',
+      subline: 'A warm, soothing soup crafted by Chef Kalabaw.',
+      tip: "Chef's Tip: Lightly bruise ginger before sautéing to release maximum aromatics into the broth.",
     })
   }
 
@@ -131,10 +131,10 @@ export function getMascotLoadingBanter(ingredients: NormalizedIngredient[] = [],
   if (has('egg') || has('itlog')) {
     if (hasAny('eggplant', 'talong', 'ground pork', 'giniling', 'potato', 'patatas')) {
       banters.push({
-        tag: 'Tortang Klasiko',
-        headline: 'Inihaw na talong at binating itlog! Klasikong sarap.',
-        subline: 'Ipiprito nang golden brown para may lutong sa labas at lambot sa loob.',
-        tip: 'Tip ni Chef: Tusukin ang talong bago ihawin para madaling matanggal ang sunog na balat.',
+        tag: 'Classic Torta',
+        headline: 'Smoky grilled eggplant coated in savory beaten egg!',
+        subline: 'Pan-frying until golden brown with crisp edges and a tender center.',
+        tip: "Chef's Tip: Prick eggplant with a fork before roasting for effortless skin peeling.",
       })
     }
   }
@@ -142,35 +142,36 @@ export function getMascotLoadingBanter(ingredients: NormalizedIngredient[] = [],
   // 10. Tofu / Healthy Veggies
   if (hasAny('tofu', 'tokwa', 'kangkong', 'sitaw', 'pechay', 'bok choy', 'repolyo', 'cabbage', 'okra', 'ampalaya')) {
     banters.push({
-      tag: 'Sariwang Gulay',
-      headline: 'Masustansya at presko! Niluluto ang mga sariwang gulay.',
-      subline: 'Mabilisang gisa lang sa katamtamang init para manatiling malutong at makulay.',
-      tip: 'Tip ni Chef: Huwag takpan nang matagal ang berdeng gulay para manatiling sariwa ang kulay.',
+      tag: 'Fresh Greens',
+      headline: 'Nutritious and vibrant sautéed vegetables!',
+      subline: 'Quickly tossing over medium heat to maintain crisp texture and vivid color.',
+      tip: "Chef's Tip: Avoid covering green vegetables for too long to preserve their bright color.",
     })
   }
 
   // Fallback general messages if no specific banter triggered
   if (banters.length === 0) {
-    const firstItemName = ingredients[0]?.name ?? 'mga sangkap'
+    const firstItemName = ingredients[0]?.name ?? 'your ingredients'
     banters.push({
-      tag: 'Kusina ni Chef',
-      headline: `Tinitimplahan na ang palayok gamit ang ${firstItemName}!`,
-      subline: 'Sinisilip ni Chef Kalabaw ang pinakamasarap at praktikal na paraan ng pagluto.',
-      tip: 'Tip ni Chef: Ang sikreto ng masarap na ulam ay nasa tamang paggisa ng bawang at sibuyas.',
+      tag: "Chef's Kitchen",
+      headline: `Seasoning the clay pot with ${firstItemName}!`,
+      subline: 'Chef Kalabaw is crafting delicious and practical cooking methods for you.',
+      tip: "Chef's Tip: The foundation of great flavor starts with properly sautéed garlic and onions.",
     })
     banters.push({
-      tag: 'Paghahanda ng Ideya',
-      headline: 'Naghahanap ng 3 kakaibang paraan ng pagluto…',
-      subline: 'Iniaangkop sa budget, serving, at pamilyang Pinoy ang bawat putahe.',
+      tag: 'Preparing Recipes',
+      headline: 'Discovering 3 authentic meal options…',
+      subline: 'Tailoring each dish to your budget, servings, and pantry.',
     })
   }
 
   // Always append a closing reassuring banter
   banters.push({
-    tag: 'Sandali na lang',
-    headline: 'Inihahanda na ang 3 resipe para sa hapag mo!',
-    subline: 'Tinitiyak na kumpleto ang sukat, paraan, at mga alternatibong sangkap.',
+    tag: 'Almost Ready',
+    headline: 'Finalizing 3 delicious recipe choices for your table!',
+    subline: 'Double-checking cooking steps, measurements, and substitution tradeoffs.',
   })
 
   return banters
 }
+
