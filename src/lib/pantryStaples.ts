@@ -1,3 +1,5 @@
+import { normalizeIngredientName } from './ingredientParser.ts'
+
 // Pantry staples are ingredients a household almost always has. They are stored as canonical
 // ingredient names (the parser's English names, e.g. "oil", "soy sauce").
 
@@ -50,4 +52,21 @@ export function toggleStapleInList(staples: readonly string[], canonicalName: st
 export function staplesToAdd(staples: readonly string[], currentCanonicalNames: readonly string[]) {
   const current = new Set(currentCanonicalNames)
   return staples.filter((item) => !current.has(item))
+}
+
+// Ingredients most Filipino kitchens keep on hand. Recipes that "miss" one of these show it as
+// a neutral staple rather than a red missing ingredient.
+const commonStaples = new Set(['garlic', 'onion', 'oil', 'salt', 'black pepper', 'soy sauce', 'vinegar', 'fish sauce', 'sugar', 'water'])
+
+// Accepts English, Tagalog, or canonical names ("Bawang", "garlic", "cooking oil").
+export function isPantryStaple(name: string) {
+  return commonStaples.has(normalizeIngredientName(name))
+}
+
+export type IngredientStatus = 'have' | 'staple' | 'missing'
+
+// One rule for cards and the detail page: provided > staple > missing.
+export function getIngredientStatus(line: { name: string; canonicalName: string; available: boolean }): IngredientStatus {
+  if (line.available) return 'have'
+  return isPantryStaple(line.canonicalName) || isPantryStaple(line.name) ? 'staple' : 'missing'
 }

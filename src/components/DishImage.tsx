@@ -1,0 +1,33 @@
+import { getDishPhoto } from '../lib/dishPhotoLookup.ts'
+
+interface DishImageProps {
+  recipe: { id?: string; title: string; localTitle?: string }
+  variant: 'card' | 'hero'
+}
+
+export function DishImage({ recipe, variant }: DishImageProps) {
+  const photo = getDishPhoto(recipe)
+  const className = variant === 'card' ? 'recipe-card-image' : 'recipe-hero-image'
+
+  if (!photo && variant === 'hero') return null
+  if (!photo) {
+    return (
+      <div className={`${className} dish-image-placeholder`} role="img" aria-label={`No photo yet for ${recipe.title}`}>
+        <span className="placeholder-pattern" aria-hidden="true" />
+        <span className="dish-image-placeholder-icon" aria-hidden="true">🍲</span>
+        <span className="placeholder-brand">No photo yet</span>
+      </div>
+    )
+  }
+
+  return (
+    <figure className={`${className} dish-image`}>
+      <img className="dish-image-img" src={photo.src} alt={recipe.title} loading={variant === 'card' ? 'lazy' : 'eager'} />
+      <figcaption className="dish-image-credit">
+        Photo: <a href={photo.sourceUrl} target="_blank" rel="noreferrer">{photo.author}</a>
+        {' · '}
+        {photo.licenseUrl ? <a href={photo.licenseUrl} target="_blank" rel="noreferrer">{photo.license}</a> : photo.license}
+      </figcaption>
+    </figure>
+  )
+}

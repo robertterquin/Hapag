@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { getIngredientStatus } from '../lib/pantryStaples.ts'
+import { DishImage } from '../components/DishImage.tsx'
 import { CostBreakdown } from '../components/CostBreakdown.tsx'
 import { RecipeMeta } from '../components/RecipeMeta.tsx'
 import { ResultsSkeleton } from '../components/Skeletons.tsx'
@@ -35,7 +37,7 @@ export function RecipeDetailPage({ recipeId, saved, onToggleSave, onStartCooking
         </button>
       </div>
       <section className="recipe-hero">
-        {recipe.imageUrl ? <img className="recipe-hero-image" src={recipe.imageUrl} alt="" /> : null}
+        <DishImage recipe={recipe} variant="hero" />
         <div className="recipe-hero-content">
           <span className="recipe-badge">{recipe.tags[0]}</span>
           <h1>{recipe.title}</h1>
@@ -56,16 +58,19 @@ export function RecipeDetailPage({ recipeId, saved, onToggleSave, onStartCooking
               <ServingStepper value={servings} onChange={setSelectedServings} />
             </div>
             <ul className="detail-ingredient-list">
-              {scaledRecipe.ingredients.map((ingredient) => (
-                <li className={ingredient.available ? 'ingredient-available' : 'ingredient-missing'} key={ingredient.id}>
-                  <span className="ingredient-status" aria-hidden="true">{ingredient.available ? '✓' : '+'}</span>
+              {scaledRecipe.ingredients.map((ingredient) => {
+                const status = getIngredientStatus(ingredient)
+                return (
+                <li className={`ingredient-${status === 'have' ? 'available' : status}`} key={ingredient.id}>
+                  <span className="ingredient-status" aria-hidden="true">{status === 'have' ? '✓' : status === 'staple' ? '•' : '+'}</span>
                   <span>
                     <strong>{formatQuantity(ingredient.quantity, ingredient.unit)} {ingredient.name}</strong>
                     {ingredient.note ? <small>{ingredient.note}</small> : null}
                   </span>
-                  <em>{ingredient.available ? 'You have' : 'Missing'}</em>
+                  <em>{status === 'have' ? 'You have' : status === 'staple' ? 'Probably in your kusina' : 'To buy'}</em>
                 </li>
-              ))}
+                )
+              })}
             </ul>
           </section>
           <section className="detail-section" aria-labelledby="substitutions-heading">

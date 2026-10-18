@@ -4,9 +4,14 @@ import { recipeService, RecipeGenerationError } from '../services/recipeService.
 import { matchRecipeCatalog } from '../services/recipeMatcher.ts'
 import type { CatalogRecipeCandidate, DiscoverySession, GenerationConstraints, IngredientDraft, NormalizedIngredient, Recipe } from '../types/domain.ts'
 import { normalizeConstraints } from '../lib/recipeControls.ts'
+import { buildDishIdeas } from '../lib/catalogIdeas.ts'
+import type { DishIdea } from '../lib/catalogIdeas.ts'
+import { hasRecipeGenerationConfig } from '../config/env.ts'
 import type { UserPreferences } from '../services/persistenceService.ts'
 
 export type GenerationStatus = 'idle' | 'loading' | 'success' | 'error'
+// Why catalog dish ideas are shown alongside (or instead of) AI recipes.
+export type FallbackReason = 'not-configured' | 'error' | null
 
 const defaultConstraints: GenerationConstraints = {
   servings: 3,
@@ -44,6 +49,8 @@ export function useDiscovery() {
   const [generationStatus, setGenerationStatus] = useState<GenerationStatus>('idle')
   const [generationError, setGenerationError] = useState<string | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
+  const [ideas, setIdeas] = useState<DishIdea[]>([])
+  const [fallback, setFallback] = useState<FallbackReason>(null)
 
   const startDiscovery = (value: string, nextNotice: string | null = null) => {
     setNotice(nextNotice)
@@ -126,6 +133,8 @@ export function useDiscovery() {
         substitutedIngredients,
       }))
       setCandidateDishes(candidateDishes)
+      setIdeas(buildDishIdeas(session.ingredients))
+      setFallback(hasRecipeGenerationConfig ? null : 'not-configured')
 
       const result = await recipeService.generateSuggestions({ rawInput: session.rawInput, ingredients: session.ingredients, constraints: session.constraints, candidateDishes }, accessToken)
       setSuggestions(result)
@@ -138,6 +147,7 @@ export function useDiscovery() {
       } else {
         setGenerationError('Could not generate recipes. You can try again or edit your ingredients.')
       }
+      setFallback('error')
       setGenerationStatus('error')
     }
   }
@@ -146,6 +156,8 @@ export function useDiscovery() {
     session,
     notice,
     suggestions,
+    ideas,
+    fallback,
     candidateDishes,
     generationStatus,
     generationError,

@@ -118,6 +118,22 @@ Size: S ≈ half a day, M ≈ 1–2 days, L ≈ 3+ days.
 **Tests:** fallback returns catalog matches for an adobo set (chicken, soy sauce, vinegar, garlic), and `isPantryStaple()` is covered.
 **Exit:** adobo ingredients with no `.env` return adobo-family dishes.
 
+**Status: done.**
+- **Your decision:** use real dish photos with credits.
+  - `src/data/dishPhotos.ts` has 45 freely licensed photos from Wikimedia Commons (CC0, CC BY, CC BY-SA). Each was checked by eye to show the named dish. Rejected candidates included menudo that was sweet-and-sour pork, raw packaged noodles, and paksiw photographed with houseflies.
+  - Every photo shows the author and licence, linked to its Commons page.
+  - Photos match only on the exact dish name. "Adobong Manok sa Gata" and "Sarciadong Tilapia" get no photo rather than a near match.
+  - Pancit Bihon and most other dishes have no photo yet and show a branded "No photo yet" tile.
+  - The three sample recipes no longer use unrelated Unsplash stock photos.
+- **Fallback:** when AI isn't set up or fails, results show catalog matches as "dish idea" cards with have/to-buy/staple chips, alongside any sample recipe that truly matches.
+  - Sample recipes now need every ingredient they treat as on hand. Garlic alone no longer pulls in the sardines recipe.
+  - Catalog matches have no steps or prices, so they aren't turned into full recipes.
+- **Cards:**
+  - Order is now a "You have X of Y" bar, then the title, then price, time and difficulty.
+  - Ingredients are grouped as "To buy" and "Probably in your kusina". `isPantryStaple()` / `getIngredientStatus()` are shared with the detail page.
+  - Feedback is 👍/👎, and 👎 opens the three reasons.
+- **States:** the loading skeleton mirrors the new card. The empty state suggests the one pantry item that unlocks the most dishes, e.g. "Add Manok (chicken) to unlock 2 dishes".
+
 ## 18.4 Recipe detail
 
 - **Action bar:** a `StickyActionBar` with **Start cooking** and a save ♥.

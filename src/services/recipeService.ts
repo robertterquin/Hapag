@@ -15,10 +15,15 @@ export function cacheRecipe(recipe: ReturnType<typeof adaptRecipePayload>) {
 async function generateWithFixtures(request: GenerationRequest) {
   await wait(350)
   const requestedIngredients = new Set(request.ingredients.map((ingredient) => ingredient.canonicalName))
-  const relevantFixtures = recipeFixtures.filter((recipe) => recipe.ingredients.some((ingredient) => {
-    const canonicalName = normalizeIngredientInput(ingredient.name)[0]?.canonicalName ?? ingredient.canonicalName
-    return requestedIngredients.has(canonicalName)
-  }))
+  // A sample recipe only counts when the user has every ingredient it treats as on hand,
+  // so a shared staple like garlic no longer pulls in an unrelated dish.
+  const relevantFixtures = recipeFixtures.filter((recipe) => {
+    const onHand = recipe.ingredients.filter((ingredient) => ingredient.available)
+    return onHand.length > 0 && onHand.every((ingredient) => {
+      const canonicalName = normalizeIngredientInput(ingredient.name)[0]?.canonicalName ?? ingredient.canonicalName
+      return requestedIngredients.has(canonicalName)
+    })
+  })
   return adaptRecipeListPayload(relevantFixtures)
 }
 

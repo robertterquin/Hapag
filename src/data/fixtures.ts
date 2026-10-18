@@ -24,7 +24,6 @@ const rawRecipeFixtures = [
   {
     id: 'sardines-egg-pechay',
     title: 'Sardines with egg and pechay',
-    imageUrl: 'https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1200&q=82',
     localTitle: 'Sardinas na may itlog at pechay',
     description: 'A quick and budget-friendly home dish using the ingredients you already have.',
     matchReason: 'The oil from the sardines bastes the pechay as it sautés, so the greens absorb a savory, slightly smoky depth before the egg binds everything into a cohesive, satisfying dish.',
@@ -62,7 +61,6 @@ const rawRecipeFixtures = [
   {
     id: 'ginisang-pechay-egg',
     title: 'Ginisang pechay with egg',
-    imageUrl: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=1200&q=82',
     localTitle: 'Ginisang pechay na may itlog',
     description: 'A simple, quick, and vegetable-centered Filipino home sauté.',
     matchReason: 'The tomatoes break down quickly in the hot pan and become a naturally sweet, acidic base that keeps the pechay bright and tender without overwhelming the delicate vegetable flavors.',
@@ -100,7 +98,6 @@ const rawRecipeFixtures = [
   {
     id: 'sardine-omelet-tomato',
     title: 'Sardine omelet with tomato',
-    imageUrl: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=1200&q=82',
     localTitle: 'Tortang sardinas na may kamatis',
     description: 'A flavorful Filipino sardine omelet perfect for quick meals and baon.',
     matchReason: 'Folding sardines directly into the egg batter lets the rich, savory fish flavor distribute evenly throughout, while the diced tomato adds bursts of acidity that cut through the egg and keep each bite balanced.',
