@@ -15,32 +15,33 @@
 
 :root {
 
-  --color-cream: var(--sand-1);
+  /* Palayok palette: clay pot terracotta, banana-leaf green, mango, and gata cream. */
+  --color-cream: #FFF8EE;
   --color-surface: #ffffff;
 
-  /* Brand (ube): identity, navigation, links, selected states. */
-  --color-brand: #7651A9;
-  --color-brand-strong: #57347F;
-  --color-brand-soft: #F3EEF9;
-  --color-brand-border: #CDBCE6;
-  --color-brand-a: rgb(118 81 169 / 18%);
+  /* Brand (terracotta): identity, navigation, links, selected states. */
+  --color-brand: #B5442A;
+  --color-brand-strong: #8A3220;
+  --color-brand-soft: #F8E6DF;
+  --color-brand-border: #E9BFB2;
+  --color-brand-a: rgb(181 68 42 / 18%);
 
-  /* Action (orange): primary buttons only. White text passes 4.5:1. */
-  --color-action: var(--orange-11);
-  --color-action-strong: #A93F00;
+  /* Action: primary buttons. Same terracotta, so there is one warm brand colour. White text passes 4.5:1. */
+  --color-action: var(--color-brand);
+  --color-action-strong: var(--color-brand-strong);
 
-  --color-mango: var(--amber-9);
-  --color-calamansi: #1B6B38;
+  --color-mango: #F4B33D;
+  --color-calamansi: #276B43;
   --color-tomato: var(--tomato-9);
 
-  --color-ink: #20130E;
+  --color-ink: #2B1D16;
   --color-muted: #523E36;
   --color-border: var(--sand-7);
   --color-border-strong: var(--sand-8);
   --color-focus: var(--color-brand);
 
-  --color-success-bg: #EAF7EE;
-  --color-success-border: #A3E2B0;
+  --color-success-bg: #E6F2EA;
+  --color-success-border: #9CCBAD;
   --color-warning-bg: var(--amber-2);
   --color-error-bg: var(--tomato-2);
 

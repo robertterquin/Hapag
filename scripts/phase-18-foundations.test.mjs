@@ -19,6 +19,8 @@ async function resolveColor(css, token) {
   const value = css.match(new RegExp(`${token}:\\s*([^;]+);`))?.[1].trim()
   assert.ok(value, `${token} is defined`)
   if (value.startsWith('#')) return value
+  const alias = value.match(/^var\((--color-[a-z-]+)\)$/)
+  if (alias) return resolveColor(css, alias[1])
   const radix = value.match(/^var\(--([a-z]+)-(\d+)\)$/)
   assert.ok(radix, `${token} resolves to a hex or Radix step`)
   const palette = await read(`node_modules/@radix-ui/colors/${radix[1]}.css`)
@@ -33,7 +35,7 @@ test('brand and action colours meet WCAG AA contrast with white', async () => {
   assert.ok(contrast(white, await resolveColor(css, '--color-action')) >= 4.5, 'white text on primary buttons')
 })
 
-test('orange is reserved for primary actions; everything else uses brand tokens', async () => {
+test('primary buttons use the action token and selected states use brand tokens', async () => {
   const css = await read('src/App.css')
   assert.doesNotMatch(css, /--color-ube|--color-lavender/)
   assert.match(css, /\.button-primary \{[^}]*background: var\(--color-action\)/)

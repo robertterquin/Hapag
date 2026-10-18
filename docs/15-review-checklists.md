@@ -8,7 +8,7 @@
 - [x] User can save and unsave recipes.
 
 ## Design
-- [x] Ube and mango palette is used consistently.
+- [x] Palayok palette (terracotta, banana-leaf green, mango, cream) is used consistently.
 - [x] Typography and spacing follow the system.
 - [x] Mobile layout works at 320px width.
 - [x] Loading, empty, error, and success states exist.

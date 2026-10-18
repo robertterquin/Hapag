@@ -2,25 +2,27 @@
 
 Tokens live in `src/index.css`. Components use the semantic tokens below, never raw Radix steps or hex values.
 
-## Brand: Ube
-- `--color-brand: #7651A9`: identity, eyebrows and kickers, links, selected tabs, active navigation, progress, focus rings
-- `--color-brand-strong: #57347F`: text on soft brand surfaces, secondary-button text, pressed states
-- `--color-brand-soft: #F3EEF9`: soft brand panels, hover backgrounds, active nav indicator
-- `--color-brand-border: #CDBCE6`: brand-tinted borders
+## Palayok palette
+Hapag's colours come from a Filipino kitchen: clay pot (*palayok*) terracotta, banana-leaf green, mango, and coconut-cream (*gata*) backgrounds. There is one warm brand colour, used for both identity and the primary button.
+
+## Brand: Terracotta
+- `--color-brand: #B5442A`: eyebrows and kickers, links, selected tabs, active navigation, progress, focus rings, primary buttons
+- `--color-brand-strong: #8A3220`: text on soft brand surfaces, secondary-button text, pressed and hover states
+- `--color-brand-soft: #F8E6DF`: soft brand panels, hover backgrounds, active nav indicator
+- `--color-brand-border: #E9BFB2`: brand-tinted borders
 - `--color-brand-a`: translucent brand for focus rings and card focus
 
-## Action: Orange
-- `--color-action: var(--orange-11)` (#CC4E00): primary buttons only
-- `--color-action-strong: #A93F00`: primary hover and the button's bottom shadow
+## Action
+- `--color-action: var(--color-brand)` and `--color-action-strong: var(--color-brand-strong)`: primary buttons. These are separate tokens so the action colour can be changed later without touching every selected state.
 
-Orange is reserved for the one main action on a screen. If something is not the primary button, it uses brand or neutral tokens.
+Use one primary button per screen. Everything else uses secondary or neutral styles.
 
 ## Supporting colors
-- `--color-mango: var(--amber-9)`: highlights and badges. Prices use the amber family (`--amber-11` on `--amber-2`).
-- `--color-calamansi: #1B6B38`: "you have" ingredients and success accents (with `--color-success-bg` / `--color-success-border`)
+- `--color-mango: #F4B33D`: highlights and badges. Prices use the amber family (`--amber-11` on `--amber-2`).
+- `--color-calamansi: #276B43` (banana-leaf green): "you have" ingredients and success accents (with `--color-success-bg` / `--color-success-border`)
 - `--color-tomato: var(--tomato-9)`: warnings. Missing ingredients use `--tomato-11` on `--color-error-bg`.
-- `--color-ink: #20130E`: primary text. `--color-muted: #523E36`: secondary text.
-- `--color-cream: var(--sand-1)`: page background. `--color-surface: #FFFFFF`: cards and inputs.
+- `--color-ink: #2B1D16`: primary text. `--color-muted: #523E36`: secondary text.
+- `--color-cream: #FFF8EE`: page background. `--color-surface: #FFFFFF`: cards and inputs.
 
 ## Ingredient chips (`IngredientChip`)
 | Variant | Meaning | Colors |
@@ -32,7 +34,7 @@ Orange is reserved for the one main action on a screen. If something is not the 
 
 ## Contrast
 Checked by `scripts/phase-18-foundations.test.mjs`:
-- White on `--color-action` is at least 4.5:1.
+- White on `--color-action` is at least 4.5:1 (5.5:1 for terracotta).
 - `--color-brand` on white is at least 4.5:1.
 - `--color-brand-strong` on `--color-brand-soft` is at least 4.5:1.
 

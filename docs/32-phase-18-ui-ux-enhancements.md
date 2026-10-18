@@ -66,6 +66,7 @@ Size: S ≈ half a day, M ≈ 1–2 days, L ≈ 3+ days.
 **Exit:** the components are used in at least one screen, and the colour tests are updated to match the decision.
 
 **Status: done.** Option (a) was chosen: ube is the brand colour and orange is used only for primary actions.
+- **Update, after 18.4:** the palette was replaced by **Palayok**: terracotta brand and buttons, banana-leaf green, mango, and cream. See `docs/06-color-system.md`. The token names from 18.1 didn't change.
 - Primary buttons use `orange-11`. White text on the old `orange-9` was only 2.97:1.
 - Fixed 19 references to `--teal-*` and `--slate-*`. Those palettes were no longer imported, so the styles that used them had been silently broken.
 - Where the new components are used:

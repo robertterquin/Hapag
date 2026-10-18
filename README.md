@@ -184,15 +184,14 @@ Before deployment:
 
 ## Visual Design System
 
-Hapag uses a playful modern Filipino kitchen identity:
+Hapag uses the Palayok palette, drawn from a Filipino kitchen:
 
-- Ube: `#7651A9`
-- Dark ube: `#57347F`
-- Mango: `#F6B544`
-- Calamansi: `#A8C64A`
-- Tomato: `#E96A4A`
-- Cream: `#FFF8E7`
-- Ink: `#30252B`
+- Terracotta (brand and primary buttons): `#B5442A`
+- Dark clay: `#8A3220`
+- Mango: `#F4B33D`
+- Banana-leaf green (ingredients you have): `#276B43`
+- Gata cream (page background): `#FFF8EE`
+- Kape ink (text): `#2B1D16`
 
 The interface uses rounded cards, colorful ingredient chips, friendly food illustrations, large readable headings, and direct Taglish microcopy.
 
