@@ -1,6 +1,11 @@
 import { useState } from 'react'
 import { motion } from 'motion/react'
 import { Icon } from '@iconify/react'
+import { DishImage } from '../components/DishImage.tsx'
+import { HaveProgress } from '../components/HaveProgress.tsx'
+import { IngredientChip } from '../components/IngredientChip.tsx'
+import { useDisplayLanguage } from '../app/displayLanguage.ts'
+import { labelForName } from '../lib/ingredientLabels.ts'
 
 export interface HomePageProps {
   onStart: (value: string) => void
@@ -14,91 +19,90 @@ const EXAMPLE_COMBOS = [
   { label: '🍆 Talong + 🥚 Itlog', value: 'talong, itlog' },
 ] as const
 
+// Sample results that mirror the real results cards. Ingredient names are canonical (English)
+// and rendered in the display language; photos come from the verified dish photo set.
 interface PreviewCardData {
   id: string
   title: string
   localName: string
   description: string
   badge: string
-  authenticity: string
-  matchScore: number
   time: string
   difficulty: string
   price: string
   servings: string
-  available: string[]
-  missing: string[]
-  subTip?: string
+  have: string[]
+  toBuy: string[]
+  staples: string[]
 }
 
 const PREVIEW_CARDS: PreviewCardData[] = [
   {
-    id: 'adobo',
-    title: 'Classic Chicken Adobo',
-    localName: 'Adobong Manok na may Patatas',
-    description: 'Classic Filipino chicken braised in savory soy sauce and vinegar with crisp garlic and potatoes.',
-    badge: 'Classic Dish',
-    authenticity: 'Home-style',
-    matchScore: 96,
-    time: '35 mins',
+    id: 'chicken-adobo',
+    title: 'Chicken Adobo',
+    localName: 'Adobong Manok',
+    description: 'Chicken braised in soy sauce and vinegar with plenty of garlic.',
+    badge: 'Classic dish',
+    time: '35 min',
     difficulty: 'Easy',
-    price: '₱140 – ₱190',
+    price: '₱140–₱190',
     servings: '4 servings',
-    available: ['Chicken', 'Potatoes', 'Garlic', 'Soy Sauce'],
-    missing: ['Vinegar'],
-    subTip: 'Can substitute Potatoes with Tofu',
+    have: ['chicken', 'soy sauce', 'garlic'],
+    toBuy: [],
+    staples: ['vinegar', 'black pepper'],
   },
   {
-    id: 'sinigang',
-    title: 'Pork Sinigang',
-    localName: 'Sinigang sa Sampalok',
-    description: 'Pork belly simmered in a tangy tamarind broth with fresh kangkong and crisp vegetables.',
-    badge: 'Classic Dish',
-    authenticity: 'Sour Soup',
-    matchScore: 88,
-    time: '50 mins',
+    id: 'sinigang-na-baboy',
+    title: 'Sinigang na Baboy',
+    localName: 'Pork Sinigang',
+    description: 'Pork in a sour tamarind broth with kangkong and tomatoes.',
+    badge: 'Sour soup',
+    time: '50 min',
     difficulty: 'Medium',
-    price: '₱220 – ₱300',
+    price: '₱220–₱300',
     servings: '4 servings',
-    available: ['Pork Belly', 'Kangkong', 'Tomatoes', 'Onion'],
-    missing: ['Tamarind', 'Radish'],
-    subTip: 'Can substitute Tamarind with Calamansi',
+    have: ['pork', 'tomato', 'water spinach'],
+    toBuy: ['tamarind'],
+    staples: ['onion'],
   },
   {
-    id: 'torta',
+    id: 'tortang-talong',
     title: 'Tortang Talong',
-    localName: 'Torta ng Talong',
-    description: 'Charred smoky eggplant dipped in savory beaten egg and pan-fried until golden crisp.',
-    badge: 'Classic Dish',
-    authenticity: 'Pan-fried',
-    matchScore: 100,
-    time: '20 mins',
+    localName: 'Eggplant Omelette',
+    description: 'Smoky charred eggplant dipped in egg and pan-fried until golden.',
+    badge: 'Budget meal',
+    time: '20 min',
     difficulty: 'Easy',
-    price: '₱60 – ₱90',
+    price: '₱60–₱90',
     servings: '2 servings',
-    available: ['Eggplant', 'Eggs', 'Garlic', 'Salt'],
-    missing: [],
-    subTip: 'Add ground pork or onion for extra flavor',
+    have: ['eggplant', 'egg'],
+    toBuy: [],
+    staples: ['garlic', 'oil'],
   },
   {
-    id: 'tinola',
-    title: 'Chicken Tinola',
-    localName: 'Tinolang Manok na may Sayote',
-    description: 'Traditional ginger chicken soup simmered with fresh chayote and tender chili leaves.',
-    badge: 'Classic Dish',
-    authenticity: 'Ginger Soup',
-    matchScore: 92,
-    time: '40 mins',
+    id: 'tinolang-manok',
+    title: 'Tinolang Manok',
+    localName: 'Chicken Tinola',
+    description: 'Gingery chicken soup with green papaya and leafy greens.',
+    badge: 'Comfort soup',
+    time: '40 min',
     difficulty: 'Easy',
-    price: '₱160 – ₱220',
+    price: '₱160–₱220',
     servings: '4 servings',
-    available: ['Chicken', 'Ginger', 'Garlic', 'Onion'],
-    missing: ['Chayote', 'Chili Leaves'],
-    subTip: 'Can substitute Chili Leaves with Malunggay / Moringa',
+    have: ['chicken', 'ginger'],
+    toBuy: ['green papaya'],
+    staples: ['onion', 'fish sauce'],
   },
 ]
 
+const HOW_IT_WORKS = [
+  { icon: 'lucide:shopping-basket', title: 'Add what you have', detail: 'Type it or tap it from the pantry.' },
+  { icon: 'lucide:utensils', title: 'Pick a dish', detail: 'See what you have and what to buy.' },
+  { icon: 'lucide:chef-hat', title: 'Cook step by step', detail: 'With timers and read-aloud steps.' },
+] as const
+
 export function HomePage({ onStart, onSurprise }: HomePageProps) {
+  const language = useDisplayLanguage()
   const [cards, setCards] = useState<PreviewCardData[]>(PREVIEW_CARDS)
 
   const handleShuffle = () => {
@@ -112,21 +116,33 @@ export function HomePage({ onStart, onSurprise }: HomePageProps) {
           <span className="eyebrow">Filipino meal assistant</span>
           <h1>Ano'ng ulam?</h1>
           <p className="hero-subtitle">Tell us what's in your kusina. We'll find Filipino dishes you can cook.</p>
-          <button className="button button-primary home-start-button" type="button" onClick={() => onStart('')}>
-            Start with Ulam AI <span aria-hidden="true">→</span>
-          </button>
-          <div className="home-examples" aria-label="Try an example">
-            <span className="home-examples-label">Try:</span>
-            {EXAMPLE_COMBOS.map((combo) => (
-              <button key={combo.value} className="suggestion-chip" type="button" onClick={() => onStart(combo.value)}>{combo.label}</button>
-            ))}
-          </div>
-          <div className="home-secondary-actions">
-            <button className="text-button" type="button" onClick={onSurprise}>
-              <Icon icon="lucide:dices" width={16} height={16} aria-hidden="true" /> Surprise me!
+          <div className="home-actions">
+            <button className="button button-primary home-start-button" type="button" onClick={() => onStart('')}>
+              Start with Ulam AI <span aria-hidden="true">→</span>
+            </button>
+            <button className="button button-secondary home-surprise-button" type="button" onClick={onSurprise}>
+              <Icon icon="lucide:dices" width={18} height={18} aria-hidden="true" /> Surprise me!
             </button>
           </div>
-          <p className="hero-description">Hapag finds authentic Filipino recipes with peso price estimates, smart substitutions, and step-by-step cooking guidance.</p>
+          <div className="home-examples">
+            <span className="home-examples-label" id="home-examples-label">Or start from a classic combo</span>
+            <div className="home-examples-grid" role="group" aria-labelledby="home-examples-label">
+              {EXAMPLE_COMBOS.map((combo) => (
+                <button key={combo.value} className="suggestion-chip" type="button" onClick={() => onStart(combo.value)}>{combo.label}</button>
+              ))}
+            </div>
+          </div>
+          <ol className="home-steps" aria-label="How Hapag works">
+            {HOW_IT_WORKS.map((step) => (
+              <li key={step.title}>
+                <span className="home-step-icon" aria-hidden="true"><Icon icon={step.icon} width={20} height={20} /></span>
+                <span>
+                  <strong>{step.title}</strong>
+                  <small>{step.detail}</small>
+                </span>
+              </li>
+            ))}
+          </ol>
         </div>
 
         <div className="hero-preview-wrapper" aria-label="Interactive Stacked Recipe Cards">
@@ -141,7 +157,7 @@ export function HomePage({ onStart, onSurprise }: HomePageProps) {
                 handleShuffle()
               }
             }}
-            aria-label="Click to shuffle recipe card"
+            aria-label="Sample result. Press to see another dish"
           >
             {cards.slice(0, 3).map((dish, index) => {
               const isTop = index === 0
@@ -165,57 +181,24 @@ export function HomePage({ onStart, onSurprise }: HomePageProps) {
                   whileHover={isTop ? { y: -4, scale: 1.01 } : {}}
                   whileTap={isTop ? { scale: 0.98 } : {}}
                 >
-                  <div className="hero-preview-topline">
-                    <div className="hero-preview-tags">
-                      <span className="hero-preview-badge">{dish.badge}</span>
-                      <span className="hero-preview-authenticity">{dish.authenticity}</span>
+                  <DishImage recipe={{ id: dish.id, title: dish.title, localTitle: dish.localName }} variant="card" />
+                  <div className="hero-preview-content">
+                    <span className="recipe-badge">{dish.badge}</span>
+                    <HaveProgress have={dish.have.length} total={dish.have.length + dish.toBuy.length} />
+                    <h3 className="hero-preview-title">{dish.title}</h3>
+                    <span className="hero-preview-local-name">{dish.localName}</span>
+                    <div className="recipe-metrics hero-preview-metrics">
+                      <span className="metric-price">{dish.price}</span>
+                      <span>{dish.time}</span>
+                      <span>{dish.difficulty}</span>
+                      <span>{dish.servings}</span>
                     </div>
-                    <span className="hero-preview-match">{dish.matchScore}% Match</span>
-                  </div>
-
-                  <div className="hero-preview-body">
-                    <div className="hero-preview-header">
-                      <h3 className="hero-preview-title">{dish.title}</h3>
-                      <span className="hero-preview-local-name">{dish.localName}</span>
-                    </div>
-
                     <p className="hero-preview-desc">{dish.description}</p>
-
-                    <div className="hero-preview-metrics">
-                      <span className="metric-pill">{dish.time}</span>
-                      <span className="metric-pill">{dish.difficulty}</span>
-                      <span className="metric-pill metric-price">{dish.price}</span>
-                      <span className="metric-pill">{dish.servings}</span>
+                    <div className="ingredient-summary">
+                      <div><strong>You have ({dish.have.length})</strong>{dish.have.map((item) => <IngredientChip key={item} name={labelForName(item, language)} variant="have" />)}</div>
+                      {dish.toBuy.length > 0 ? <div><strong>To buy ({dish.toBuy.length})</strong>{dish.toBuy.map((item) => <IngredientChip key={item} name={labelForName(item, language)} variant="missing" />)}</div> : null}
+                      {dish.staples.length > 0 ? <div><strong>Probably in your kusina</strong>{dish.staples.map((item) => <IngredientChip key={item} name={labelForName(item, language)} variant="staple" />)}</div> : null}
                     </div>
-
-                    <div className="hero-preview-ingredients">
-                      <div className="hero-preview-group">
-                        <span className="hero-preview-group-label meron">You Have ({dish.available.length})</span>
-                        <div className="hero-preview-chips">
-                          {dish.available.map((item) => (
-                            <span key={item} className="chip-meron">{item}</span>
-                          ))}
-                        </div>
-                      </div>
-
-                      {dish.missing.length > 0 && (
-                        <div className="hero-preview-group">
-                          <span className="hero-preview-group-label kulang">Missing ({dish.missing.length})</span>
-                          <div className="hero-preview-chips">
-                            {dish.missing.map((item) => (
-                              <span key={item} className="chip-kulang">{item}</span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-
-                    {dish.subTip && (
-                      <div className="hero-preview-sub-tip">
-                        <span className="sub-tip-badge">Substitution</span>
-                        <span className="sub-tip-text">{dish.subTip}</span>
-                      </div>
-                    )}
                   </div>
                 </motion.div>
               )
