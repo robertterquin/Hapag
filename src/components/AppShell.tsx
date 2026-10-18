@@ -9,6 +9,7 @@ interface AppShellProps {
   contentKey: string
   onNavigate: (path: string) => void
   fullName?: string
+  isSignedIn: boolean
   children: ReactNode
 }
 
@@ -18,9 +19,9 @@ const navigation = [
   { label: 'Saved', path: '/saved', route: 'saved' as const, icon: 'lucide:heart' },
 ]
 
-export function AppShell({ routeName, contentKey, onNavigate, fullName, children }: AppShellProps) {
+export function AppShell({ routeName, contentKey, onNavigate, fullName, isSignedIn, children }: AppShellProps) {
   const isActive = (route: AppRoute['name']) => routeName === route || (route === 'ulam' && (routeName === 'results' || routeName === 'recipe-detail' || routeName === 'cooking'))
-  const profileInitial = (fullName?.[0] ?? 'U').toUpperCase()
+  const profileInitial = fullName?.[0]?.toUpperCase()
 
   return (
     <div className={`app-shell app-shell-${routeName}`}>
@@ -77,10 +78,17 @@ export function AppShell({ routeName, contentKey, onNavigate, fullName, children
             ))}
           </nav>
 
-          <button className="profile-link" type="button" onClick={() => onNavigate('/profile')} aria-label="Profile and preferences">
-            <span className="avatar" aria-hidden="true">{profileInitial}</span>
-            <span className="profile-name">{fullName?.split(' ')[0] ?? 'Profile'}</span>
-          </button>
+          {isSignedIn ? (
+            <button className="profile-link" type="button" onClick={() => onNavigate('/profile')} aria-label="Profile and preferences">
+              <span className="avatar" aria-hidden="true">{profileInitial ?? <Icon icon="lucide:user" width={16} height={16} />}</span>
+              <span className="profile-name">{fullName?.split(' ')[0] ?? 'Profile'}</span>
+            </button>
+          ) : (
+            <button className="sign-in-link" type="button" onClick={() => onNavigate('/auth')}>
+              <Icon icon="lucide:log-in" width={16} height={16} aria-hidden="true" />
+              <span>Sign in</span>
+            </button>
+          )}
         </header>
       </div>
 
@@ -90,9 +98,16 @@ export function AppShell({ routeName, contentKey, onNavigate, fullName, children
             <BrandMark className="brand-mark" size={36} />
             <strong>Hapag</strong>
           </button>
-          <button className="mobile-profile-button" type="button" onClick={() => onNavigate('/profile')} aria-label="Open profile">
-            <span className="avatar" aria-hidden="true">{profileInitial}</span>
-          </button>
+          {isSignedIn ? (
+            <button className="mobile-profile-button" type="button" onClick={() => onNavigate('/profile')} aria-label="Open profile">
+              <span className="avatar" aria-hidden="true">{profileInitial ?? <Icon icon="lucide:user" width={16} height={16} />}</span>
+            </button>
+          ) : (
+            <button className="sign-in-link" type="button" onClick={() => onNavigate('/auth')}>
+              <Icon icon="lucide:log-in" width={16} height={16} aria-hidden="true" />
+              <span>Sign in</span>
+            </button>
+          )}
         </header>
 
         <main className="app-content">
@@ -119,7 +134,9 @@ export function AppShell({ routeName, contentKey, onNavigate, fullName, children
               onClick={() => onNavigate(item.path)}
               aria-current={isActive(item.route) ? 'page' : undefined}
             >
-              <Icon icon={item.icon} width={20} height={20} aria-hidden="true" />
+              <span className="mobile-nav-indicator" aria-hidden="true">
+                <Icon icon={item.icon} width={20} height={20} />
+              </span>
               <small>{item.label}</small>
             </button>
           ))}

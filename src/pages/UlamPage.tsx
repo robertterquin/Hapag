@@ -2,7 +2,24 @@ import { IngredientAddForm } from '../components/IngredientAddForm.tsx'
 import { IngredientChips } from '../components/IngredientChips.tsx'
 import { KusinaShelf } from '../components/KusinaShelf.tsx'
 import { ServingStepper } from '../components/ServingStepper.tsx'
+import { SegmentedControl } from '../components/SegmentedControl.tsx'
+import type { SegmentedOption } from '../components/SegmentedControl.tsx'
+import { StickyActionBar } from '../components/StickyActionBar.tsx'
 import type { DiscoverySession, GenerationConstraints, IngredientDraft } from '../types/domain.ts'
+
+type BudgetChoice = 'any' | '100' | '200'
+
+const budgetOptions: readonly SegmentedOption<BudgetChoice>[] = [
+  { value: 'any', label: 'Any' },
+  { value: '100', label: 'Under ₱100' },
+  { value: '200', label: 'Under ₱200' },
+]
+
+const spiceOptions: readonly SegmentedOption<GenerationConstraints['spiceLevel']>[] = [
+  { value: 'mild', label: 'Mild' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'hot', label: 'Spicy' },
+]
 
 export interface UlamPageProps {
   session: DiscoverySession
@@ -71,14 +88,12 @@ export function UlamPage({ session, onAddIngredients, onReset, onUpdateConstrain
         </div>
         <div className="constraint-grid">
           <ServingStepper value={session.constraints.servings} onChange={(value) => onUpdateConstraints({ servings: value })} />
-          <label className="field-label">
-            Budget limit
-            <select value={session.constraints.budgetLimit ?? ''} onChange={(event) => onUpdateConstraints({ budgetLimit: event.target.value ? Number(event.target.value) : undefined })}>
-              <option value="">Any budget</option>
-              <option value="100">Under ₱100</option>
-              <option value="200">Under ₱200</option>
-            </select>
-          </label>
+          <SegmentedControl
+            label="Budget limit"
+            value={session.constraints.budgetLimit ? String(session.constraints.budgetLimit) as BudgetChoice : 'any'}
+            options={budgetOptions}
+            onChange={(choice) => onUpdateConstraints({ budgetLimit: choice === 'any' ? undefined : Number(choice) })}
+          />
           <label className="field-label">
             Dietary preference
             <select value={session.constraints.dietaryPreference ?? 'none'} onChange={(event) => onUpdateConstraints({ dietaryPreference: event.target.value as GenerationConstraints['dietaryPreference'] })}>
@@ -88,14 +103,12 @@ export function UlamPage({ session, onAddIngredients, onReset, onUpdateConstrain
               <option value="diabetic-friendly">Diabetic-friendly</option>
             </select>
           </label>
-          <label className="field-label">
-            Spice level
-            <select value={session.constraints.spiceLevel} onChange={(event) => onUpdateConstraints({ spiceLevel: event.target.value as GenerationConstraints['spiceLevel'] })}>
-              <option value="mild">Mild</option>
-              <option value="medium">Medium</option>
-              <option value="hot">Spicy</option>
-            </select>
-          </label>
+          <SegmentedControl
+            label="Spice level"
+            value={session.constraints.spiceLevel}
+            options={spiceOptions}
+            onChange={(spiceLevel) => onUpdateConstraints({ spiceLevel })}
+          />
         </div>
         <div className="allergy-callout">
           <strong>Have food allergies?</strong>
@@ -103,9 +116,11 @@ export function UlamPage({ session, onAddIngredients, onReset, onUpdateConstrain
         </div>
       </section>
 
-      <button className="button button-primary full-width" type="button" onClick={onGenerate} disabled={session.ingredients.length === 0}>
-        Let's Cook!
-      </button>
+      <StickyActionBar summary={session.ingredients.length === 0 ? 'Add an ingredient to start' : `${session.ingredients.length} sangkap ready`}>
+        <button className="button button-primary" type="button" onClick={onGenerate} disabled={session.ingredients.length === 0}>
+          Let's Cook! <span aria-hidden="true">→</span>
+        </button>
+      </StickyActionBar>
     </div>
   )
 }

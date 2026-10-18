@@ -65,6 +65,15 @@ Size: S ≈ half a day, M ≈ 1–2 days, L ≈ 3+ days.
 
 **Exit:** the components are used in at least one screen, and the colour tests are updated to match the decision.
 
+**Status: done.** Option (a) was chosen: ube is the brand colour and orange is used only for primary actions.
+- Primary buttons use `orange-11`. White text on the old `orange-9` was only 2.97:1.
+- Fixed 19 references to `--teal-*` and `--slate-*`. Those palettes were no longer imported, so the styles that used them had been silently broken.
+- Where the new components are used:
+  - `IngredientChip`: results cards.
+  - `SegmentedControl`: budget and spice on `/ulam`.
+  - `StickyActionBar`: "Let's Cook!" on `/ulam`.
+  - `BottomSheet`: built, but not yet used on any screen. Phase 18.2 is where it gets wired in, for preferences.
+
 ## 18.2 Ingredient flow (Home + `/ulam`)
 
 **Why:** This is the screen that matters most. On a phone, the cook button currently sits about 4 screens below the input.

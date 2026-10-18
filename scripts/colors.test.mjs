@@ -11,15 +11,16 @@ test('Radix palettes are imported and mapped to Hapag semantic tokens', async ()
     assert.match(css, new RegExp(`@radix-ui/colors/${palette}\\.css`))
   }
 
-  for (const token of ['--color-ube', '--color-ube-dark', '--color-mango', '--color-tomato', '--color-border', '--color-warning-bg', '--color-error-bg']) {
+  for (const token of ['--color-action', '--color-mango', '--color-tomato', '--color-border', '--color-warning-bg', '--color-error-bg']) {
     assert.match(css, new RegExp(`${token}:\\s+var\\(--`))
   }
 
-  for (const token of ['--color-calamansi', '--color-ink', '--color-muted', '--color-success-bg']) {
+  for (const token of ['--color-brand', '--color-brand-strong', '--color-brand-soft', '--color-calamansi', '--color-ink', '--color-muted', '--color-success-bg']) {
     assert.match(css, new RegExp(`${token}:\\s+(?:var\\(--|#[0-9A-Fa-f]{6})`))
   }
 
-  assert.match(css, /--color-ube:\s+var\(--orange-9\)/)
+  assert.match(css, /--color-brand:\s+#7651A9/)
+  assert.match(css, /--color-action:\s+var\(--orange-11\)/)
   assert.match(css, /--color-warning-bg:\s+var\(--amber-2\)/)
   assert.match(css, /--color-error-bg:\s+var\(--tomato-2\)/)
 })

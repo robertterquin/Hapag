@@ -18,18 +18,26 @@
   --color-cream: var(--sand-1);
   --color-surface: #ffffff;
 
-  --color-ube: var(--orange-9);
-  --color-ube-dark: var(--orange-10);
+  /* Brand (ube): identity, navigation, links, selected states. */
+  --color-brand: #7651A9;
+  --color-brand-strong: #57347F;
+  --color-brand-soft: #F3EEF9;
+  --color-brand-border: #CDBCE6;
+  --color-brand-a: rgb(118 81 169 / 18%);
+
+  /* Action (orange): primary buttons only. White text passes 4.5:1. */
+  --color-action: var(--orange-11);
+  --color-action-strong: #A93F00;
+
   --color-mango: var(--amber-9);
   --color-calamansi: #1B6B38;
   --color-tomato: var(--tomato-9);
 
   --color-ink: #20130E;
   --color-muted: #523E36;
-  --color-lavender: var(--orange-2);
   --color-border: var(--sand-7);
   --color-border-strong: var(--sand-8);
-  --color-focus: var(--orange-9);
+  --color-focus: var(--color-brand);
 
   --color-success-bg: #EAF7EE;
   --color-success-border: #A3E2B0;
@@ -40,8 +48,8 @@
   --color-shadow-soft: var(--brown-a4);
   --color-shadow: var(--brown-a5);
   --color-shadow-hover: var(--brown-a6);
-  --color-card-focus: var(--orange-a5);
-  --color-focus-ring: var(--orange-a4);
+  --color-card-focus: var(--color-brand-a);
+  --color-focus-ring: var(--color-brand-a);
   --color-surface-translucent: var(--white-a10);
   --color-warning-border: var(--amber-a7);
   --color-error-border: var(--tomato-a7);

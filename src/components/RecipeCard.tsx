@@ -3,6 +3,7 @@ import type { Recipe } from '../types/domain.ts'
 import { formatCost } from '../lib/format.ts'
 import type { RecipeAuthenticity } from '../types/domain.ts'
 import { RecipeFeedback } from './RecipeFeedback.tsx'
+import { IngredientChip } from './IngredientChip.tsx'
 import type { RecipeFeedbackKind } from '../hooks/useRecipeFeedback.ts'
 
 interface RecipeCardProps {
@@ -53,8 +54,8 @@ export function RecipeCard({ recipe, saved, onOpen, onToggleSave, feedback, onFe
           {typeof recipe.matchScore === 'number' ? <span className="metric-match">{recipe.matchScore}% match</span> : null}
         </div>
         <div className="ingredient-summary" aria-label="Ingredient evidence">
-          <div><strong>You Have ({available.length})</strong>{available.length > 0 ? available.map((ingredient) => <span key={ingredient.id} className="chip-meron">{ingredient.name}</span>) : <span>None</span>}</div>
-          <div><strong>Missing ({missing.length})</strong>{missing.length > 0 ? missing.map((ingredient) => <span key={ingredient.id} className="chip-kulang">{ingredient.name}</span>) : <span>None</span>}</div>
+          <div><strong>You Have ({available.length})</strong>{available.length > 0 ? available.map((ingredient) => <IngredientChip key={ingredient.id} name={ingredient.name} variant="have" />) : <span className="summary-empty">None</span>}</div>
+          <div><strong>Missing ({missing.length})</strong>{missing.length > 0 ? missing.map((ingredient) => <IngredientChip key={ingredient.id} name={ingredient.name} variant="missing" />) : <span className="summary-empty">None</span>}</div>
         </div>
         <span className="card-action">View recipe <span aria-hidden="true">→</span></span>
       </button>
