@@ -43,8 +43,10 @@ export function useDiscovery() {
   const [candidateDishes, setCandidateDishes] = useState<CatalogRecipeCandidate[]>([])
   const [generationStatus, setGenerationStatus] = useState<GenerationStatus>('idle')
   const [generationError, setGenerationError] = useState<string | null>(null)
+  const [notice, setNotice] = useState<string | null>(null)
 
-  const startDiscovery = (value: string) => {
+  const startDiscovery = (value: string, nextNotice: string | null = null) => {
+    setNotice(nextNotice)
     setSession((current) => ({ ...current, rawInput: value, ingredients: value ? dedupeIngredients(recipeService.normalizeIngredients(value, 'manual')) : [] }))
     setSuggestions([])
     setGenerationStatus('idle')
@@ -52,6 +54,7 @@ export function useDiscovery() {
   }
 
   const resetDiscovery = () => {
+    setNotice(null)
     setSession({ rawInput: '', ingredients: [], constraints: preferredConstraints.current })
     setSuggestions([])
     setGenerationStatus('idle')
@@ -141,6 +144,7 @@ export function useDiscovery() {
 
   return {
     session,
+    notice,
     suggestions,
     candidateDishes,
     generationStatus,

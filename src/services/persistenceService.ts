@@ -130,4 +130,23 @@ export const persistenceService = {
     if (error) throw error
   },
 
+  async loadPantryStaples(userId: string): Promise<string[]> {
+    const { data, error } = await requireClient().from('pantry_items').select('canonical_name').eq('user_id', userId).order('created_at', { ascending: true })
+    if (error) throw error
+    return (data ?? []).map((row: { canonical_name: string }) => row.canonical_name)
+  },
+
+  async addPantryStaple(userId: string, staple: { canonicalName: string; name: string }) {
+    const { error } = await requireClient().from('pantry_items').upsert({
+      user_id: userId, canonical_name: staple.canonicalName, ingredient_name: staple.name,
+      quantity: 1, unit: 'piece', confidence: 'high', available: true,
+    }, { onConflict: 'user_id,canonical_name' })
+    if (error) throw error
+  },
+
+  async removePantryStaple(userId: string, canonicalName: string) {
+    const { error } = await requireClient().from('pantry_items').delete().eq('user_id', userId).eq('canonical_name', canonicalName)
+    if (error) throw error
+  },
+
 }

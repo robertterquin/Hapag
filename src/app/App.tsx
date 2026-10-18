@@ -17,6 +17,9 @@ import { ResultsPage } from '../pages/ResultsPage.tsx'
 import { SavedPage } from '../pages/SavedPage.tsx'
 import { UlamPage } from '../pages/UlamPage.tsx'
 import { useAppRouter } from './router.ts'
+import { DisplayLanguageContext } from './displayLanguage.ts'
+import { useKusinaStaples } from '../hooks/useKusinaStaples.ts'
+import { pickSurpriseDish } from '../lib/surprise.ts'
 
 function App() {
   const { route, navigate } = useAppRouter()
@@ -24,6 +27,7 @@ function App() {
   const discovery = useDiscovery()
   const savedRecipes = useSavedRecipes(auth.session)
   const preferences = usePreferences(auth.session)
+  const kusinaStaples = useKusinaStaples(auth.session)
   const sessionId = auth.session?.user.id
   const { applyPreferences } = discovery
   const appliedPreferencesKey = useRef<string | null>(null)
@@ -38,6 +42,13 @@ function App() {
   const recipeFeedback = useRecipeFeedback()
   const startDiscovery = (value: string) => {
     discovery.startDiscovery(value)
+    navigate('/ulam')
+  }
+
+  const startSurprise = () => {
+    const dish = pickSurpriseDish()
+    if (!dish) return
+    discovery.startDiscovery(dish.requiredIngredients.join(', '), `Surprise! Here's what you need for ${dish.name}. Remove anything you don't have.`)
     navigate('/ulam')
   }
 
@@ -79,8 +90,8 @@ function App() {
 
   const page: ReactNode = (() => {
     switch (route.name) {
-      case 'home': return <HomePage onStart={startDiscovery} />
-      case 'ulam': return <UlamPage session={discovery.session} onAddIngredients={discovery.addIngredients} onReset={discovery.resetDiscovery} onUpdateConstraints={discovery.updateConstraints} onGenerate={generateSuggestions} onRemove={discovery.removeIngredient} />
+      case 'home': return <HomePage onStart={startDiscovery} onSurprise={startSurprise} />
+      case 'ulam': return <UlamPage session={discovery.session} notice={discovery.notice} staples={kusinaStaples.staples} staplesError={kusinaStaples.error} onAddIngredients={discovery.addIngredients} onReset={discovery.resetDiscovery} onUpdateConstraints={discovery.updateConstraints} onGenerate={generateSuggestions} onRemove={discovery.removeIngredient} onToggleStaple={(item) => void kusinaStaples.toggleStaple(item)} onSurprise={startSurprise} />
       case 'results': return <ResultsPage session={discovery.session} status={discovery.generationStatus} suggestions={recipeFeedback.rankRecipes(discovery.suggestions)} error={discovery.generationError} savedError={savedRecipes.error} savedIds={savedRecipes.savedIds} feedback={recipeFeedback.feedback} onOpen={(id) => navigate(`/recipes/${id}`)} onToggleSave={toggleSaved} onFeedback={submitFeedback} onRetry={generateSuggestions} onEdit={() => navigate('/ulam')} />
       case 'recipe-detail': return <RecipeDetailPage key={route.recipeId} recipeId={route.recipeId} saved={savedRecipes.savedIds.includes(route.recipeId)} onToggleSave={() => toggleSaved(route.recipeId)} onStartCooking={() => navigate(`/recipes/${route.recipeId}/cook`)} onBack={() => navigate('/results')} />
       case 'cooking': return <CookingPage key={route.recipeId} recipeId={route.recipeId} onFinish={finishCooking} onBack={() => navigate(`/recipes/${route.recipeId}`)} />
@@ -94,7 +105,11 @@ function App() {
   const contentKey = route.name === 'recipe-detail' || route.name === 'cooking' ? `${route.name}:${route.recipeId}` : route.name
   const rawFullName = auth.session?.user.user_metadata?.full_name
   const fullName = typeof rawFullName === 'string' && rawFullName.trim() ? rawFullName.trim() : undefined
-  return <AppShell routeName={route.name} contentKey={contentKey} fullName={fullName} isSignedIn={Boolean(auth.session)} onNavigate={navigateFromShell}>{page}</AppShell>
+  return (
+    <DisplayLanguageContext.Provider value={preferences.preferences.language}>
+      <AppShell routeName={route.name} contentKey={contentKey} fullName={fullName} isSignedIn={Boolean(auth.session)} onNavigate={navigateFromShell}>{page}</AppShell>
+    </DisplayLanguageContext.Provider>
+  )
 }
 
 export default App

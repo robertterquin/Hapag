@@ -1,7 +1,13 @@
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
 import type { NormalizedIngredient } from '../types/domain.ts'
-import { kusinaCategories, kusinaPantryItems, getSmartPairings, type KusinaCategory } from '../data/kusinaShelf.ts'
+import { kusinaCategories, kusinaPantryItems, getSmartPairings, type KusinaCategory, type KusinaItem } from '../data/kusinaShelf.ts'
+import { useDisplayLanguage } from '../app/displayLanguage.ts'
+import { getIngredientLabel, labelForName } from '../lib/ingredientLabels.ts'
+
+function findExistingId(activeIds: Map<string, string>, item: KusinaItem) {
+  return activeIds.get(item.canonicalName.toLowerCase()) || activeIds.get(item.localName.toLowerCase()) || activeIds.get(item.name.toLowerCase())
+}
 
 interface KusinaShelfProps {
   activeIngredients: readonly NormalizedIngredient[]
@@ -10,6 +16,7 @@ interface KusinaShelfProps {
 
 export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
   const [selectedCategory, setSelectedCategory] = useState<KusinaCategory['id']>('all')
+  const language = useDisplayLanguage()
 
   const activeCanonicalMap = useMemo(() => {
     const map = new Map<string, string>()
@@ -27,6 +34,16 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
   const smartPairings = useMemo(() => {
     return getSmartPairings(activeCanonicalNames)
   }, [activeCanonicalNames])
+
+  const activeCountByCategory = useMemo(() => {
+    const counts: Record<KusinaCategory['id'], number> = { all: 0, protina: 0, gulay: 0, pampalasa: 0 }
+    for (const item of kusinaPantryItems) {
+      if (!findExistingId(activeCanonicalMap, item)) continue
+      counts.all += 1
+      counts[item.category] += 1
+    }
+    return counts
+  }, [activeCanonicalMap])
 
   const filteredItems = useMemo(() => {
     if (selectedCategory === 'all') return kusinaPantryItems
@@ -68,7 +85,7 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
                   onClick={() => onToggle(pair.name, false)}
                   title={`Add ${pair.name}`}
                 >
-                  <span className="plus-glyph">+</span> {pair.name}
+                  <span className="plus-glyph">+</span> {labelForName(pair.name, language)}
                 </button>
               ))}
             </div>
@@ -79,6 +96,7 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
       <div className="shelf-tabs" role="tablist" aria-label="Kitchen Shelf Categories">
         {kusinaCategories.map((cat) => {
           const isSelected = selectedCategory === cat.id
+          const count = activeCountByCategory[cat.id]
           return (
             <button
               key={cat.id}
@@ -89,6 +107,7 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
               onClick={() => setSelectedCategory(cat.id)}
             >
               {cat.label}
+              {count > 0 ? <span className="shelf-tab-count" aria-label={`${count} selected`}>{count}</span> : null}
             </button>
           )
         })}
@@ -96,8 +115,9 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
 
       <motion.div layout className="shelf-grid">
         {filteredItems.map((item) => {
-          const existingId = activeCanonicalMap.get(item.canonicalName.toLowerCase()) || activeCanonicalMap.get(item.localName.toLowerCase()) || activeCanonicalMap.get(item.name.toLowerCase())
+          const existingId = findExistingId(activeCanonicalMap, item)
           const isActive = Boolean(existingId)
+          const label = getIngredientLabel(item.name, item.localName, language)
 
           return (
             <motion.button
@@ -107,7 +127,7 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
               type="button"
               onClick={() => onToggle(item.name, isActive, existingId)}
               aria-pressed={isActive}
-              title={isActive ? `Remove ${item.name}` : `Add ${item.name}`}
+              aria-label={`${isActive ? 'Remove' : 'Add'} ${label.secondary ? `${label.primary} (${label.secondary})` : label.primary}`}
               whileTap={{ scale: 0.95 }}
             >
               <span className="chip-indicator" aria-hidden="true">
@@ -122,7 +142,11 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
                   </svg>
                 )}
               </span>
-              <span className="item-name">{item.name}</span>
+              <span className="item-emoji" aria-hidden="true">{item.emoji}</span>
+              <span className="item-name">
+                {label.primary}
+                {label.secondary ? <small>{label.secondary}</small> : null}
+              </span>
             </motion.button>
           )
         })}

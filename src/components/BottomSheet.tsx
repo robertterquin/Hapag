@@ -20,12 +20,21 @@ export function BottomSheet({ open, title, onClose, children, footer }: BottomSh
   const dialogRef = useRef<HTMLDialogElement>(null)
   const titleId = useId()
   const dragControls = useDragControls()
+  const returnFocusRef = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
     const dialog = dialogRef.current
     if (!dialog) return
-    if (open && !dialog.open) dialog.showModal()
-    if (!open && dialog.open) dialog.close()
+    if (open && !dialog.open) {
+      returnFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
+      dialog.showModal()
+    }
+    if (!open && dialog.open) {
+      dialog.close()
+      // Safari does not focus buttons on click, so the browser's own restore can land on <body>.
+      const target = returnFocusRef.current
+      if (target?.isConnected && target !== document.body) target.focus()
+    }
   }, [open])
 
   return (

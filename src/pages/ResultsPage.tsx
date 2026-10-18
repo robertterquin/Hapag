@@ -1,4 +1,6 @@
 import { CookingLoadingState } from '../components/CookingLoadingState.tsx'
+import { labelForIngredient } from '../lib/ingredientLabels.ts'
+import { useDisplayLanguage } from '../app/displayLanguage.ts'
 import { RecipeCard } from '../components/RecipeCard.tsx'
 import { ResultsSkeleton } from '../components/Skeletons.tsx'
 import { StatePanel } from '../components/StatePanel.tsx'
@@ -22,6 +24,7 @@ export interface ResultsPageProps {
 }
 
 export function ResultsPage({ session, status, suggestions, error, savedError, savedIds, feedback, onOpen, onToggleSave, onFeedback, onRetry, onEdit }: ResultsPageProps) {
+  const language = useDisplayLanguage()
   if (status === 'loading') {
     return (
       <div className="page-shell">
@@ -48,7 +51,7 @@ export function ResultsPage({ session, status, suggestions, error, savedError, s
         <div>
           <span className="eyebrow">Recipe Suggestions</span>
           <h1>Dishes you can cook</h1>
-          <p className="page-intro">3 meal ideas matching: <strong>{session.rawInput || 'your ingredients'}</strong></p>
+          <p className="page-intro">3 meal ideas matching: <strong>{session.ingredients.length > 0 ? session.ingredients.map((ingredient) => labelForIngredient(ingredient, language)).join(', ') : 'your ingredients'}</strong></p>
         </div>
         <button className="button button-secondary" type="button" onClick={onEdit}>Edit Ingredients</button>
       </div>

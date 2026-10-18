@@ -13,7 +13,12 @@ test('removed My Ingredients code is disconnected from the application', async (
   assert.doesNotMatch(app, /usePantry|PantryPicker|PantryPage|startFromPantry|replacePantryIngredients/)
   assert.doesNotMatch(shell, /My Ingredients|pantry/)
   assert.doesNotMatch(ulam, /PantryPicker|pantryItems|My Ingredients/)
-  assert.doesNotMatch(service, /pantry_items|loadPantryItems|savePantryItem|updatePantryItem|removePantryItem/)
+  assert.doesNotMatch(service, /loadPantryItems|savePantryItem|updatePantryItem|removePantryItem/)
+  // Phase 18.2 reuses pantry_items only for remembered staples.
+  for (const match of service.matchAll(/from\('pantry_items'\)/g)) {
+    const method = service.slice(0, match.index).match(/async (\w+)\(/g)?.at(-1)
+    assert.match(method ?? '', /PantryStaple/)
+  }
 })
 
 test('legacy pantry URL redirects to Ulam AI and the database schema remains preserved', async () => {

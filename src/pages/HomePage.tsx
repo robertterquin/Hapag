@@ -1,9 +1,19 @@
 import { useState } from 'react'
 import { motion } from 'motion/react'
+import { Icon } from '@iconify/react'
+import { IngredientAddForm } from '../components/IngredientAddForm.tsx'
 
 export interface HomePageProps {
   onStart: (value: string) => void
+  onSurprise: () => void
 }
+
+const EXAMPLE_COMBOS = [
+  { label: '🥚 Itlog + 🍅 Kamatis', value: 'itlog, kamatis' },
+  { label: '🍗 Manok + 🧄 Bawang + Toyo', value: 'manok, bawang, toyo, suka' },
+  { label: '🥫 Sardinas + 🥬 Pechay', value: 'sardinas, pechay, itlog' },
+  { label: '🍆 Talong + 🥚 Itlog', value: 'talong, itlog' },
+] as const
 
 interface PreviewCardData {
   id: string
@@ -89,7 +99,7 @@ const PREVIEW_CARDS: PreviewCardData[] = [
   },
 ]
 
-export function HomePage({ onStart }: HomePageProps) {
+export function HomePage({ onStart, onSurprise }: HomePageProps) {
   const [cards, setCards] = useState<PreviewCardData[]>(PREVIEW_CARDS)
 
   const handleShuffle = () => {
@@ -101,14 +111,29 @@ export function HomePage({ onStart }: HomePageProps) {
       <section className="hero-panel">
         <div className="hero-copy">
           <span className="eyebrow">Filipino meal assistant</span>
-          <h1>Got ingredients? Let's cook something delicious.</h1>
-          <p className="hero-subtitle">From your kitchen pantry to the dinner table.</p>
-          <p className="hero-description">Enter whatever ingredients you have on hand. Hapag analyzes them to find authentic Filipino recipes, complete with price estimates, smart substitutions, and step-by-step guidance.</p>
-          <div className="home-cta-content">
-            <strong>Discover dishes tailored to you.</strong>
-            <p>With Ulam AI, input your available ingredients, set preferences, and explore 3 practical meal options.</p>
-            <button className="button button-primary" type="button" onClick={() => onStart('')}>Start with Ulam AI <span aria-hidden="true">→</span></button>
+          <h1>Ano'ng ulam?</h1>
+          <p className="hero-subtitle">Tell us what's in your kusina. We'll find Filipino dishes you can cook.</p>
+          <IngredientAddForm
+            idPrefix="home-start"
+            label="What ingredients do you have?"
+            helper="English, Tagalog, or Taglish. Separate with commas."
+            submitLabel="Find dishes →"
+            placeholder="e.g. itlog, kamatis, sardinas"
+            onSubmit={async (input) => { onStart(input.name) }}
+          />
+          <div className="home-examples" aria-label="Try an example">
+            <span className="home-examples-label">Try:</span>
+            {EXAMPLE_COMBOS.map((combo) => (
+              <button key={combo.value} className="suggestion-chip" type="button" onClick={() => onStart(combo.value)}>{combo.label}</button>
+            ))}
           </div>
+          <div className="home-secondary-actions">
+            <button className="text-button" type="button" onClick={onSurprise}>
+              <Icon icon="lucide:dices" width={16} height={16} aria-hidden="true" /> Surprise me!
+            </button>
+            <button className="text-button" type="button" onClick={() => onStart('')}>Browse the pantry instead <span aria-hidden="true">→</span></button>
+          </div>
+          <p className="hero-description">Hapag finds authentic Filipino recipes with peso price estimates, smart substitutions, and step-by-step cooking guidance.</p>
         </div>
 
         <div className="hero-preview-wrapper" aria-label="Interactive Stacked Recipe Cards">

@@ -95,6 +95,17 @@ Size: S ≈ half a day, M ≈ 1–2 days, L ≈ 3+ days.
 **Tests:** staples persistence, chip label formatting for each language, and the Surprise me selection logic.
 **Exit:** at 375px, a user can add five ingredients and start generation without scrolling past the pantry.
 
+**Status: done.**
+- **Your decisions:**
+  - Chips default to Taglish, e.g. "Manok (chicken)". They follow the Profile language setting for signed-in users. Signed-out users always see Taglish.
+  - Signed-in users' staples sync to Supabase `pantry_items`. Signed-out users' staples are saved in the browser. On first sign-in, the browser's staples are copied to the account.
+- **Home:** the hero is now an ingredient input with four example combos, "Surprise me!", and "Browse the pantry instead".
+- **`/ulam` order:** input, selected ingredients, staples card ("Add my staples", with an Edit sheet), pantry (emoji, counts, stacked English name), preferences summary with a BottomSheet, one-line allergy note, then the sticky Cook bar.
+- **Surprise me** is offered only while the list is empty. It fills the list with a random everyday dish's ingredients and explains what it did. Adding a dish's ingredients to a list you already started would mark things as available that you may not have.
+- **BottomSheet** now restores focus to the button that opened it, because Safari doesn't focus buttons on click.
+- **Autocomplete:** the dropdown gets its own stacking layer, so it stays above the form.
+- **Tests:** the Phase 13 guard on legacy pantry code now allows `pantry_items` only inside the `*PantryStaple` methods.
+
 ## 18.3 Results
 
 - **No-AI fallback:** when `hasRecipeGenerationConfig` is false, or the AI request fails, build results from `matchRecipeCatalog` instead of the sample recipes. Each catalog dish is turned into a full recipe card, labelled "Catalog match", with an empty "steps coming soon" state if needed. The edge function's grounding rules stay unchanged.
