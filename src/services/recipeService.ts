@@ -2,11 +2,13 @@ import { recipeFixtures } from '../data/fixtures.ts'
 import { appConfig, hasRecipeGenerationConfig } from '../config/env.ts'
 import { normalizeIngredientInput } from '../lib/ingredientParser.ts'
 import { adaptRecipeListPayload, adaptRecipePayload } from '../schemas/recipeAdapter.ts'
+import { loadRecentRecipes, saveRecentRecipes } from '../lib/recipeSessionCache.ts'
 import type { GenerationRequest, IngredientSource, RecipeService } from '../types/domain.ts'
 
 const wait = (milliseconds: number) => new Promise((resolve) => setTimeout(resolve, milliseconds))
 
 const recipeCache = new Map(recipeFixtures.map((recipe) => [recipe.id, recipe]))
+for (const recipe of loadRecentRecipes()) recipeCache.set(recipe.id, recipe)
 
 export function cacheRecipe(recipe: ReturnType<typeof adaptRecipePayload>) {
   recipeCache.set(recipe.id, recipe)
@@ -88,6 +90,7 @@ async function generateWithOpenAI(request: GenerationRequest, accessToken?: stri
 
   const recipes = adaptRecipeListPayload(payload.recipes)
   recipes.forEach((recipe) => recipeCache.set(recipe.id, recipe))
+  saveRecentRecipes(recipes)
   return recipes
 }
 

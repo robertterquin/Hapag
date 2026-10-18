@@ -52,6 +52,11 @@ export function ResultsPage({ session, status, suggestions, ideas, fallback, err
 
   const showIdeas = Boolean(fallback) && ideas.length > 0
 
+  // Nothing searched yet in this session, e.g. after a page reload.
+  if (status === 'idle' && suggestions.length === 0) {
+    return <StatePanel tone="empty" title="No search yet" description="Tell Hapag what's in your kusina to see dishes you can cook." actionLabel="Find dishes" onAction={onEdit} />
+  }
+
   if (status === 'error' && !showIdeas) {
     return <StatePanel tone="error" icon="!" title="We couldn't get recipes right now." description={error ?? 'Something unexpected happened. Your ingredients are still saved.'} actionLabel="Try Again" onAction={onRetry} secondaryLabel="Edit Ingredients" onSecondary={onEdit} />
   }

@@ -1264,7 +1264,7 @@ p { line-height: 1.6; }
 .sticky-action-buttons { display: flex; flex: 0 0 auto; gap: var(--space-2); }
 .sticky-action-buttons .button { min-height: 48px; }
 .sticky-action-bar:not(:has(.sticky-action-summary)) .sticky-action-buttons { flex: 1 1 auto; }
-.sticky-action-bar:not(:has(.sticky-action-summary)) .sticky-action-buttons .button { width: 100%; }
+.sticky-action-bar:not(:has(.sticky-action-summary)) .sticky-action-buttons .button { flex: 1 1 auto; min-width: 0; }
 @media (max-width: 900px) {
   .sticky-action-bar { bottom: calc(84px + env(safe-area-inset-bottom)); }
 }
@@ -1359,3 +1359,29 @@ figure.recipe-card-image, figure.recipe-hero-image { display: block; }
 .ideas-note { display: flex; align-items: flex-start; gap: var(--space-2); margin: 0 0 var(--space-4); padding: 12px 16px; color: var(--color-ink); font-size: 14px; font-weight: 600; background: var(--amber-2); border: 1px solid var(--amber-7); border-radius: var(--radius-control); }
 .unlock-hint { display: grid; gap: var(--space-3); justify-items: center; margin-top: var(--space-4); }
 .unlock-hint p { margin: 0; color: var(--color-ink); font-weight: 700; text-align: center; }
+
+/* Phase 18.4 recipe detail */
+
+.detail-page .sticky-action-bar { padding-left: 10px; }
+.detail-page .sticky-action-buttons { flex: 1 1 auto; }
+.sticky-action-bar .sticky-action-buttons .button.detail-save-button { flex: 0 0 auto; }
+.detail-save-button { display: inline-flex; align-items: center; gap: 6px; padding: 0 16px; font-size: 18px; }
+.detail-save-label { font-size: 14px; }
+.detail-cook-button { flex: 1 1 auto; }
+.detail-section .match-callout { margin-top: var(--space-3); }
+
+.shopping-items { display: grid; gap: 6px; margin: var(--space-4) 0 0; padding: 0; list-style: none; }
+.shopping-items li { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); padding: 10px 14px; background: var(--color-error-bg); border: 1px solid var(--tomato-5); border-radius: var(--radius-control); }
+.shopping-items small { color: var(--color-muted); font-weight: 600; }
+.shopping-price { flex: 0 0 auto; color: var(--amber-11); font-weight: 800; }
+.shopping-toggle { display: flex; align-items: center; gap: var(--space-2); min-height: 44px; margin-top: var(--space-3); color: var(--color-ink); font-size: 14px; font-weight: 600; }
+.shopping-toggle input { width: 18px; height: 18px; accent-color: var(--color-brand); }
+.shopping-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-2); }
+.shopping-actions .button { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; }
+.shopping-list .inline-warning { margin: var(--space-3) 0 0; }
+.shopping-fallback { display: grid; gap: var(--space-2); margin-top: var(--space-3); }
+.shopping-fallback .inline-warning { margin: 0; }
+.shopping-fallback-text { width: 100%; padding: 10px 12px; color: var(--color-ink); font: inherit; font-size: 13px; background: var(--sand-2); border: 1px solid var(--color-border-strong); border-radius: var(--radius-control); resize: vertical; }
+.shopping-items li.shopping-item-staple { background: var(--sand-2); border: 1px dashed var(--sand-7); }
+figure.recipe-hero-image { margin: 0; }
+@media (min-width: 901px) { .detail-page .sticky-action-bar { width: min(460px, 100%); margin-left: auto; } }

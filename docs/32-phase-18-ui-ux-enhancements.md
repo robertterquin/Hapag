@@ -144,6 +144,23 @@ Size: S ≈ half a day, M ≈ 1–2 days, L ≈ 3+ days.
 **Tests:** a cache round-trip through `sessionStorage`, and a corrupt-storage fallback.
 **Exit:** generate, open a recipe, refresh, and the recipe still renders.
 
+**Status: done.**
+- **Sticky action bar:** compact Save (♥) and a wide "Start cooking". On desktop it's capped at 460px and right-aligned.
+- **Section order:** summary stats, ingredients with the servings control, shopping list, steps, substitutions (hidden if there are none), then "Why it works". Cost and the safety note sit in the side column. The safety note says "AI-generated" only for AI recipes.
+- **Shopping list:**
+  - Lists only "to buy" items, with quantities scaled to the chosen servings.
+  - Peso prices come from the recipe's own cost lines, matched by canonical name (e.g. "Eggs" matches "Itlog").
+  - Staples can be included with a checkbox.
+  - Copy, plus Share where `navigator.share` exists. When the browser blocks the clipboard, the list appears in a pre-selected text box.
+- **Links that survive reload:**
+  - AI recipes are saved to `sessionStorage` (newest 12) and re-validated against the recipe schema on load.
+  - A missing recipe shows "We couldn't find that recipe" with "Start over" and "Back to results".
+  - `/results` after a reload shows "No search yet" instead of an empty list.
+- **Bugs fixed along the way:**
+  - The sticky bar's keyboard check now requires a focused text field. Pinch-zoom and viewport differences had been hiding the bar.
+  - The 18.1 rule that made a lone sticky button full width also overflowed two-button bars.
+  - The 18.3 hero photo kept the browser's default `<figure>` margin and overflowed on phones.
+
 ## 18.5 Cooking Mode
 
 - **Full-screen:** the `cooking` route hides the app header and bottom nav, and has its own slim top bar with ✕ (exit), the title and "2 / 4".
