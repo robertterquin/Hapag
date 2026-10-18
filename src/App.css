@@ -1473,3 +1473,6 @@ figure.recipe-hero-image { margin: 0; }
 /* The 44px stepper no longer fits beside long headings on phones; let it drop below. */
 .detail-section .section-heading-row { flex-wrap: wrap; }
 .detail-section .serving-stepper { margin-left: auto; }
+
+.home-start-button { margin-top: var(--space-5); min-height: 52px; padding: 0 28px; font-size: 17px; }
+@media (max-width: 900px) { .home-start-button { width: 100%; } }

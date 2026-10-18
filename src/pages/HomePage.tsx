@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'motion/react'
 import { Icon } from '@iconify/react'
-import { IngredientAddForm } from '../components/IngredientAddForm.tsx'
 
 export interface HomePageProps {
   onStart: (value: string) => void
@@ -113,14 +112,9 @@ export function HomePage({ onStart, onSurprise }: HomePageProps) {
           <span className="eyebrow">Filipino meal assistant</span>
           <h1>Ano'ng ulam?</h1>
           <p className="hero-subtitle">Tell us what's in your kusina. We'll find Filipino dishes you can cook.</p>
-          <IngredientAddForm
-            idPrefix="home-start"
-            label="What ingredients do you have?"
-            helper="English, Tagalog, or Taglish. Separate with commas."
-            submitLabel="Find dishes →"
-            placeholder="e.g. itlog, kamatis, sardinas"
-            onSubmit={async (input) => { onStart(input.name) }}
-          />
+          <button className="button button-primary home-start-button" type="button" onClick={() => onStart('')}>
+            Start with Ulam AI <span aria-hidden="true">→</span>
+          </button>
           <div className="home-examples" aria-label="Try an example">
             <span className="home-examples-label">Try:</span>
             {EXAMPLE_COMBOS.map((combo) => (
@@ -131,7 +125,6 @@ export function HomePage({ onStart, onSurprise }: HomePageProps) {
             <button className="text-button" type="button" onClick={onSurprise}>
               <Icon icon="lucide:dices" width={16} height={16} aria-hidden="true" /> Surprise me!
             </button>
-            <button className="text-button" type="button" onClick={() => onStart('')}>Browse the pantry instead <span aria-hidden="true">→</span></button>
           </div>
           <p className="hero-description">Hapag finds authentic Filipino recipes with peso price estimates, smart substitutions, and step-by-step cooking guidance.</p>
         </div>

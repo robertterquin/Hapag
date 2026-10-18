@@ -101,6 +101,7 @@ Size: S ≈ half a day, M ≈ 1–2 days, L ≈ 3+ days.
   - Chips default to Taglish, e.g. "Manok (chicken)". They follow the Profile language setting for signed-in users. Signed-out users always see Taglish.
   - Signed-in users' staples sync to Supabase `pantry_items`. Signed-out users' staples are saved in the browser. On first sign-in, the browser's staples are copied to the account.
 - **Home:** the hero is now an ingredient input with four example combos, "Surprise me!", and "Browse the pantry instead".
+  - **Changed after 18.6:** the Home input was removed because it duplicated `/ulam`. Home now has one "Start with Ulam AI" button, plus the example combos and "Surprise me!" as one-tap shortcuts.
 - **`/ulam` order:** input, selected ingredients, staples card ("Add my staples", with an Edit sheet), pantry (emoji, counts, stacked English name), preferences summary with a BottomSheet, one-line allergy note, then the sticky Cook bar.
 - **Surprise me** is offered only while the list is empty. It fills the list with a random everyday dish's ingredients and explains what it did. Adding a dish's ingredients to a list you already started would mark things as available that you may not have.
 - **BottomSheet** now restores focus to the button that opened it, because Safari doesn't focus buttons on click.
