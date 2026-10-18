@@ -7,6 +7,8 @@ export interface StirParticle {
   x: number
   y: number
   rotation: number
+  driftX: number
+  driftY: number
 }
 
 interface ChefKalabawProps {
@@ -30,6 +32,8 @@ export function ChefKalabaw({ size = 180, className = '', onStir, stirCount = 0 
       x: 100 + (Math.random() - 0.5) * 30,
       y: 118 + (Math.random() - 0.5) * 10,
       rotation: (Math.random() - 0.5) * 60,
+      driftX: (Math.random() - 0.5) * 40,
+      driftY: 45 + Math.random() * 25,
     }))
 
     setParticles((prev) => [...prev.slice(-8), ...newParticles])
@@ -426,8 +430,8 @@ export function ChefKalabaw({ size = 180, className = '', onStir, stirCount = 0 
                 animate={{
                   opacity: 0,
                   scale: 1.2,
-                  y: p.y - 45 - Math.random() * 25,
-                  x: p.x + (Math.random() - 0.5) * 40,
+                  y: p.y - p.driftY,
+                  x: p.x + p.driftX,
                 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.8, ease: 'easeOut' }}

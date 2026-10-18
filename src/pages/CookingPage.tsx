@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import { ResultsSkeleton } from '../components/Skeletons.tsx'
 import { useRecipe } from '../hooks/useRecipe.ts'
@@ -30,11 +30,17 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
   const [timerRunning, setTimerRunning] = useState(false)
   const [timerFinished, setTimerFinished] = useState(false)
   const [showCompletion, setShowCompletion] = useState(false)
-  const cookingStartTime = useRef(Date.now())
+  const [cookingStartTime] = useState(() => Date.now())
+  const [cookingMinutes, setCookingMinutes] = useState(0)
   const [soundEnabled, setSoundEnabled] = useState(() => {
     if (typeof window === 'undefined') return true
     return localStorage.getItem('hapag_sound_enabled') !== 'false'
   })
+
+  const completeCooking = useCallback(() => {
+    setCookingMinutes(Math.round((Date.now() - cookingStartTime) / 60000))
+    setShowCompletion(true)
+  }, [cookingStartTime])
 
   const toggleSound = () => {
     setSoundEnabled((prev) => {
@@ -152,7 +158,7 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
         if (stepIndex < (recipe?.steps.length ?? 0) - 1) {
           handleStepChange(stepIndex + 1)
         } else if (stepIndex === (recipe?.steps.length ?? 0) - 1) {
-          setShowCompletion(true)
+          completeCooking()
         }
       } else if (e.key === 'ArrowLeft' || e.key === 'k' || e.key === 'K') {
         e.preventDefault()
@@ -179,7 +185,7 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [stepIndex, recipe, step, handleStepChange, handleTimerToggle, handleTimerReset, onFinish, toggleVoice])
+  }, [stepIndex, recipe, step, handleStepChange, handleTimerToggle, handleTimerReset, onFinish, toggleVoice, completeCooking])
 
   if (!recipe || !step) return <div className="page-shell"><ResultsSkeleton /></div>
 
@@ -390,7 +396,7 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
         <button
           className="button button-primary"
           type="button"
-          onClick={() => (stepIndex === recipe.steps.length - 1 ? setShowCompletion(true) : handleStepChange(stepIndex + 1))}
+          onClick={() => (stepIndex === recipe.steps.length - 1 ? completeCooking() : handleStepChange(stepIndex + 1))}
         >
           {stepIndex === recipe.steps.length - 1 ? 'Finish' : 'Next →'}
         </button>
@@ -409,7 +415,7 @@ export function CookingPage({ recipeId, onFinish, onBack }: CookingPageProps) {
               </div>
               <h2 className="completion-title">Cooking Complete!</h2>
               <p className="completion-dish">{recipe.title}</p>
-              <p className="completion-time">Finished in {Math.round((Date.now() - cookingStartTime.current) / 60000)} minutes</p>
+              <p className="completion-time">Finished in {cookingMinutes} minutes</p>
               <div className="completion-actions">
                 <button className="button button-primary" type="button" onClick={onFinish}>Save & Return</button>
                 <button className="button button-secondary" type="button" onClick={() => { setShowCompletion(false); handleStepChange(0) }}>Start Over</button>

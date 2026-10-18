@@ -15,7 +15,7 @@ function readFeedback(): RecipeFeedbackMap {
 }
 
 function writeFeedback(feedback: RecipeFeedbackMap) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(feedback)) } catch {  }
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(feedback)) } catch { /* Storage can be full or blocked; feedback still works for this session. */ }
 }
 
 export function useRecipeFeedback() {

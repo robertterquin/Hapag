@@ -21,9 +21,12 @@ export function IngredientAutocomplete({
   const suggestions = getAutocompleteSuggestions(query)
   const isVisible = visible && suggestions.length > 0 && query.trim().length > 0
 
-  useEffect(() => {
+  const resetKey = `${query}|${isVisible}`
+  const [lastResetKey, setLastResetKey] = useState(resetKey)
+  if (lastResetKey !== resetKey) {
+    setLastResetKey(resetKey)
     setActiveIndex(-1)
-  }, [query, isVisible])
+  }
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {

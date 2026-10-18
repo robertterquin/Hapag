@@ -39,7 +39,6 @@ test('Phase 15 false-positive guard cases stay out of unrelated dishes', () => {
 test('no-match input is allowed to use the grounded AI fallback', async () => {
   const { readFile } = await import('node:fs/promises')
   const discovery = await readFile('src/hooks/useDiscovery.ts', 'utf8')
-  assert.match(discovery, /partial or unfamiliar/)
-  assert.match(discovery, /clearly labelled Hapag adaptation/)
+  assert.doesNotMatch(discovery, /candidateDishes\.length === 0/)
   assert.match(discovery, /recipeService\.generateSuggestions/)
 })

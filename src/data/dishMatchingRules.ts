@@ -53,7 +53,7 @@ export const dishMatchingRules: Record<string, DishMatchingRule> = {
     preferredIngredients: ['tomato', 'onion'],
   },
   'sinigang-na-manok': {
-    requiredAny: [['chicken', 'pork'], ['tamarind', 'calamansi', 'lemon', 'tomato']],
+    requiredAny: [['chicken', 'pork'], ['tamarind', 'calamansi', 'lemon']],
     preferredIngredients: ['tomato', 'onion'],
   },
   'afritada': {

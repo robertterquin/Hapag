@@ -33,8 +33,8 @@ test('card elevation uses Radix shadow tokens and reduced-motion-safe hover styl
   const css = await read('src/App.css')
   const tokens = await read('src/index.css')
 
-  assert.match(tokens, /--color-shadow-hover: var\(--slate-a6\)/)
-  assert.match(tokens, /--color-card-focus: var\(--teal-a5\)/)
+  assert.match(tokens, /--color-shadow-hover: var\(--brown-a6\)/)
+  assert.match(tokens, /--color-card-focus: var\(--orange-a5\)/)
   assert.match(css, /\.recipe-card:hover, \.recipe-card:focus-within/)
   assert.match(css, /\.recipe-card:hover \.recipe-card-image/)
   assert.match(css, /prefers-reduced-motion/)

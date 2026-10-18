@@ -16,7 +16,7 @@ class SoundManager {
         void this.audioCtx.resume()
       }
     } catch {
-
+      // Audio is optional; ignore playback failures.
     }
   }
 
@@ -47,7 +47,7 @@ class SoundManager {
       osc.start(now)
       osc.stop(now + 0.3)
     } catch {
-
+      // Audio is optional; ignore playback failures.
     }
   }
 
@@ -81,7 +81,7 @@ class SoundManager {
         osc.stop(now + note.start + note.duration + 0.05)
       }
     } catch {
-
+      // Audio is optional; ignore playback failures.
     }
   }
 }

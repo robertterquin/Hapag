@@ -20,7 +20,7 @@ test('browser recipe service falls back when AI is unavailable', async () => {
 
   assert.match(source, /hasRecipeGenerationConfig/)
   assert.match(source, /generateWithOpenAI/)
-  assert.match(source, /using curated Hapag fixtures/)
+  assert.match(source, /if \(!hasRecipeGenerationConfig\) return mockRecipeService\.generateSuggestions\(request\)/)
   assert.match(source, /adaptRecipeListPayload\(payload\.recipes\)/)
 })
 

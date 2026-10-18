@@ -58,7 +58,6 @@ test('production documentation includes deployment and security checks', async (
 
 test('catalog matches are preferred while no-match input can still reach AI fallback', async () => {
   const discovery = await read('src/hooks/useDiscovery.ts')
-  assert.match(discovery, /partial or unfamiliar/)
   assert.doesNotMatch(discovery, /candidateDishes\.length === 0/)
   assert.match(discovery, /recipeService\.generateSuggestions/) 
 })

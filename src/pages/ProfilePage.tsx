@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import type { UserPreferences } from '../services/persistenceService.ts'
 
@@ -9,13 +9,14 @@ export function ProfilePage({ session, preferences, status, error, onSave, onSig
   const [saved, setSaved] = useState(false)
   const preferencesKey = `${preferences.language}-${preferences.default_servings}-${preferences.dietary_preference}-${preferences.spice_level}-${preferences.allergies.join('|')}`
 
-  useEffect(() => {
+  const [syncedPreferencesKey, setSyncedPreferencesKey] = useState(preferencesKey)
+  if (syncedPreferencesKey !== preferencesKey) {
+    setSyncedPreferencesKey(preferencesKey)
     if (JSON.stringify(draft) !== JSON.stringify(preferences)) {
-
       setDraft(preferences)
       setSaved(false)
     }
-  }, [preferencesKey])
+  }
 
   if (!session) return <div className="page-shell narrow-page"><span className="eyebrow">Profile and preferences</span><h1>Make Hapag fit your kitchen.</h1><p className="page-intro">Sign in to keep your preferences and saved cooking decisions private to you.</p><button className="button button-primary" type="button" onClick={onSignIn}>Sign in</button></div>
   return (

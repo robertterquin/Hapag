@@ -38,7 +38,7 @@ export function useWakeLock(): WakeLockState {
         setIsLocked(false)
       }
     } catch {
-
+      // The lock may already be released by the browser.
     }
   }, [])
 
