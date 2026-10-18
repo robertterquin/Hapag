@@ -22,7 +22,7 @@ export function DishImage({ recipe, variant }: DishImageProps) {
 
   return (
     <figure className={`${className} dish-image`}>
-      <img className="dish-image-img" src={photo.src} alt={recipe.title} loading={variant === 'card' ? 'lazy' : 'eager'} />
+      <img className="dish-image-img" src={photo.src} alt={recipe.title} width={640} height={360} decoding="async" loading={variant === 'card' ? 'lazy' : 'eager'} />
       <figcaption className="dish-image-credit">
         Photo: <a href={photo.sourceUrl} target="_blank" rel="noreferrer">{photo.author}</a>
         {' · '}

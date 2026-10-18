@@ -33,7 +33,7 @@ export function UlamPage({ session, notice, staples, staplesError, onAddIngredie
   }
 
   return (
-    <div className="page-shell narrow-page ulam-page">
+    <div className="page-shell ulam-page">
       <span className="eyebrow">Ulam AI</span>
       <h1>Start with what you have.</h1>
       <p className="page-intro">Add what's in your kitchen, then we'll find Filipino dishes you can cook.</p>
@@ -45,58 +45,71 @@ export function UlamPage({ session, notice, staples, staplesError, onAddIngredie
         </p>
       ) : null}
 
-      <IngredientAddForm
-        idPrefix="ulam-add"
-        label="Add ingredients"
-        helper="Separate several with commas."
-        submitLabel="Add"
-        placeholder="e.g. 1/2 kg manok, patatas, bawang"
-        onSubmit={async (input) => { onAddIngredients(input) }}
-      />
-
-      <section className="review-panel selected-panel" aria-labelledby="review-heading">
-        <div className="section-heading-row">
-          <div>
-            <span className="section-kicker">Your list</span>
-            <h2 id="review-heading">Selected ingredients</h2>
+      {/* Phones: both groups dissolve (display: contents) and `order` restores the 18.2 order: input, list,
+          staples, pantry, preferences, Cook bar. Desktop: pantry work on the left; the list, preferences,
+          and Cook button stay pinned on the right. */}
+      <div className="ulam-layout">
+        <div className="ulam-main">
+          <div className="ulam-order-input">
+            <IngredientAddForm
+              idPrefix="ulam-add"
+              label="Add ingredients"
+              helper="Separate several with commas."
+              submitLabel="Add"
+              placeholder="e.g. 1/2 kg manok, patatas, bawang"
+              onSubmit={async (input) => { onAddIngredients(input) }}
+            />
           </div>
-          <span className="count-badge" aria-label={`${ingredientCount} ingredients`}>{ingredientCount}</span>
+          <div className="ulam-order-staples">
+            <PantryStaplesCard
+              staples={staples}
+              currentCanonicalNames={session.ingredients.map((ingredient) => ingredient.canonicalName)}
+              error={staplesError}
+              onAddStaples={(canonicalNames) => onAddIngredients({ name: canonicalNames.join(', ') })}
+              onToggleStaple={onToggleStaple}
+            />
+          </div>
+          <div className="ulam-order-pantry">
+            <KusinaShelf activeIngredients={session.ingredients} onToggle={handleKusinaToggle} />
+          </div>
         </div>
-        <IngredientChips ingredients={session.ingredients} onRemove={onRemove} />
-        {session.ingredients.some((ingredient) => ingredient.confidence === 'low') ? (
-          <p className="inline-warning">Some ingredients need checking. Hapag didn't recognize the ones marked with "?".</p>
-        ) : null}
-        <div className="selected-panel-actions">
-          {ingredientCount > 0 ? (
-            <button className="text-button" type="button" onClick={onReset}>Start a new list</button>
-          ) : (
-            <button className="text-button" type="button" onClick={onSurprise}>
-              <Icon icon="lucide:dices" width={16} height={16} aria-hidden="true" /> Surprise me!
-            </button>
-          )}
-        </div>
-      </section>
 
-      <PantryStaplesCard
-        staples={staples}
-        currentCanonicalNames={session.ingredients.map((ingredient) => ingredient.canonicalName)}
-        error={staplesError}
-        onAddStaples={(canonicalNames) => onAddIngredients({ name: canonicalNames.join(', ') })}
-        onToggleStaple={onToggleStaple}
-      />
-
-      <KusinaShelf
-        activeIngredients={session.ingredients}
-        onToggle={handleKusinaToggle}
-      />
-
-      <UlamPreferences constraints={session.constraints} onUpdate={onUpdateConstraints} />
-
-      <StickyActionBar summary={ingredientCount === 0 ? 'Add an ingredient to start' : `${ingredientCount} sangkap ready`}>
-        <button className="button button-primary" type="button" onClick={onGenerate} disabled={ingredientCount === 0}>
-          Let's Cook! <span aria-hidden="true">→</span>
-        </button>
-      </StickyActionBar>
+        <aside className="ulam-side" aria-label="Your list and preferences">
+          <section className="review-panel selected-panel ulam-order-selected" aria-labelledby="review-heading">
+            <div className="section-heading-row">
+              <div>
+                <span className="section-kicker">Your list</span>
+                <h2 id="review-heading">Selected ingredients</h2>
+              </div>
+              <span className="count-badge" aria-label={`${ingredientCount} ingredients`}>{ingredientCount}</span>
+            </div>
+            <IngredientChips ingredients={session.ingredients} onRemove={onRemove} />
+            {session.ingredients.some((ingredient) => ingredient.confidence === 'low') ? (
+              <p className="inline-warning">Some ingredients need checking. Hapag didn't recognize the ones marked with "?".</p>
+            ) : null}
+            <div className="selected-panel-actions">
+              {ingredientCount > 0 ? (
+                <button className="text-button" type="button" onClick={onReset}>Start a new list</button>
+              ) : (
+                <button className="text-button" type="button" onClick={onSurprise}>
+                  <Icon icon="lucide:dices" width={16} height={16} aria-hidden="true" /> Surprise me!
+                </button>
+              )}
+            </div>
+          </section>
+          <div className="ulam-order-prefs">
+            <UlamPreferences constraints={session.constraints} onUpdate={onUpdateConstraints} />
+          </div>
+          {/* display: contents, so the sticky bar's scroll container is the whole page on phones. */}
+          <div className="ulam-order-cook">
+            <StickyActionBar summary={ingredientCount === 0 ? 'Add an ingredient to start' : `${ingredientCount} sangkap ready`}>
+              <button className="button button-primary" type="button" onClick={onGenerate} disabled={ingredientCount === 0}>
+                Let's Cook! <span aria-hidden="true">→</span>
+              </button>
+            </StickyActionBar>
+          </div>
+        </aside>
+      </div>
     </div>
   )
 }

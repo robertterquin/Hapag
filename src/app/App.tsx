@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useRef } from 'react'
+import { type ReactNode, Suspense, lazy, useEffect, useRef } from 'react'
 import '../App.css'
 import { AppShell } from '../components/AppShell.tsx'
 import { useDiscovery } from '../hooks/useDiscovery.ts'
@@ -7,19 +7,22 @@ import { usePreferences } from '../hooks/usePreferences.ts'
 import { useSavedRecipes } from '../hooks/useSavedRecipes.ts'
 import { useRecipeFeedback } from '../hooks/useRecipeFeedback.ts'
 import { persistenceService } from '../services/persistenceService.ts'
-import { AuthPage } from '../pages/AuthPage.tsx'
-import { CookingPage } from '../pages/CookingPage.tsx'
 import { HomePage } from '../pages/HomePage.tsx'
-import { NotFoundPage } from '../pages/NotFoundPage.tsx'
-import { ProfilePage } from '../pages/ProfilePage.tsx'
-import { RecipeDetailPage } from '../pages/RecipeDetailPage.tsx'
-import { ResultsPage } from '../pages/ResultsPage.tsx'
-import { SavedPage } from '../pages/SavedPage.tsx'
 import { UlamPage } from '../pages/UlamPage.tsx'
+import { ResultsSkeleton } from '../components/Skeletons.tsx'
 import { useAppRouter } from './router.ts'
 import { DisplayLanguageContext } from './displayLanguage.ts'
 import { useKusinaStaples } from '../hooks/useKusinaStaples.ts'
 import { pickSurpriseDish } from '../lib/surprise.ts'
+
+// Home and Ulam AI ship in the first bundle; every other page loads when first visited.
+const AuthPage = lazy(() => import('../pages/AuthPage.tsx').then((module) => ({ default: module.AuthPage })))
+const CookingPage = lazy(() => import('../pages/CookingPage.tsx').then((module) => ({ default: module.CookingPage })))
+const NotFoundPage = lazy(() => import('../pages/NotFoundPage.tsx').then((module) => ({ default: module.NotFoundPage })))
+const ProfilePage = lazy(() => import('../pages/ProfilePage.tsx').then((module) => ({ default: module.ProfilePage })))
+const RecipeDetailPage = lazy(() => import('../pages/RecipeDetailPage.tsx').then((module) => ({ default: module.RecipeDetailPage })))
+const ResultsPage = lazy(() => import('../pages/ResultsPage.tsx').then((module) => ({ default: module.ResultsPage })))
+const SavedPage = lazy(() => import('../pages/SavedPage.tsx').then((module) => ({ default: module.SavedPage })))
 
 function App() {
   const { route, navigate } = useAppRouter()
@@ -107,7 +110,7 @@ function App() {
   const fullName = typeof rawFullName === 'string' && rawFullName.trim() ? rawFullName.trim() : undefined
   return (
     <DisplayLanguageContext.Provider value={preferences.preferences.language}>
-      <AppShell routeName={route.name} contentKey={contentKey} fullName={fullName} isSignedIn={Boolean(auth.session)} onNavigate={navigateFromShell}>{page}</AppShell>
+      <AppShell routeName={route.name} contentKey={contentKey} fullName={fullName} isSignedIn={Boolean(auth.session)} onNavigate={navigateFromShell}><Suspense fallback={<div className="page-shell"><ResultsSkeleton /></div>}>{page}</Suspense></AppShell>
     </DisplayLanguageContext.Provider>
   )
 }

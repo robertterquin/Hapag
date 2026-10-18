@@ -87,7 +87,8 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  overflow-x: hidden;
+  /* clip, not hidden: hidden makes body a scroll container and breaks every sticky bar. */
+  overflow-x: clip;
   font-weight: 500;
   letter-spacing: -0.008em;
   color: var(--color-ink);
@@ -107,7 +108,7 @@ strong, label { font-weight: 700; }
 
 button { cursor: pointer; }
 
-button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, a:focus-visible, [tabindex]:focus-visible, summary:focus-visible {
   outline: 3px solid var(--color-focus);
   outline-offset: 3px;
 }

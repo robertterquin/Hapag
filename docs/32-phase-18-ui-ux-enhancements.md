@@ -206,6 +206,34 @@ Size: S ≈ half a day, M ≈ 1–2 days, L ≈ 3+ days.
 
 **Exit:** the matrix passes, after screenshots are compared with the 18.0 baseline, and the README feature list is updated.
 
+**Status: done.**
+- **Desktop `/ulam` (1100px and up):**
+  - Two columns: input, staples, and pantry on the left; your list, preferences, and the Cook button pinned on the right.
+  - On phones the same markup dissolves with `display: contents`, and CSS `order` keeps the 18.2 order and the sticky Cook bar.
+- **Desktop recipe detail (1100px and up):** prep (ingredients, shopping list, cost) on the left and method (steps, substitutions, why it works) on the right. Results were already three across.
+- **Accessibility:**
+  - An audit at 375px found controls of 26–40px. All are now at least 44px: chips, tabs, stepper, save, 👍/👎, remove ✕, Listen, header buttons, and text buttons.
+  - Every focusable element shows a ring; links and `[tabindex]` were added to the focus style.
+  - Reduced motion now also stops Chef Kalabaw's looping opacity pulses.
+  - No unlabeled controls were found.
+- **Performance:**
+  - Secondary pages are lazy-loaded.
+  - Libraries are split into `react`, `supabase`, `motion`, and `vendor` chunks, which removes the 500 kB warning. App code is 130 kB (36 kB gzipped).
+  - Dish photos declare their size so the page doesn't jump while they load.
+- **QA matrix:**
+  - Passed at 320, 390, 768, and 1280px: no sideways scrolling, Cooking Mode steps and controls fit on screen, and the finish screen fits.
+  - Keyboard-only: Tab order and focus rings are correct, and typing then Enter adds ingredients.
+  - The AI-off fallback and the AI-error fallback both render catalog matches.
+- **Found and fixed during QA:**
+  - At 320px the home page overflowed by 1px.
+  - A 503 showed users "check your Supabase Edge Function secrets".
+  - The 44px stepper overflowed the Ingredients card on phones.
+  - The fix for the 1px overflow first put `overflow-x` on `<html>`, which turned `<body>` into its own scroll box and broke every sticky bar. Clipping now lives on `<body>` as `overflow-x: clip`, guarded by a test.
+- **Not covered:**
+  - Signed-in flows (saving recipes, cooked history, staples sync), because creating test accounts on the hosted project is off-limits for me.
+  - Real AI recipes, because the edge function still returns 503 until the Upstash secrets are updated.
+- After screenshots are in `docs/screenshots/phase-18-after/`.
+
 ## Open decisions
 
 1. **Brand colour:** restore ube purple, or keep orange (18.1).

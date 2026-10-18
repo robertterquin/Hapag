@@ -143,7 +143,7 @@ export function useDiscovery() {
       if (error instanceof RecipeGenerationError && error.status === 429) {
         setGenerationError('AI generation limit reached. Please try again in a few minutes.')
       } else if (error instanceof RecipeGenerationError && error.status === 503) {
-        setGenerationError('AI service is temporarily unavailable. Please check your Supabase Edge Function secrets and try again.')
+        setGenerationError('AI recipes are unavailable right now. Try again in a few minutes.')
       } else {
         setGenerationError('Could not generate recipes. You can try again or edit your ingredients.')
       }

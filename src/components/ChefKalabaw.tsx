@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'motion/react'
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react'
 
 export interface StirParticle {
   id: number
@@ -20,6 +20,8 @@ interface ChefKalabawProps {
 
 export function ChefKalabaw({ size = 180, className = '', onStir, stirCount = 0 }: ChefKalabawProps) {
   const [wobbleKey, setWobbleKey] = useState(0)
+  // MotionConfig already freezes transforms for reduced motion; this also stops the looping opacity pulses.
+  const reduceMotion = useReducedMotion()
   const [particles, setParticles] = useState<StirParticle[]>([])
 
   const handlePotClick = () => {
@@ -154,7 +156,7 @@ export function ChefKalabaw({ size = 180, className = '', onStir, stirCount = 0 
         <circle cx="100" cy="115" r="75" fill="url(#palayokGlow)" />
 
         <motion.g
-          animate={{ y: [-2, -8, -2], opacity: [0.5, 0.85, 0.5] }}
+          animate={reduceMotion ? undefined : { y: [-2, -8, -2], opacity: [0.5, 0.85, 0.5] }}
           transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
         >
           <path
@@ -350,7 +352,7 @@ export function ChefKalabaw({ size = 180, className = '', onStir, stirCount = 0 
               cy="124.5"
               r="2.2"
               fill="#FFFBEB"
-              animate={{ scale: [0.8, 1.4, 0.8], opacity: [0.7, 1, 0.7] }}
+              animate={reduceMotion ? undefined : { scale: [0.8, 1.4, 0.8], opacity: [0.7, 1, 0.7] }}
               transition={{ duration: 1.1, repeat: Infinity }}
             />
             <motion.circle
@@ -358,7 +360,7 @@ export function ChefKalabaw({ size = 180, className = '', onStir, stirCount = 0 
               cy="125.8"
               r="1.8"
               fill="#FFFBEB"
-              animate={{ scale: [1.3, 0.7, 1.3], opacity: [1, 0.5, 1] }}
+              animate={reduceMotion ? undefined : { scale: [1.3, 0.7, 1.3], opacity: [1, 0.5, 1] }}
               transition={{ duration: 1.4, repeat: Infinity, delay: 0.25 }}
             />
             <motion.circle
@@ -366,7 +368,7 @@ export function ChefKalabaw({ size = 180, className = '', onStir, stirCount = 0 
               cy="123.5"
               r="1.4"
               fill="#FEF08A"
-              animate={{ scale: [0.6, 1.3, 0.6], opacity: [0.5, 0.9, 0.5] }}
+              animate={reduceMotion ? undefined : { scale: [0.6, 1.3, 0.6], opacity: [0.5, 0.9, 0.5] }}
               transition={{ duration: 0.9, repeat: Infinity, delay: 0.4 }}
             />
           </g>

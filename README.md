@@ -88,34 +88,36 @@ Dietary and allergy information is provided as general guidance and is not a rep
 
 ### Saved Recipes and Pantry
 
-- Save and favorite recipes
-- Mark recipes as cooked
+- Save recipes and mark them as cooked (signed-in users)
 - Reopen previously saved recipes
-- Track pantry ingredients
-- Generate recipes from pantry items
-- Remove used or unavailable ingredients
-- Suggest ways to use leftover ingredients
+- Remember your kusina staples (garlic, onion, oil, and more) and add them in one tap; staples sync to your account when signed in
+- Turn missing ingredients into a shopping list with peso estimates, then copy or share it
+- Reuse leftovers: after cooking, start a new search with the ingredients the recipe didn't use
 
 ### Cooking Mode
 
-- View one cooking step at a time
-- Track cooking progress
-- Start an optional cooking timer
-- Review the current recipe while cooking
-- Finish with a clear completion state
+- Full-screen, one step at a time, with swipe, arrow keys, or large Previous/Next buttons
+- Each step lists the ingredients it uses
+- A step timer that keeps running when you move between steps, with a floating pill to jump back
+- Read-aloud steps and a screen that stays awake
+- A "Luto na!" finish screen with feedback, mark as cooked, and "Use the leftovers"
+
+### When AI is unavailable
+
+If AI generation isn't configured or fails, Hapag still shows matching dishes from its 150-dish Filipino catalog, clearly labelled as catalog matches. Dish photos are freely licensed Wikimedia Commons images, credited on each photo and shown only for exact dish matches.
 
 ## Main User Flow
 
-1. The user opens Hapag and sees **“Ano'ng ulam?”**
-2. The user enters available ingredients in English, Tagalog, or Taglish.
-3. Hapag displays the interpreted ingredient chips for confirmation.
-4. The user may choose servings, budget, meal type, diet, allergy, region, or spiciness filters.
-5. The user taps **“Lutuin natin!”** or **“Surprise me!”**
-6. Hapag generates three recipe suggestions.
-7. The user compares the dish, cost, time, difficulty, and missing ingredients.
-8. The user opens one recipe and reviews the instructions and substitutions.
-9. The user adjusts servings or starts Cooking Mode.
-10. The user saves the recipe or taps **“I cooked this.”**
+1. The user opens Hapag and sees **"Ano'ng ulam?"** with an ingredient box and example combos.
+2. The user enters available ingredients in English, Tagalog, or Taglish, or taps **"Surprise me!"**
+3. Hapag shows the ingredient chips (Taglish by default, e.g. "Manok (chicken)") and the kusina pantry.
+4. The user may adjust servings, budget, diet, or spice in the preferences sheet.
+5. The user taps **"Let's Cook!"**
+6. Hapag suggests three recipes, plus catalog matches when AI is unavailable.
+7. The user compares what they have, what to buy, cost, and time.
+8. The user opens a recipe, adjusts servings, and checks the shopping list.
+9. The user starts Cooking Mode and follows the steps.
+10. The user marks the dish as cooked or uses the leftovers for the next meal.
 
 ## Example Input and Output
 
@@ -223,6 +225,8 @@ The interface uses rounded cards, colorful ingredient chips, friendly food illus
 - More regional recipe coverage
 
 ## Project Documentation
+
+The Phase 18 UI/UX rework is documented in [`docs/32-phase-18-ui-ux-enhancements.md`](./docs/32-phase-18-ui-ux-enhancements.md), with before and after screenshots in [`docs/screenshots/`](./docs/screenshots/).
 
 Detailed product, UX, visual, architecture, scope, and quality-gate documents are available in [`docs/`](./docs/).
 

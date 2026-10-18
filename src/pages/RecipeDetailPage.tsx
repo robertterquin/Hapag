@@ -47,6 +47,7 @@ export function RecipeDetailPage({ recipeId, saved, onToggleSave, onStartCooking
       </section>
       <div className="detail-layout">
         <div className="detail-main-column">
+          <div className="detail-prep">
           <section className="detail-section" aria-labelledby="ingredients-heading">
             <div className="section-heading-row">
               <div>
@@ -72,6 +73,8 @@ export function RecipeDetailPage({ recipeId, saved, onToggleSave, onStartCooking
             </ul>
           </section>
           <ShoppingListPanel recipe={scaledRecipe} />
+          </div>
+          <div className="detail-method">
           <section className="detail-section" aria-labelledby="steps-heading">
             <div className="section-heading-row">
               <div>
@@ -128,6 +131,7 @@ export function RecipeDetailPage({ recipeId, saved, onToggleSave, onStartCooking
               <p className="match-callout">{recipe.matchReason}</p>
             </section>
           ) : null}
+          </div>
         </div>
         <aside className="detail-side-column">
           <CostBreakdown recipe={scaledRecipe} />
