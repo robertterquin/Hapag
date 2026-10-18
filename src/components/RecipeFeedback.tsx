@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { RecipeFeedbackKind } from '../hooks/useRecipeFeedback.ts'
 
-interface RecipeFeedbackProps { value?: RecipeFeedbackKind; onChange: (kind: RecipeFeedbackKind) => void }
+interface RecipeFeedbackProps { value?: RecipeFeedbackKind; onChange: (kind: RecipeFeedbackKind) => void; label?: string }
 
 const reasons: Array<{ kind: Exclude<RecipeFeedbackKind, 'helpful'>; label: string }> = [
   { kind: 'not-relevant', label: 'Not relevant' },
@@ -9,14 +9,14 @@ const reasons: Array<{ kind: Exclude<RecipeFeedbackKind, 'helpful'>; label: stri
   { kind: 'not-filipino', label: 'Not a Filipino dish' },
 ]
 
-export function RecipeFeedback({ value, onChange }: RecipeFeedbackProps) {
+export function RecipeFeedback({ value, onChange, label = 'Good suggestion?' }: RecipeFeedbackProps) {
   const [showReasons, setShowReasons] = useState(false)
   const isNegative = Boolean(value && value !== 'helpful')
 
   return (
     <div className="recipe-feedback" aria-label="Recipe feedback">
       <div className="recipe-feedback-row">
-        <span className="recipe-feedback-label">Good suggestion?</span>
+        <span className="recipe-feedback-label">{label}</span>
         <button className={`feedback-thumb ${value === 'helpful' ? 'feedback-thumb-active' : ''}`} type="button" aria-pressed={value === 'helpful'} aria-label="Helpful" onClick={() => { setShowReasons(false); onChange('helpful') }}>👍</button>
         <button className={`feedback-thumb ${isNegative ? 'feedback-thumb-active' : ''}`} type="button" aria-pressed={isNegative} aria-expanded={showReasons} aria-label="Not helpful" onClick={() => setShowReasons((open) => !open)}>👎</button>
       </div>

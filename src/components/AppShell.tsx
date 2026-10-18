@@ -22,9 +22,11 @@ const navigation = [
 export function AppShell({ routeName, contentKey, onNavigate, fullName, isSignedIn, children }: AppShellProps) {
   const isActive = (route: AppRoute['name']) => routeName === route || (route === 'ulam' && (routeName === 'results' || routeName === 'recipe-detail' || routeName === 'cooking'))
   const profileInitial = fullName?.[0]?.toUpperCase()
+  // Cooking Mode is full screen: no header or nav competing with the step.
+  const immersive = routeName === 'cooking'
 
   return (
-    <div className={`app-shell app-shell-${routeName}`}>
+    <div className={`app-shell app-shell-${routeName} ${immersive ? 'app-shell-immersive' : ''}`}>
       <div className="app-background" aria-hidden="true">
         <svg className="background-flow" viewBox="0 0 1280 900" preserveAspectRatio="none" fill="none">
           <path className="background-flow-line" d="M-40 180C170 55 270 310 470 205C655 108 725 35 900 145C1065 250 1090 420 1340 310" />
@@ -56,6 +58,7 @@ export function AppShell({ routeName, contentKey, onNavigate, fullName, isSigned
         </svg>
       </div>
 
+      {immersive ? null : (
       <div className="app-topbar-wrapper">
         <header className="app-topbar">
           <button className="brand-lockup" type="button" onClick={() => onNavigate('/')}>
@@ -91,8 +94,10 @@ export function AppShell({ routeName, contentKey, onNavigate, fullName, isSigned
           )}
         </header>
       </div>
+      )}
 
       <div className="app-content-wrap">
+        {immersive ? null : (
         <header className="mobile-header">
           <button className="mobile-brand" type="button" onClick={() => onNavigate('/')}>
             <BrandMark className="brand-mark" size={36} />
@@ -109,6 +114,7 @@ export function AppShell({ routeName, contentKey, onNavigate, fullName, isSigned
             </button>
           )}
         </header>
+        )}
 
         <main className="app-content">
           <AnimatePresence mode="wait" initial={false}>
@@ -125,6 +131,7 @@ export function AppShell({ routeName, contentKey, onNavigate, fullName, isSigned
           </AnimatePresence>
         </main>
 
+        {immersive ? null : (
         <nav className="mobile-nav" aria-label="Mobile navigation">
           {navigation.map((item) => (
             <button
@@ -141,6 +148,7 @@ export function AppShell({ routeName, contentKey, onNavigate, fullName, isSigned
             </button>
           ))}
         </nav>
+        )}
       </div>
     </div>
   )

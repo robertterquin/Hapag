@@ -173,6 +173,20 @@ Size: S ≈ half a day, M ≈ 1–2 days, L ≈ 3+ days.
 **Tests:** step-ingredient matching for the adobo and sinigang fixtures.
 **Exit:** a full recipe can be cooked at 375px with no vertical scrolling, and the screen stays awake.
 
+**Status: done.**
+- **Full screen:** the cooking route hides the app header and both navs. A slim bar shows ✕ (exit, also Esc), "Cooking mode", the title, a single "2 / 4" counter, and an icon-only sound toggle, with a thin progress bar below it.
+- **One step per screen:** swipe, arrow keys, or a sticky Previous/Next bar. Wake lock and read-aloud are unchanged.
+- **Ingredients per step:** `getStepIngredients()` matches each ingredient's English, Tagalog, and canonical names in the step text, as whole words with plurals. For example, "eggs" matches Itlog, and "eggplant" does not.
+- **Timer:**
+  - −1m, the time, and +1m sit on one row. One timer runs at a time.
+  - It belongs to the step it started on and keeps running when you change steps.
+  - Away from that step, a floating pill shows the time and jumps back to it. When the timer ends it chimes (if sound is on), vibrates where supported, and the pill turns red.
+- **Finish screen ("Luto na! 🎉"):**
+  - Shows the cooking time and a 👍/👎 ("How did it turn out?").
+  - "Mark as cooked", or "Sign in to save as cooked" for signed-out users.
+  - "Use the leftovers" lists searched ingredients the recipe didn't use and opens `/ulam` with them prefilled.
+  - "Cook it again" starts over.
+
 ## 18.6 Desktop and QA
 
 - **Desktop `/ulam`:** two columns. Pantry on the left; selected ingredients, preferences and the cook button in a pinned right column.

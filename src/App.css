@@ -1385,3 +1385,48 @@ figure.recipe-card-image, figure.recipe-hero-image { display: block; }
 .shopping-items li.shopping-item-staple { background: var(--sand-2); border: 1px dashed var(--sand-7); }
 figure.recipe-hero-image { margin: 0; }
 @media (min-width: 901px) { .detail-page .sticky-action-bar { width: min(460px, 100%); margin-left: auto; } }
+
+/* Phase 18.5 Cooking Mode */
+
+.app-shell-immersive .app-content { padding: var(--space-3) clamp(16px, 3vw, 32px) calc(var(--space-6) + env(safe-area-inset-bottom)); }
+.app-shell-immersive .cooking-page { padding-top: 0; }
+
+.cooking-bar { display: flex; align-items: center; gap: var(--space-3); padding: 6px 0 10px; }
+.cooking-icon-button { display: grid; flex: 0 0 auto; width: 44px; height: 44px; place-items: center; padding: 0; color: var(--color-ink); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 50%; }
+.cooking-icon-button:hover { border-color: var(--color-brand-border); background: var(--color-brand-soft); }
+.cooking-icon-button-muted { color: var(--color-muted); background: var(--sand-2); }
+.cooking-bar-title { display: grid; flex: 1 1 auto; min-width: 0; }
+.cooking-bar-title span { color: var(--color-brand); font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.cooking-bar-title strong { overflow: hidden; font-family: var(--font-display); font-size: 17px; white-space: nowrap; text-overflow: ellipsis; }
+.cooking-bar-count { flex: 0 0 auto; padding: 6px 12px; color: var(--color-brand-strong); font-size: 14px; font-weight: 800; background: var(--color-brand-soft); border-radius: var(--radius-pill); }
+.cooking-progress { height: 6px; }
+
+.app-shell-immersive .cooking-step-card { margin-top: var(--space-4); min-height: 0; }
+.cooking-step-card h1 { line-height: 1.2; text-align: center; }
+.step-ingredients { display: grid; justify-items: center; gap: 8px; margin-top: var(--space-5); }
+.step-ingredients-label { color: var(--color-muted); font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+.step-ingredients ul { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.step-ingredients li { padding: 6px 12px; color: var(--color-ink); font-size: 14px; font-weight: 700; background: var(--color-brand-soft); border: 1px solid var(--color-brand-border); border-radius: var(--radius-pill); }
+
+.timer-row { display: flex; flex-wrap: nowrap; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: var(--space-5); }
+.timer-row .timer-button { display: inline-flex; flex: 0 1 auto; align-items: center; justify-content: center; gap: 8px; min-width: 0; min-height: 52px; font-variant-numeric: tabular-nums; }
+.timer-row .timer-adjust-button { flex: 0 0 auto; min-width: 52px; min-height: 52px; }
+.cooking-step-content .timer-reset-button { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; margin-top: var(--space-3); }
+
+.app-shell-immersive .cooking-controls { position: sticky; bottom: calc(var(--space-3) + env(safe-area-inset-bottom)); z-index: 10; padding: 10px; background: var(--white-a11); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--color-border); border-radius: calc(var(--radius-control) + 6px); box-shadow: 0 10px 30px var(--color-shadow-soft); }
+.cooking-controls .button { display: inline-flex; flex: 1 1 0; align-items: center; justify-content: center; gap: 8px; min-height: 56px; font-size: 17px; }
+@media (max-width: 900px) {
+  .app-shell-immersive .cooking-controls { flex-direction: row; }
+  .app-shell-immersive .cooking-controls .button { width: auto; }
+}
+
+.timer-pill { position: fixed; right: 16px; bottom: calc(100px + env(safe-area-inset-bottom)); z-index: 30; display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 16px; color: var(--color-surface); font-weight: 800; font-variant-numeric: tabular-nums; background: var(--color-brand-strong); border: 0; border-radius: var(--radius-pill); box-shadow: 0 8px 24px var(--color-shadow); }
+.timer-pill small { opacity: .85; font-weight: 600; }
+.timer-pill-finished { background: var(--tomato-11); }
+
+.completion-emoji { display: block; font-size: 44px; line-height: 1; }
+.completion-card .recipe-feedback { margin: var(--space-4) 0 0; padding-top: var(--space-3); border-top: 1px solid var(--color-border); }
+.completion-actions { display: grid; gap: var(--space-2); margin-top: var(--space-4); }
+.completion-actions .button { width: 100%; min-height: 48px; }
+.completion-actions .text-button { justify-self: center; }
+.cooking-controls .button:disabled { opacity: .45; }
