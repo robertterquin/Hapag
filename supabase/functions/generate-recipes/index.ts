@@ -1,4 +1,5 @@
 import { consumeRateLimit, getRateLimitConfig, rateLimiterHealthy } from './rateLimit.ts'
+import { getProvidedIngredientSet, isRecord, markOnlyProvidedAvailable, validateCandidateGrounding, validateRecipeGrounding, type JsonRecord } from './grounding.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -120,12 +121,6 @@ const recipeJsonSchema = {
   },
   required: ['recipes'],
 } as const
-
-type JsonRecord = Record<string, unknown>
-
-function isRecord(value: unknown): value is JsonRecord {
-  return typeof value === 'object' && value !== null && !Array.isArray(value)
-}
 
 function isGenerationRequest(value: unknown): value is JsonRecord {
   if (!isRecord(value)) return false
@@ -454,92 +449,6 @@ function validateResultComposition(recipes: JsonRecord[], candidateDishes: unkno
   return adaptationCount <= maximumAdaptations
 }
 
-const ingredientAliases: Record<string, string> = {
-  bawang: 'garlic',
-  sibuyas: 'onion',
-  itlog: 'egg',
-  eggs: 'egg',
-  kamatis: 'tomato',
-  tomatoes: 'tomato',
-  sardinas: 'sardines',
-  manok: 'chicken',
-  baboy: 'pork',
-  hipon: 'shrimp',
-  repolyo: 'cabbage',
-  pechay: 'bok choy',
-  'bok choy': 'bok choy',
-  sampalok: 'tamarind',
-  gata: 'coconut milk',
-  toyo: 'soy sauce',
-  suka: 'vinegar',
-}
-
-function canonicalizeGeneratedIngredient(value: unknown) {
-  if (typeof value !== 'string') return undefined
-  const cleaned = value.toLowerCase().trim().replace(/[.,!?;:()[\]{}]/g, '').replace(/\s+/g, ' ')
-  if (!cleaned) return undefined
-  return ingredientAliases[cleaned] ?? cleaned.replace(/s$/, '')
-}
-
-function getIngredientNames(value: unknown) {
-  if (!Array.isArray(value)) return []
-  return value.flatMap((ingredient) => {
-    if (!isRecord(ingredient)) return []
-    const canonical = canonicalizeGeneratedIngredient(ingredient.canonicalName)
-      ?? canonicalizeGeneratedIngredient(ingredient.name)
-    return canonical ? [{ canonical, available: ingredient.available === true }] : []
-  })
-}
-
-function getProvidedIngredientSet(payload: JsonRecord) {
-  return new Set(
-    Array.isArray(payload.ingredients)
-      ? payload.ingredients.flatMap((ingredient) => {
-        if (!isRecord(ingredient)) return []
-        const canonical = canonicalizeGeneratedIngredient(ingredient.canonicalName)
-          ?? canonicalizeGeneratedIngredient(ingredient.name)
-        return canonical ? [canonical] : []
-      })
-      : [],
-  )
-}
-
-function validateCandidateGrounding(candidateDishes: unknown, providedIngredients: Set<string>) {
-  if (!Array.isArray(candidateDishes) || candidateDishes.length === 0 || providedIngredients.size === 0) return false
-  return candidateDishes.every((candidate) => {
-    if (!isRecord(candidate) || !Array.isArray(candidate.availableIngredients)) return false
-    return candidate.availableIngredients.every((ingredient) => {
-      const canonical = canonicalizeGeneratedIngredient(ingredient)
-      return canonical !== undefined && providedIngredients.has(canonical)
-    })
-  })
-}
-
-function validateRecipeGrounding(recipes: JsonRecord[], payload: JsonRecord) {
-  const providedIngredients = getProvidedIngredientSet(payload)
-  if (providedIngredients.size === 0) return false
-
-  const candidates = Array.isArray(payload.candidateDishes) ? payload.candidateDishes : []
-  const primaryCandidate = candidates.find(isRecord)
-  const groundedIngredients = primaryCandidate && Array.isArray(primaryCandidate.availableIngredients)
-    ? new Set(primaryCandidate.availableIngredients.flatMap((ingredient) => {
-      const canonical = canonicalizeGeneratedIngredient(ingredient)
-      return canonical ? [canonical] : []
-    }))
-    : new Set<string>()
-
-  const requiredIngredients = groundedIngredients
-
-  return recipes.every((recipe) => {
-    const recipeIngredients = getIngredientNames(recipe.ingredients)
-    const recipeNames = new Set(recipeIngredients.map((ingredient) => ingredient.canonical))
-    const keepsGroundedIngredients = [...requiredIngredients].every((ingredient) => recipeNames.has(ingredient))
-    const usesProvidedIngredient = [...providedIngredients].some((ingredient) => recipeNames.has(ingredient))
-    const doesNotInventAvailability = recipeIngredients.every((ingredient) => !ingredient.available || providedIngredients.has(ingredient.canonical))
-    return keepsGroundedIngredients && usesProvidedIngredient && doesNotInventAvailability
-  })
-}
-
 async function handler(request: Request) {
   if (request.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
   if (request.method === 'GET') {
@@ -658,7 +567,7 @@ async function handler(request: Request) {
       return responseJson({ error: 'AI returned an invalid recipe payload.' }, 502)
     }
 
-    const recipes = generatedPayload.recipes.filter(isRecord)
+    const recipes = markOnlyProvidedAvailable(generatedPayload.recipes.filter(isRecord), payload)
     if (recipes.length !== 3) {
       return responseJson({ error: 'AI must return exactly three grounded recipes.' }, 502)
     }

@@ -13,7 +13,7 @@ test('discovery sends ranked Filipino candidates with the generation request', a
 })
 
 test('Edge Function validates and grounds generation with candidate dishes', async () => {
-  const source = await read('supabase/functions/generate-recipes/index.ts')
+  const source = await read('supabase/functions/generate-recipes/index.ts') + await read('supabase/functions/generate-recipes/grounding.ts')
   assert.match(source, /isValidCandidateDishes/)
   assert.match(source, /candidate\.authenticity/)
   assert.match(source, /Generate exactly three practical, authentic Filipino recipe choices/)
