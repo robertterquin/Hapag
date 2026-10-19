@@ -77,7 +77,7 @@ export function IngredientAddForm({ idPrefix, label, helper = 'Add ingredients o
         </div>
       </label>
       <div className="ingredient-add-footer">
-        <span className="prompt-helper">{helper}</span>
+        {helper ? <span className="prompt-helper">{helper}</span> : <span />}
         <button className="button button-primary" type="submit" disabled={busy}>{busy ? 'Idinadagdag…' : submitLabel}</button>
       </div>
       {suggestions ? <IngredientSuggestions items={suggestions} onSelect={(ingredient) => onSuggestionSelect ? onSuggestionSelect(ingredient) : setName(ingredient.toLowerCase())} /> : null}

@@ -35,14 +35,13 @@ export function ShoppingListPanel({ recipe }: { recipe: Recipe }) {
     <section className="detail-section shopping-list" aria-labelledby="shopping-heading">
       <div className="section-heading-row">
         <div>
-          <span className="section-kicker">Palengke run</span>
           <h2 id="shopping-heading">Shopping list</h2>
         </div>
         {list.knownTotal !== undefined ? <strong className="cost-total">about ₱{list.knownTotal}</strong> : null}
       </div>
 
       {list.items.length === 0 ? (
-        <p className="muted-copy">Nothing to buy. You have everything{includeStaples ? '' : ', assuming your kusina staples'}.</p>
+        <p className="muted-copy">Nothing to buy.</p>
       ) : (
         <ul className="shopping-items">
           {list.items.map((item) => (
@@ -56,7 +55,7 @@ export function ShoppingListPanel({ recipe }: { recipe: Recipe }) {
 
       <label className="shopping-toggle">
         <input type="checkbox" checked={includeStaples} onChange={(event) => { setIncludeStaples(event.target.checked); setCopyState('idle') }} />
-        Include kusina staples
+        Include staples
       </label>
 
       {list.items.length > 0 ? (

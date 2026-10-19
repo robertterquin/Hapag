@@ -1,3 +1,4 @@
+import { isPantryStaple } from '../lib/pantryStaples.ts'
 import type { Recipe } from '../types/domain.ts'
 import { formatCost } from '../lib/format.ts'
 
@@ -6,7 +7,6 @@ export function CostBreakdown({ recipe }: { recipe: Recipe }) {
     <section className="cost-panel" aria-labelledby="cost-heading">
       <div className="section-heading-row">
         <div>
-          <span className="section-kicker">Budget check</span>
           <h2 id="cost-heading">Estimated cost</h2>
         </div>
         <strong className="cost-total">{formatCost(recipe.estimatedCost)}</strong>
@@ -16,7 +16,7 @@ export function CostBreakdown({ recipe }: { recipe: Recipe }) {
           <li key={line.ingredient}>
             <span>
               {line.ingredient}{' '}
-              {line.available ? <small>· you have</small> : <small className="missing-text">· missing</small>}
+              {line.available ? <small>· you have</small> : isPantryStaple(line.ingredient) || /staple/i.test(line.ingredient) ? <small>· staple</small> : <small className="missing-text">· to buy</small>}
             </span>
             <strong>₱{line.estimatedCost}</strong>
           </li>

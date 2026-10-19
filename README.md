@@ -228,6 +228,8 @@ The interface uses rounded cards, colorful ingredient chips, friendly food illus
 
 The Phase 18 UI/UX rework is documented in [`docs/32-phase-18-ui-ux-enhancements.md`](./docs/32-phase-18-ui-ux-enhancements.md), with before and after screenshots in [`docs/screenshots/`](./docs/screenshots/).
 
+Phase 19 removes repeated labels and visual noise across every page while keeping the minimal look; see [`docs/33-phase-19-cleanup-and-design-polish.md`](./docs/33-phase-19-cleanup-and-design-polish.md) and [`docs/screenshots/phase-19-after/`](./docs/screenshots/phase-19-after/).
+
 Detailed product, UX, visual, architecture, scope, and quality-gate documents are available in [`docs/`](./docs/).
 
 The complete product-flow document is available at [`output/pdf/hapag-project-flow-scope.pdf`](./output/pdf/hapag-project-flow-scope.pdf).

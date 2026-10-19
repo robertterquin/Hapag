@@ -36,7 +36,8 @@ export function RecipeCard({ recipe, saved, onOpen, onToggleSave, feedback, onFe
       <DishImage recipe={recipe} variant="card" />
       <div className="recipe-card-topline">
         <span className="recipe-badge">{recipe.tags[0]}</span>
-        {recipe.authenticity ? <span className="recipe-authenticity-badge">{authenticityLabels[recipe.authenticity]}</span> : null}
+        {/* Only an adaptation needs flagging; "classic" is the default and adds noise. */}
+        {recipe.authenticity === 'hapag-adaptation' ? <span className="recipe-authenticity-badge">{authenticityLabels[recipe.authenticity]}</span> : null}
         <motion.button className={`save-button ${saved ? 'save-button-saved' : ''}`} type="button" onClick={onToggleSave} aria-label={saved ? `Remove from saved: ${recipe.title}` : `Save ${recipe.title}`} aria-pressed={saved} whileTap={{ scale: 0.9 }} transition={{ duration: 0.12 }}>
           <motion.span key={saved ? 'saved' : 'unsaved'} initial={{ scale: 0.7, opacity: 0.5 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.16 }}>{saved ? '♥' : '♡'}</motion.span>
         </motion.button>
@@ -52,9 +53,9 @@ export function RecipeCard({ recipe, saved, onOpen, onToggleSave, feedback, onFe
         </div>
         <p className="recipe-description">{recipe.description || recipe.matchReason}</p>
         <div className="ingredient-summary" aria-label="Ingredient evidence">
-          <div><strong>You have ({have.length})</strong>{have.length > 0 ? have.map((ingredient) => <IngredientChip key={ingredient.id} name={ingredient.name} variant="have" />) : <span className="summary-empty">None</span>}</div>
-          {missing.length > 0 ? <div><strong>To buy ({missing.length})</strong>{missing.map((ingredient) => <IngredientChip key={ingredient.id} name={ingredient.name} variant="missing" />)}</div> : null}
-          {staples.length > 0 ? <div><strong>Probably in your kusina</strong>{staples.map((ingredient) => <IngredientChip key={ingredient.id} name={ingredient.name} variant="staple" />)}</div> : null}
+          <div><strong>You have</strong>{have.length > 0 ? have.map((ingredient) => <IngredientChip key={ingredient.id} name={ingredient.name} variant="have" />) : <span className="summary-empty">None</span>}</div>
+          {missing.length > 0 ? <div><strong>To buy</strong>{missing.map((ingredient) => <IngredientChip key={ingredient.id} name={ingredient.name} variant="missing" />)}</div> : null}
+          {staples.length > 0 ? <div><strong>Staples</strong>{staples.map((ingredient) => <IngredientChip key={ingredient.id} name={ingredient.name} variant="staple" />)}</div> : null}
         </div>
         <span className="card-action">View recipe <span aria-hidden="true">→</span></span>
       </button>

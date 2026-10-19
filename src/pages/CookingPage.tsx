@@ -192,7 +192,6 @@ export function CookingPage({ recipeId, isSignedIn, feedback, sessionIngredients
           <Icon icon="lucide:x" width={20} height={20} aria-hidden="true" />
         </button>
         <div className="cooking-bar-title">
-          <span>Cooking mode</span>
           <strong>{recipe.title}</strong>
         </div>
         <span className="cooking-bar-count" aria-label={`Step ${stepIndex + 1} of ${stepCount}`}>{stepIndex + 1} / {stepCount}</span>
@@ -227,7 +226,6 @@ export function CookingPage({ recipeId, isSignedIn, feedback, sessionIngredients
             transition={{ duration: 0.2, ease: 'easeOut' }}
           >
             <div className="cooking-step-header-row">
-              <span className="step-kicker">Step {stepIndex + 1}</span>
               {isVoiceSupported ? (
                 <button className={`cooking-voice-button ${isSpeaking ? 'voice-speaking' : ''}`} type="button" onClick={readStepAloud} aria-label={isSpeaking ? 'Stop reading this step' : 'Read this step aloud'}>
                   <Icon icon={isSpeaking ? 'lucide:pause' : 'lucide:volume-2'} width={14} height={14} aria-hidden="true" />
@@ -287,7 +285,7 @@ export function CookingPage({ recipeId, isSignedIn, feedback, sessionIngredients
           {isLastStep ? 'Finish' : 'Next'} <Icon icon={isLastStep ? 'lucide:check' : 'lucide:arrow-right'} width={18} height={18} aria-hidden="true" />
         </button>
       </div>
-      <p className="cooking-note">Swipe left or right to change steps. Use your judgment on cooking times and food safety.</p>
+      <p className="cooking-note">Swipe to change steps.</p>
 
       <AnimatePresence>
         {timerActive && !timerOnThisStep && timerStepIndex !== null && !showCompletion ? (

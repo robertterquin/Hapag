@@ -30,10 +30,13 @@ export interface ResultsPageProps {
   onAddIngredient: (name: string) => void
 }
 
+// One message explains the fallback; it replaces the separate error banner.
 const fallbackNotes: Record<Exclude<FallbackReason, null>, string> = {
-  'not-configured': "AI recipes aren't set up here, so these are matches from Hapag's Filipino dish catalog. They don't have step-by-step instructions or prices yet.",
-  error: 'AI recipes are unavailable right now, so here are matches from our Filipino dish catalog.',
+  'not-configured': "AI recipes aren't set up here, so these come from Hapag's Filipino dish catalog, without steps or prices.",
+  error: "AI recipes aren't available right now, so these come from Hapag's Filipino dish catalog.",
 }
+
+const spiceLabels = { mild: 'Mild', medium: 'Medium', hot: 'Spicy' } as const
 
 export function ResultsPage({ session, status, suggestions, ideas, fallback, error, savedError, savedIds, feedback, onOpen, onToggleSave, onFeedback, onRetry, onEdit, onAddIngredient }: ResultsPageProps) {
   const language = useDisplayLanguage()
@@ -41,9 +44,7 @@ export function ResultsPage({ session, status, suggestions, ideas, fallback, err
   if (status === 'loading') {
     return (
       <div className="page-shell">
-        <span className="eyebrow">Recipe Suggestions</span>
         <h1>Finding dishes…</h1>
-        <p className="page-intro">Discovering Filipino dishes you can cook with your ingredients.</p>
         <CookingLoadingState ingredients={session.ingredients} rawInput={session.rawInput} />
         <ResultsSkeleton />
       </div>
@@ -58,14 +59,14 @@ export function ResultsPage({ session, status, suggestions, ideas, fallback, err
   }
 
   if (status === 'error' && !showIdeas) {
-    return <StatePanel tone="error" icon="!" title="We couldn't get recipes right now." description={error ?? 'Something unexpected happened. Your ingredients are still saved.'} actionLabel="Try Again" onAction={onRetry} secondaryLabel="Edit Ingredients" onSecondary={onEdit} />
+    return <StatePanel tone="error" icon="!" title="We couldn't get recipes right now." description={error ?? 'Something unexpected happened. Your ingredients are still saved.'} actionLabel="Try again" onAction={onRetry} secondaryLabel="Edit ingredients" onSecondary={onEdit} />
   }
 
   if (status === 'success' && suggestions.length === 0 && !showIdeas) {
     const unlock = suggestUnlockIngredient(session.ingredients)
     return (
       <div className="page-shell narrow-page">
-        <StatePanel tone="empty" title="No matching dishes yet." description="These ingredients don't match a dish in our catalog. One more ingredient often makes the difference." actionLabel="Edit Ingredients" onAction={onEdit} />
+        <StatePanel tone="empty" title="No matching dishes yet." description="These ingredients don't match a dish in our catalog. One more ingredient often makes the difference." actionLabel="Edit ingredients" onAction={onEdit} />
         {unlock ? (
           <div className="unlock-hint">
             <p>Add {labelForName(unlock.name, language)} to unlock {unlock.gain} {unlock.gain === 1 ? 'dish' : 'dishes'}.</p>
@@ -78,27 +79,27 @@ export function ResultsPage({ session, status, suggestions, ideas, fallback, err
     )
   }
 
-  const count = suggestions.length > 0 ? suggestions.length : ideas.length
-  const ingredientList = session.ingredients.length > 0 ? session.ingredients.map((ingredient) => labelForIngredient(ingredient, language)).join(', ') : 'your ingredients'
+  const ingredientList = session.ingredients.map((ingredient) => labelForIngredient(ingredient, language)).join(', ')
+  const { servings, spiceLevel, budgetLimit, dietaryPreference } = session.constraints
+  const settings = [
+    `${servings} ${servings === 1 ? 'serving' : 'servings'}`,
+    spiceLabels[spiceLevel],
+    budgetLimit ? `Under ₱${budgetLimit}` : null,
+    dietaryPreference && dietaryPreference !== 'none' ? dietaryPreference.replace('-', ' ') : null,
+  ].filter(Boolean).join(' · ')
+  const hasAiRecipes = suggestions.some((recipe) => recipe.source === 'ai')
 
   return (
     <div className="page-shell">
-      <div className="results-header">
-        <div>
-          <span className="eyebrow">Recipe Suggestions</span>
-          <h1>Dishes you can cook</h1>
-          <p className="page-intro">{count} {count === 1 ? 'idea' : 'ideas'} for: <strong>{ingredientList}</strong></p>
-        </div>
-        <button className="button button-secondary" type="button" onClick={onEdit}>Edit Ingredients</button>
-      </div>
+      <header className="results-header">
+        <h1>Dishes you can cook</h1>
+        <p className="results-summary">
+          <span>{ingredientList}</span>
+          <span className="results-summary-settings">{settings}</span>
+          <button className="text-button" type="button" onClick={onEdit}>Edit</button>
+        </p>
+      </header>
       {savedError ? <div className="error-banner" role="alert">{savedError}</div> : null}
-      {status === 'error' && error ? <div className="error-banner" role="alert">{error}</div> : null}
-      <div className="active-filter-row" aria-label="Applied constraints">
-        <span className="filter-pill">{session.constraints.servings} servings</span>
-        {session.constraints.budgetLimit ? <span className="filter-pill">Under ₱{session.constraints.budgetLimit}</span> : null}
-        {session.constraints.dietaryPreference && session.constraints.dietaryPreference !== 'none' ? <span className="filter-pill">{session.constraints.dietaryPreference}</span> : null}
-        <span className="filter-pill">{session.constraints.spiceLevel} spice</span>
-      </div>
 
       {suggestions.length > 0 ? (
         <div className="results-grid">
@@ -107,11 +108,12 @@ export function ResultsPage({ session, status, suggestions, ideas, fallback, err
       ) : null}
 
       {showIdeas && fallback ? (
-        <section className="ideas-section" aria-labelledby="ideas-heading">
-          <h2 id="ideas-heading">{suggestions.length > 0 ? 'More dishes that match' : 'Dishes that match your ingredients'}</h2>
-          <p className="ideas-note">
+        <section className="ideas-section" aria-labelledby={suggestions.length > 0 ? 'ideas-heading' : undefined} aria-label={suggestions.length > 0 ? undefined : 'Catalog matches'}>
+          {suggestions.length > 0 ? <h2 id="ideas-heading">More dishes that match</h2> : null}
+          <p className="ideas-note" role={fallback === 'error' ? 'status' : undefined}>
             <Icon icon="lucide:info" width={16} height={16} aria-hidden="true" />
             <span>{fallbackNotes[fallback]}</span>
+            {fallback === 'error' ? <button className="text-button" type="button" onClick={onRetry}>Try again</button> : null}
           </p>
           <div className="results-grid">
             {ideas.map((idea) => <DishIdeaCard key={idea.id} idea={idea} />)}
@@ -119,10 +121,14 @@ export function ResultsPage({ session, status, suggestions, ideas, fallback, err
         </section>
       ) : null}
 
-      <div className="results-footer-actions">
-        <button className="button button-secondary" type="button" onClick={onRetry}>Try Again</button>
-      </div>
-      <p className="trust-note trust-note-block">{suggestions.some((recipe) => recipe.source === 'ai') ? 'AI-generated suggestions. ' : ''}Prices are estimates. Verify ingredients and labels before cooking. Dish photos from Wikimedia Commons; credits on each photo.</p>
+      {hasAiRecipes ? (
+        <div className="results-footer-actions">
+          <button className="text-button" type="button" onClick={onRetry}>
+            <Icon icon="lucide:refresh-cw" width={16} height={16} aria-hidden="true" /> Show other dishes
+          </button>
+        </div>
+      ) : null}
+      <p className="trust-note trust-note-block">Prices are estimates. Check labels before cooking.</p>
     </div>
   )
 }

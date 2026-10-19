@@ -9,16 +9,8 @@ export function DishImage({ recipe, variant }: DishImageProps) {
   const photo = getDishPhoto(recipe)
   const className = variant === 'card' ? 'recipe-card-image' : 'recipe-hero-image'
 
-  if (!photo && variant === 'hero') return null
-  if (!photo) {
-    return (
-      <div className={`${className} dish-image-placeholder`} role="img" aria-label={`No photo yet for ${recipe.title}`}>
-        <span className="placeholder-pattern" aria-hidden="true" />
-        <span className="dish-image-placeholder-icon" aria-hidden="true">🍲</span>
-        <span className="placeholder-brand">No photo yet</span>
-      </div>
-    )
-  }
+  // No placeholder tile: a card without a verified photo simply starts with its text.
+  if (!photo) return null
 
   return (
     <figure className={`${className} dish-image`}>

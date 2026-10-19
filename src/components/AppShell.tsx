@@ -24,10 +24,14 @@ export function AppShell({ routeName, contentKey, onNavigate, fullName, isSigned
   const profileInitial = fullName?.[0]?.toUpperCase()
   // Cooking Mode is full screen: no header or nav competing with the step.
   const immersive = routeName === 'cooking'
+  // The sign-in page has its own form; a second "Sign in" in the header only repeats it.
+  const showSignIn = !isSignedIn && routeName !== 'auth'
 
   return (
     <div className={`app-shell app-shell-${routeName} ${immersive ? 'app-shell-immersive' : ''}`}>
       <div className="app-background" aria-hidden="true">
+        {/* Decorative doodles stay on Home only; content pages keep just the soft gradient. */}
+        {routeName === 'home' ? (
         <svg className="background-flow" viewBox="0 0 1280 900" preserveAspectRatio="none" fill="none">
           <path className="background-flow-line" d="M-40 180C170 55 270 310 470 205C655 108 725 35 900 145C1065 250 1090 420 1340 310" />
           <path className="background-flow-line background-flow-line-secondary" d="M-80 720C175 610 250 815 470 690C675 575 790 760 1000 650C1135 580 1220 630 1360 560" />
@@ -56,6 +60,7 @@ export function AppShell({ routeName, contentKey, onNavigate, fullName, isSigned
             <path d="M930 500C955 510 982 515 1010 511M1012 493C1019 484 1028 483 1034 489" />
           </g>
         </svg>
+        ) : null}
       </div>
 
       {immersive ? null : (
@@ -86,12 +91,12 @@ export function AppShell({ routeName, contentKey, onNavigate, fullName, isSigned
               <span className="avatar" aria-hidden="true">{profileInitial ?? <Icon icon="lucide:user" width={16} height={16} />}</span>
               <span className="profile-name">{fullName?.split(' ')[0] ?? 'Profile'}</span>
             </button>
-          ) : (
+          ) : showSignIn ? (
             <button className="sign-in-link" type="button" onClick={() => onNavigate('/auth')}>
               <Icon icon="lucide:log-in" width={16} height={16} aria-hidden="true" />
               <span>Sign in</span>
             </button>
-          )}
+          ) : null}
         </header>
       </div>
       )}
@@ -107,12 +112,12 @@ export function AppShell({ routeName, contentKey, onNavigate, fullName, isSigned
             <button className="mobile-profile-button" type="button" onClick={() => onNavigate('/profile')} aria-label="Open profile">
               <span className="avatar" aria-hidden="true">{profileInitial ?? <Icon icon="lucide:user" width={16} height={16} />}</span>
             </button>
-          ) : (
+          ) : showSignIn ? (
             <button className="sign-in-link" type="button" onClick={() => onNavigate('/auth')}>
               <Icon icon="lucide:log-in" width={16} height={16} aria-hidden="true" />
               <span>Sign in</span>
             </button>
-          )}
+          ) : null}
         </header>
         )}
 

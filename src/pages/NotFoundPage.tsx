@@ -10,8 +10,8 @@ export function NotFoundPage({ onBack }: NotFoundPageProps) {
       tone="empty"
       icon="?"
       title="Page not found"
-      description="The requested page could not be found."
-      actionLabel="Back to Home"
+      description="This link doesn't lead anywhere. Let's get you back to cooking."
+      actionLabel="Back to home"
       onAction={onBack}
     />
   )

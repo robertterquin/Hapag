@@ -34,9 +34,7 @@ export function UlamPage({ session, notice, staples, staplesError, onAddIngredie
 
   return (
     <div className="page-shell ulam-page">
-      <span className="eyebrow">Ulam AI</span>
       <h1>Start with what you have.</h1>
-      <p className="page-intro">Add what's in your kitchen, then we'll find Filipino dishes you can cook.</p>
 
       {notice ? (
         <p className="discovery-notice" role="status">
@@ -54,7 +52,7 @@ export function UlamPage({ session, notice, staples, staplesError, onAddIngredie
             <IngredientAddForm
               idPrefix="ulam-add"
               label="Add ingredients"
-              helper="Separate several with commas."
+              helper=""
               submitLabel="Add"
               placeholder="e.g. 1/2 kg manok, patatas, bawang"
               onSubmit={async (input) => { onAddIngredients(input) }}
@@ -78,11 +76,9 @@ export function UlamPage({ session, notice, staples, staplesError, onAddIngredie
           <section className="review-panel selected-panel ulam-order-selected" aria-labelledby="review-heading">
             <div className="section-heading-row">
               <div>
-                <span className="section-kicker">Your list</span>
-                <h2 id="review-heading">Selected ingredients</h2>
+                <h2 id="review-heading">Your ingredients</h2>
               </div>
-              <span className="count-badge" aria-label={`${ingredientCount} ingredients`}>{ingredientCount}</span>
-            </div>
+              </div>
             <IngredientChips ingredients={session.ingredients} onRemove={onRemove} />
             {session.ingredients.some((ingredient) => ingredient.confidence === 'low') ? (
               <p className="inline-warning">Some ingredients need checking. Hapag didn't recognize the ones marked with "?".</p>
@@ -104,7 +100,7 @@ export function UlamPage({ session, notice, staples, staplesError, onAddIngredie
           <div className="ulam-order-cook">
             <StickyActionBar summary={ingredientCount === 0 ? 'Add an ingredient to start' : `${ingredientCount} sangkap ready`}>
               <button className="button button-primary" type="button" onClick={onGenerate} disabled={ingredientCount === 0}>
-                Let's Cook! <span aria-hidden="true">→</span>
+                Let's cook <span aria-hidden="true">→</span>
               </button>
             </StickyActionBar>
           </div>

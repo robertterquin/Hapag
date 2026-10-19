@@ -105,6 +105,7 @@ html::-webkit-scrollbar {
 
 .brand-lockup {
   padding: 4px 6px;
+  min-height: 44px;
   border-radius: var(--radius-pill);
   transition: opacity 150ms ease;
 }
@@ -141,7 +142,7 @@ html::-webkit-scrollbar {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  min-height: 36px;
+  min-height: 44px;
   padding: 0 14px;
   border: 1px solid transparent;
   border-radius: var(--radius-pill);
@@ -423,7 +424,7 @@ p { line-height: 1.6; }
 .recipe-metrics-large span:nth-child(3) { color: var(--amber-11); background: var(--amber-2); border-color: var(--amber-7); font-weight: 800; }
 .recipe-metrics-large strong { color: inherit; }
 
-.ingredient-summary { display: grid; gap: 10px; padding: 12px 0 6px 0; border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); }
+.ingredient-summary { display: grid; gap: 10px; padding: 12px 0 0; border-top: 1px solid var(--color-border); }
 .ingredient-summary div { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; font-size: 11px; }
 .ingredient-summary strong { width: 100%; color: var(--color-muted); font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 2px; }
 
@@ -573,7 +574,7 @@ p { line-height: 1.6; }
 .auth-form { display: grid; gap: var(--space-4); margin: var(--space-6) 0 var(--space-4); }
 .field-label input { min-height: 46px; padding: 0 12px; color: var(--color-ink); background: var(--color-surface); border: 1px solid var(--color-border-strong); border-radius: var(--radius-control); }
 .auth-mode-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: var(--space-5); padding: 4px; background: var(--color-cream); border: 1px solid var(--color-border); border-radius: var(--radius-control); }
-.auth-mode-switch button { min-height: 40px; color: var(--color-muted); background: transparent; border: 0; border-radius: 10px; font-weight: 800; }
+.auth-mode-switch button { min-height: 44px; color: var(--color-muted); background: transparent; border: 0; border-radius: 10px; font-weight: 800; }
 .auth-mode-switch button:hover, .auth-mode-active { color: var(--color-brand-strong) !important; background: var(--color-surface) !important; box-shadow: var(--shadow-card); }
 .auth-status { margin-top: var(--space-4); }
 .auth-field-error { color: var(--color-tomato); font-size: 12px; font-weight: 700; }
@@ -1308,7 +1309,7 @@ html:has(dialog.bottom-sheet[open]) { overflow: hidden; }
 .item-emoji { font-size: 15px; line-height: 1; }
 .shelf-item-chip .item-name { display: grid; text-align: left; line-height: 1.15; }
 .shelf-item-chip .item-name small { color: var(--color-muted); font-size: 10.5px; font-weight: 600; }
-.shelf-item-chip:has(.item-name small) { min-height: 40px; padding-top: 3px; padding-bottom: 3px; }
+.shelf-item-chip:has(.item-name small) { min-height: 44px; padding-top: 3px; padding-bottom: 3px; }
 .shelf-item-chip.item-active .item-name small { color: inherit; opacity: 0.8; }
 
 .preferences-summary { display: flex; align-items: center; gap: var(--space-3); width: 100%; margin-top: var(--space-4); padding: 14px 16px; color: var(--color-ink); text-align: left; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-card); box-shadow: var(--shadow-card); transition: border-color 140ms ease; }
@@ -1396,7 +1397,6 @@ figure.recipe-hero-image { margin: 0; }
 .cooking-icon-button:hover { border-color: var(--color-brand-border); background: var(--color-brand-soft); }
 .cooking-icon-button-muted { color: var(--color-muted); background: var(--sand-2); }
 .cooking-bar-title { display: grid; flex: 1 1 auto; min-width: 0; }
-.cooking-bar-title span { color: var(--color-brand); font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .cooking-bar-title strong { overflow: hidden; font-family: var(--font-display); font-size: 17px; white-space: nowrap; text-overflow: ellipsis; }
 .cooking-bar-count { flex: 0 0 auto; padding: 6px 12px; color: var(--color-brand-strong); font-size: 14px; font-weight: 800; background: var(--color-brand-soft); border-radius: var(--radius-pill); }
 .cooking-progress { height: 6px; }
@@ -1516,3 +1516,70 @@ figure.recipe-hero-image { margin: 0; }
   .hero-preview-card .recipe-card-image { aspect-ratio: 2 / 1; }
   .hero-preview-content { gap: 6px; padding: 14px 20px 18px; }
 }
+
+/* Phase 19.3 visual system
+   One surface style for every card, a quieter background, consistent headings and chips. */
+:root {
+  --surface-border: 1px solid var(--sand-a5);
+  --surface-radius: 20px;
+  --surface-shadow: 0 1px 2px var(--color-shadow-subtle), 0 10px 28px -16px var(--color-shadow);
+}
+
+.ingredient-add-form, .review-panel, .constraints-panel, .detail-section, .saved-section, .cost-panel,
+.recipe-card, .state-panel, .recipe-hero, .cooking-step-card, .preferences-panel, .account-panel, .auth-card,
+.kusina-shelf, .staples-card, .preferences-summary, .hero-preview-card {
+  border: var(--surface-border);
+  border-radius: var(--surface-radius);
+  box-shadow: var(--surface-shadow);
+}
+.recipe-card:hover, .recipe-card:focus-within { border-color: var(--color-brand-border); box-shadow: 0 1px 2px var(--color-shadow-subtle), 0 16px 32px -16px var(--color-shadow-hover); }
+
+/* Quieter background: keep the warm gradient, drop the dotted texture everywhere. */
+.app-background::after { display: none; }
+
+/* Section headings share one size and spacing. */
+.review-panel h2, .detail-section h2, .cost-panel h2, .saved-section h2, .preferences-panel h2, .account-panel h2,
+.staples-header h2, .shelf-title, .ideas-section > h2 { margin: 0; font-size: 20px; line-height: 1.25; letter-spacing: -0.01em; }
+.page-shell > h1, .results-header h1, .ulam-page > h1 { margin-bottom: var(--space-2); }
+
+/* Group labels inside cards: quieter than headings. */
+.ingredient-summary strong { color: var(--color-muted); font-size: 11px; font-weight: 700; letter-spacing: .05em; }
+
+/* Selected ingredients use the same pill as the "have" chips on cards. */
+.ingredient-chip { min-height: 36px; padding: 0 4px 0 14px; color: var(--color-calamansi); font-size: 14px; font-weight: 700; background: var(--color-success-bg); border: 1px solid var(--color-success-border); border-radius: var(--radius-pill); }
+.ingredient-chip button { color: inherit; opacity: .7; }
+.ingredient-chip button:hover { opacity: 1; }
+
+/* Results header: title, then one quiet summary line. */
+.results-header { display: block; margin-bottom: var(--space-5); }
+.results-summary { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin: 0; color: var(--color-muted); font-size: 15px; font-weight: 600; }
+.results-summary > span:first-child { color: var(--color-ink); }
+.results-summary-settings::before { content: '·'; margin-right: 12px; color: var(--sand-8); }
+.results-summary .text-button { min-height: 44px; padding: 0 8px; margin-left: auto; }
+.ideas-section:first-of-type { margin-top: 0; }
+.ideas-note { align-items: center; flex-wrap: wrap; background: var(--sand-2); border-color: var(--sand-6); }
+.ideas-note .text-button { margin-left: auto; min-height: 44px; padding: 0 8px; }
+.ideas-note > svg { flex-shrink: 0; }
+.ideas-note > span { flex: 1 1 200px; }
+.results-footer-actions { display: flex; justify-content: center; margin-top: var(--space-5); }
+
+/* Detail: lighter "why" text without the heavy side bar. */
+.detail-section .match-callout { padding: 0; background: none; border: 0; border-radius: 0; color: var(--color-ink); font-size: 15px; line-height: 1.6; }
+
+/* Profile: controls stacked with even spacing. */
+.preference-form { display: grid; gap: var(--space-4); }
+.preference-form .serving-stepper { justify-self: start; }
+
+@media (max-width: 680px) {
+  .results-summary > span:first-child { flex-basis: 100%; }
+  .results-summary-settings::before { display: none; }
+  .results-summary .text-button { margin-left: 0; }
+  .ingredient-add-form, .review-panel, .detail-section, .saved-section, .cost-panel, .kusina-shelf, .staples-card { border-radius: 18px; }
+}
+
+/* Pairing suggestions: a plain inline row, not a dashed box. */
+.smart-pairings-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: var(--space-3); padding: 0; background: none; border: 0; border-radius: 0; }
+.pairings-label { margin: 0; color: var(--color-muted); font-size: 13px; font-weight: 700; }
+.pairings-label svg { display: none; }
+.pairing-chip { padding: 0 12px; font-size: 13px; border-color: var(--color-brand-border); }
+.recipe-card-main { align-content: start; }

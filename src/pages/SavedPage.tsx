@@ -5,16 +5,14 @@ import type { Recipe } from '../types/domain.ts'
 export interface SavedPageProps { isAuthenticated: boolean; status: string; error: string | null; savedIds: string[]; savedRecipes: Recipe[]; cookedRecipes: Recipe[]; onOpen: (id: string) => void; onUnsave: (id: string) => Promise<void>; onStart: () => void; onSignIn: () => void; onRetry: () => void }
 
 export function SavedPage({ isAuthenticated, status, error, savedIds, savedRecipes, cookedRecipes, onOpen, onUnsave, onStart, onSignIn, onRetry }: SavedPageProps) {
-  if (!isAuthenticated) return <div className="page-shell"><StatePanel title="Sign in to view your saved recipes" description="Saved recipes and cooking history are kept private to your account." actionLabel="Sign In" onAction={onSignIn} secondaryLabel="Find Recipes" onSecondary={onStart} /></div>
-  if (status === 'error') return <div className="page-shell"><StatePanel tone="error" title="Could not load your saved recipes" description={error ?? 'Please check your connection and try again.'} actionLabel="Try Again" onAction={onRetry} secondaryLabel="Find Recipes" onSecondary={onStart} /></div>
-  if (status !== 'ready') return <div className="page-shell"><span className="eyebrow">Saved Recipes</span><h1>Loading your recipes…</h1></div>
+  if (!isAuthenticated) return <div className="page-shell"><StatePanel title="Sign in to view your saved recipes" description="Saved recipes and cooking history are kept private to your account." actionLabel="Sign in" onAction={onSignIn} secondaryLabel="Find recipes" onSecondary={onStart} /></div>
+  if (status === 'error') return <div className="page-shell"><StatePanel tone="error" title="Could not load your saved recipes" description={error ?? 'Please check your connection and try again.'} actionLabel="Try again" onAction={onRetry} secondaryLabel="Find recipes" onSecondary={onStart} /></div>
+  if (status !== 'ready') return <div className="page-shell"><h1>Loading your recipes…</h1></div>
   return (
     <div className="page-shell">
-      <span className="eyebrow">Saved Recipes</span>
-      <h1>Your personal recipe collection</h1>
-      <p className="page-intro">Save your favorite recipes and keep track of dishes you have cooked.</p>
+      <h1>Saved</h1>
       {savedRecipes.length === 0 && cookedRecipes.length === 0 ? (
-        <StatePanel title="No saved recipes yet" description="Save recipes to easily access and cook them anytime." actionLabel="Find Recipes" onAction={onStart} />
+        <StatePanel title="No saved recipes yet" description="Tap the heart on any recipe to keep it here." actionLabel="Find recipes" onAction={onStart} />
       ) : (
         <>
           <section className="saved-section" aria-labelledby="favorites-heading">

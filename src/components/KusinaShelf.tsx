@@ -51,13 +51,11 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
   }, [selectedCategory])
 
   return (
-    <section className="kusina-shelf" aria-label="Kitchen Pantry Quick-Add Shelf">
+    <section className="kusina-shelf" aria-labelledby="pantry-heading">
       <div className="shelf-header">
         <div className="shelf-title-group">
-          <span className="shelf-kicker">Quick Pick</span>
-          <h2 className="shelf-title">Kitchen Pantry</h2>
+          <h2 className="shelf-title" id="pantry-heading">Pantry</h2>
         </div>
-        <span className="shelf-hint">Tap to add or remove</span>
       </div>
 
       <AnimatePresence>
@@ -74,7 +72,7 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
                 <circle cx="12" cy="12" r="10" />
                 <path d="m9 12 2 2 4-4" />
               </svg>
-              Pairs well with this:
+              Goes well with
             </span>
             <div className="pairings-list">
               {smartPairings.map((pair) => (
@@ -83,9 +81,9 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
                   className="pairing-chip"
                   type="button"
                   onClick={() => onToggle(pair.name, false)}
-                  title={`Add ${pair.name}`}
+                  aria-label={`Add ${labelForName(pair.name, language)}`}
                 >
-                  <span className="plus-glyph">+</span> {labelForName(pair.name, language)}
+                  <span className="plus-glyph" aria-hidden="true">+</span> {getIngredientLabel(pair.name, pair.localName, language).primary}
                 </button>
               ))}
             </div>

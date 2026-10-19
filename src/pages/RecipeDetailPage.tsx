@@ -51,7 +51,6 @@ export function RecipeDetailPage({ recipeId, saved, onToggleSave, onStartCooking
           <section className="detail-section" aria-labelledby="ingredients-heading">
             <div className="section-heading-row">
               <div>
-                <span className="section-kicker">Ingredients needed</span>
                 <h2 id="ingredients-heading">Ingredients</h2>
               </div>
               <ServingStepper value={servings} onChange={setSelectedServings} />
@@ -64,9 +63,10 @@ export function RecipeDetailPage({ recipeId, saved, onToggleSave, onStartCooking
                   <span className="ingredient-status" aria-hidden="true">{status === 'have' ? '✓' : status === 'staple' ? '•' : '+'}</span>
                   <span>
                     <strong>{formatQuantity(ingredient.quantity, ingredient.unit)} {ingredient.name}</strong>
-                    {ingredient.note ? <small>{ingredient.note}</small> : null}
+                    {ingredient.note && !(status === 'staple' && /staple/i.test(ingredient.note)) ? <small>{ingredient.note}</small> : null}
                   </span>
-                  <em>{status === 'have' ? 'You have' : status === 'staple' ? 'Probably in your kusina' : 'To buy'}</em>
+                  {/* Icon and colour already say "you have"; only the other states need words on screen. */}
+                  {status === 'have' ? <span className="sr-only">You have this</span> : <em>{status === 'staple' ? 'Staple' : 'To buy'}</em>}
                 </li>
                 )
               })}
@@ -78,8 +78,7 @@ export function RecipeDetailPage({ recipeId, saved, onToggleSave, onStartCooking
           <section className="detail-section" aria-labelledby="steps-heading">
             <div className="section-heading-row">
               <div>
-                <span className="section-kicker">Preparation</span>
-                <h2 id="steps-heading">Cooking Steps</h2>
+                <h2 id="steps-heading">Steps</h2>
               </div>
             </div>
             <ol className="step-preview-list">
@@ -101,7 +100,6 @@ export function RecipeDetailPage({ recipeId, saved, onToggleSave, onStartCooking
           <section className="detail-section" aria-labelledby="substitutions-heading">
             <div className="section-heading-row">
               <div>
-                <span className="section-kicker">Flexible cooking</span>
                 <h2 id="substitutions-heading">Substitutions</h2>
               </div>
             </div>
@@ -126,7 +124,6 @@ export function RecipeDetailPage({ recipeId, saved, onToggleSave, onStartCooking
           ) : null}
           {recipe.matchReason ? (
             <section className="detail-section" aria-labelledby="why-heading">
-              <span className="section-kicker">Why this dish</span>
               <h2 id="why-heading">Why it works</h2>
               <p className="match-callout">{recipe.matchReason}</p>
             </section>

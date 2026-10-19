@@ -195,9 +195,9 @@ export function HomePage({ onStart, onSurprise }: HomePageProps) {
                     </div>
                     <p className="hero-preview-desc">{dish.description}</p>
                     <div className="ingredient-summary">
-                      <div><strong>You have ({dish.have.length})</strong>{dish.have.map((item) => <IngredientChip key={item} name={labelForName(item, language)} variant="have" />)}</div>
-                      {dish.toBuy.length > 0 ? <div><strong>To buy ({dish.toBuy.length})</strong>{dish.toBuy.map((item) => <IngredientChip key={item} name={labelForName(item, language)} variant="missing" />)}</div> : null}
-                      {dish.staples.length > 0 ? <div><strong>Probably in your kusina</strong>{dish.staples.map((item) => <IngredientChip key={item} name={labelForName(item, language)} variant="staple" />)}</div> : null}
+                      <div><strong>You have</strong>{dish.have.map((item) => <IngredientChip key={item} name={labelForName(item, language)} variant="have" />)}</div>
+                      {dish.toBuy.length > 0 ? <div><strong>To buy</strong>{dish.toBuy.map((item) => <IngredientChip key={item} name={labelForName(item, language)} variant="missing" />)}</div> : null}
+                      {dish.staples.length > 0 ? <div><strong>Staples</strong>{dish.staples.map((item) => <IngredientChip key={item} name={labelForName(item, language)} variant="staple" />)}</div> : null}
                     </div>
                   </div>
                 </motion.div>

@@ -23,7 +23,6 @@ export function PantryStaplesCard({ staples, currentCanonicalNames, error, onAdd
     <section className="staples-card" aria-labelledby="staples-heading">
       <div className="staples-header">
         <div>
-          <span className="section-kicker">Always in your kusina</span>
           <h2 id="staples-heading">My staples</h2>
         </div>
         <button className="text-button" type="button" aria-haspopup="dialog" onClick={(event) => { event.currentTarget.focus(); setEditing(true) }}>
