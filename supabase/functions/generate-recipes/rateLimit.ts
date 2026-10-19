@@ -12,6 +12,8 @@ function positiveInteger(value: string | undefined, fallback: number) {
 export function getRateLimitConfig(env: (name: string) => string | undefined) {
   return {
     anonymousLimit: positiveInteger(env('AI_ANONYMOUS_LIMIT'), 3),
+    signedInLimit: positiveInteger(env('AI_SIGNED_IN_LIMIT'), 20),
+    dailyLimit: positiveInteger(env('AI_DAILY_LIMIT'), 500),
     windowSeconds: positiveInteger(env('AI_RATE_WINDOW_SECONDS'), 3600),
   }
 }
@@ -38,5 +40,18 @@ export async function consumeRateLimit(key: string, limit: number, windowSeconds
     allowed: count <= limit,
     remaining: Math.max(0, limit - count),
     retryAfterSeconds: windowSeconds,
+  }
+}
+
+// Health check for uptime monitoring: true only when Upstash answers with the configured credentials.
+export async function rateLimiterHealthy(env: (name: string) => string | undefined) {
+  const url = env('UPSTASH_REDIS_REST_URL')?.replace(/\/$/, '')
+  const token = env('UPSTASH_REDIS_REST_TOKEN')
+  if (!url || !token) return false
+  try {
+    const response = await fetch(`${url}/ping`, { headers: { Authorization: `Bearer ${token}` } })
+    return response.ok
+  } catch {
+    return false
   }
 }

@@ -1,6 +1,7 @@
 import { type ReactNode, Suspense, lazy, useEffect, useRef } from 'react'
 import '../App.css'
 import { AppShell } from '../components/AppShell.tsx'
+import { ErrorBoundary } from '../components/ErrorBoundary.tsx'
 import { useDiscovery } from '../hooks/useDiscovery.ts'
 import { useAuth } from '../hooks/useAuth.ts'
 import { usePreferences } from '../hooks/usePreferences.ts'
@@ -110,7 +111,7 @@ function App() {
   const fullName = typeof rawFullName === 'string' && rawFullName.trim() ? rawFullName.trim() : undefined
   return (
     <DisplayLanguageContext.Provider value={preferences.preferences.language}>
-      <AppShell routeName={route.name} contentKey={contentKey} fullName={fullName} isSignedIn={Boolean(auth.session)} onNavigate={navigateFromShell}><Suspense fallback={<div className="page-shell"><ResultsSkeleton /></div>}>{page}</Suspense></AppShell>
+      <AppShell routeName={route.name} contentKey={contentKey} fullName={fullName} isSignedIn={Boolean(auth.session)} onNavigate={navigateFromShell}><ErrorBoundary key={contentKey} area={route.name} onHome={() => navigate('/')}><Suspense fallback={<div className="page-shell"><ResultsSkeleton /></div>}>{page}</Suspense></ErrorBoundary></AppShell>
     </DisplayLanguageContext.Provider>
   )
 }

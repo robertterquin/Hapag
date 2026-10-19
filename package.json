@@ -8,15 +8,15 @@
     "typecheck": "tsc -b",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "test": "node --experimental-strip-types --test scripts/foundation.test.mjs scripts/recipe-schema.test.ts scripts/phase-9.test.mjs scripts/phase-10.test.mjs scripts/phase-11.test.mjs scripts/phase-12.test.ts scripts/phase-13.test.mjs scripts/phase-15.test.ts scripts/phase-16.test.mjs scripts/phase-17.test.mjs scripts/pantry-quantities.test.ts scripts/auth-registration.test.ts scripts/motion.test.mjs scripts/colors.test.mjs scripts/ui-enhancement.test.mjs scripts/rate-limit.test.mjs scripts/filipino-catalog.test.ts scripts/ingredient-normalization.test.ts scripts/recipe-matcher.test.ts scripts/grounded-ai.test.mjs scripts/recipe-transparency.test.ts scripts/phase-18-foundations.test.mjs scripts/phase-18-ingredient-flow.test.ts scripts/phase-18-results.test.ts scripts/phase-18-recipe-detail.test.ts scripts/phase-18-cooking-mode.test.ts scripts/phase-18-desktop-qa.test.mjs scripts/phase-19-cleanup.test.mjs",
+    "test": "node --experimental-strip-types --test scripts/foundation.test.mjs scripts/recipe-schema.test.ts scripts/phase-9.test.mjs scripts/phase-10.test.mjs scripts/phase-11.test.mjs scripts/phase-12.test.ts scripts/phase-13.test.mjs scripts/phase-15.test.ts scripts/phase-16.test.mjs scripts/phase-17.test.mjs scripts/pantry-quantities.test.ts scripts/auth-registration.test.ts scripts/motion.test.mjs scripts/colors.test.mjs scripts/ui-enhancement.test.mjs scripts/rate-limit.test.mjs scripts/filipino-catalog.test.ts scripts/ingredient-normalization.test.ts scripts/recipe-matcher.test.ts scripts/grounded-ai.test.mjs scripts/recipe-transparency.test.ts scripts/phase-18-foundations.test.mjs scripts/phase-18-ingredient-flow.test.ts scripts/phase-18-results.test.ts scripts/phase-18-recipe-detail.test.ts scripts/phase-18-cooking-mode.test.ts scripts/phase-18-desktop-qa.test.mjs scripts/phase-19-cleanup.test.mjs scripts/phase-20-blockers.test.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
     "@iconify/react": "^6.0.2",
     "@radix-ui/colors": "^3.0.0",
+    "@sentry/react": "^11.8.0",
     "@supabase/supabase-js": "^2.110.7",
     "motion": "^12.42.2",
-    "msedge-tts": "^2.0.7",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "zod": "^4.4.3"
@@ -26,7 +26,6 @@
     "@types/node": "^24.13.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "@vercel/node": "^7.0.0",
     "@vitejs/plugin-react": "^6.0.3",
     "eslint": "^10.6.0",
     "eslint-plugin-react-hooks": "^7.1.1",

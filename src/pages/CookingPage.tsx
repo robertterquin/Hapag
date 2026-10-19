@@ -146,11 +146,11 @@ export function CookingPage({ recipeId, isSignedIn, feedback, sessionIngredients
   }, [timerRunning, soundEnabled])
 
   const readStepAloud = useCallback(() => {
-    if (!step || !recipe) return
+    if (!step) return
     const heatPart = step.heat && step.heat !== 'none' ? `Heat: ${step.heat}.` : ''
     const durationPart = step.durationMinutes ? `Duration: about ${step.durationMinutes} minutes.` : ''
-    toggleVoice(`${step.action}. ${durationPart} ${heatPart}`.trim(), `/audio/steps/${recipe.id}-step-${step.order}.mp3`)
-  }, [step, recipe, toggleVoice])
+    toggleVoice(`${step.action.replace(/[.!?]+$/, '')}. ${durationPart} ${heatPart}`.trim())
+  }, [step, toggleVoice])
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {

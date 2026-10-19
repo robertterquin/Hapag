@@ -1,12 +1,11 @@
-import { useCallback, useEffect, useState, useRef } from 'react'
-import { getAudioUrl } from '../services/ttsService.ts'
+import { useCallback, useEffect, useState } from 'react'
 
 export interface VoiceReadoutState {
   isSupported: boolean
   isSpeaking: boolean
-  speak: (text: string, staticAudioPath?: string) => void
+  speak: (text: string) => void
   stop: () => void
-  toggle: (text: string, staticAudioPath?: string) => void
+  toggle: (text: string) => void
 }
 
 const TAGALOG_MARKERS =
@@ -47,42 +46,31 @@ function selectBestVoice(voices: SpeechSynthesisVoice[], lang: 'tl-PH' | 'en-US'
   return english ?? voices[0] ?? null
 }
 
+// Reads steps aloud with the device's built-in speech voices; no server or third-party service.
 export function useVoiceReadout(): VoiceReadoutState {
+  const isSupported = typeof window !== 'undefined' && 'speechSynthesis' in window
   const [isSpeaking, setIsSpeaking] = useState(false)
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([])
-  const audioRef = useRef<HTMLAudioElement | null>(null)
-  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null)
-  const pendingRef = useRef(0)
 
   useEffect(() => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return undefined
+    if (!isSupported) return undefined
     const load = () => setVoices(window.speechSynthesis.getVoices())
     load()
     window.speechSynthesis.onvoiceschanged = load
     return () => { window.speechSynthesis.onvoiceschanged = null }
-  }, [])
+  }, [isSupported])
 
   const stop = useCallback(() => {
-    pendingRef.current++
-    if (audioRef.current) {
-      audioRef.current.pause()
-      audioRef.current.currentTime = 0
-      audioRef.current = null
-    }
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel()
-    }
-    utteranceRef.current = null
+    if (isSupported) window.speechSynthesis.cancel()
     setIsSpeaking(false)
-  }, [])
+  }, [isSupported])
 
-  const speakWithSynthesis = useCallback((text: string) => {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return
+  const speak = useCallback((text: string) => {
+    if (!isSupported) return
 
     window.speechSynthesis.cancel()
     const lang = detectLanguage(text)
     const utterance = new SpeechSynthesisUtterance(text)
-    utteranceRef.current = utterance
 
     const available = voices.length > 0 ? voices : window.speechSynthesis.getVoices()
     const best = selectBestVoice(available, lang)
@@ -100,55 +88,13 @@ export function useVoiceReadout(): VoiceReadoutState {
     utterance.onerror = () => setIsSpeaking(false)
 
     window.speechSynthesis.speak(utterance)
-  }, [voices])
+  }, [isSupported, voices])
 
-  const speak = useCallback((text: string, staticAudioPath?: string) => {
-    stop()
-    const requestId = ++pendingRef.current
-
-    void (async () => {
-      const url = await getAudioUrl(text, staticAudioPath)
-
-      if (requestId !== pendingRef.current) return
-
-      if (!url) {
-        speakWithSynthesis(text)
-        return
-      }
-
-      const audio = new Audio(url)
-      audioRef.current = audio
-
-      audio.onplay = () => {
-        if (requestId === pendingRef.current) setIsSpeaking(true)
-      }
-      audio.onended = () => {
-        if (requestId === pendingRef.current) {
-          setIsSpeaking(false)
-          audioRef.current = null
-        }
-      }
-      audio.onerror = () => {
-        if (requestId === pendingRef.current) {
-          audioRef.current = null
-          speakWithSynthesis(text)
-        }
-      }
-
-      audio.play().catch(() => {
-        if (requestId === pendingRef.current) {
-          audioRef.current = null
-          speakWithSynthesis(text)
-        }
-      })
-    })()
-  }, [stop, speakWithSynthesis])
-
-  const toggle = useCallback((text: string, staticAudioPath?: string) => {
+  const toggle = useCallback((text: string) => {
     if (isSpeaking) {
       stop()
     } else {
-      speak(text, staticAudioPath)
+      speak(text)
     }
   }, [isSpeaking, speak, stop])
 
@@ -156,5 +102,5 @@ export function useVoiceReadout(): VoiceReadoutState {
     return () => { stop() }
   }, [stop])
 
-  return { isSupported: true, isSpeaking, speak, stop, toggle }
+  return { isSupported, isSpeaking, speak, stop, toggle }
 }

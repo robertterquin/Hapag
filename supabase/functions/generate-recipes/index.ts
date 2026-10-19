@@ -1,8 +1,8 @@
-import { consumeRateLimit, getRateLimitConfig } from './rateLimit.ts'
+import { consumeRateLimit, getRateLimitConfig, rateLimiterHealthy } from './rateLimit.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
   'Access-Control-Allow-Origin': '*',
   'Content-Type': 'application/json',
 }
@@ -542,7 +542,11 @@ function validateRecipeGrounding(recipes: JsonRecord[], payload: JsonRecord) {
 
 async function handler(request: Request) {
   if (request.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
-  if (request.method !== 'POST') return responseJson({ error: 'Only POST requests are supported.' }, 405)
+  if (request.method === 'GET') {
+    const healthy = Boolean(Deno.env.get('OPENAI_API_KEY') && Deno.env.get('OPENAI_MODEL')) && await rateLimiterHealthy((name) => Deno.env.get(name))
+    return responseJson({ status: healthy ? 'ok' : 'unavailable' }, healthy ? 200 : 503)
+  }
+  if (request.method !== 'POST') return responseJson({ error: 'Only GET and POST requests are supported.' }, 405)
 
   const apiKey = Deno.env.get('OPENAI_API_KEY')
   if (!apiKey) return responseJson({ error: 'AI generation is not configured.' }, 503)
@@ -574,19 +578,27 @@ async function handler(request: Request) {
     return responseJson({ error: 'Recipe candidates are not grounded in the provided ingredients.' }, 400)
   }
 
+  // Every caller has a per-hour quota, and a project-wide daily ceiling caps total AI spend.
   const rateLimitConfig = getRateLimitConfig((name) => Deno.env.get(name))
   const userId = await identifyUser(request)
-  if (!userId) {
-    const identity = `ip:${await hashValue(getClientIp(request))}`
-    const currentWindow = Math.floor(Date.now() / 1000 / rateLimitConfig.windowSeconds)
+  const identity = userId ? `user:${await hashValue(userId)}` : `ip:${await hashValue(getClientIp(request))}`
+  const identityLimit = userId ? rateLimitConfig.signedInLimit : rateLimitConfig.anonymousLimit
+  const nowSeconds = Math.floor(Date.now() / 1000)
+  const currentWindow = Math.floor(nowSeconds / rateLimitConfig.windowSeconds)
+  const currentDay = Math.floor(nowSeconds / 86_400)
 
-    try {
-      const rateLimit = await consumeRateLimit(`hapag:ai:${identity}:${currentWindow}`, rateLimitConfig.anonymousLimit, rateLimitConfig.windowSeconds, (name) => Deno.env.get(name))
-      if (!rateLimit.allowed) return responseJson({ error: 'AI generation rate limit exceeded.' }, 429, { 'Retry-After': String(rateLimit.retryAfterSeconds) })
-    } catch (error) {
-      console.error('AI rate limiting failed', error instanceof Error ? error.message : 'unknown')
+  try {
+    const env = (name: string) => Deno.env.get(name)
+    const rateLimit = await consumeRateLimit(`hapag:ai:${identity}:${currentWindow}`, identityLimit, rateLimitConfig.windowSeconds, env)
+    if (!rateLimit.allowed) return responseJson({ error: 'AI generation rate limit exceeded.' }, 429, { 'Retry-After': String(rateLimit.retryAfterSeconds) })
+    const dailyLimit = await consumeRateLimit(`hapag:ai:global:${currentDay}`, rateLimitConfig.dailyLimit, 86_400, env)
+    if (!dailyLimit.allowed) {
+      console.error('AI daily ceiling reached')
       return responseJson({ error: 'AI generation is temporarily unavailable.' }, 503)
     }
+  } catch (error) {
+    console.error('AI rate limiting failed', error instanceof Error ? error.message : 'unknown')
+    return responseJson({ error: 'AI generation is temporarily unavailable.' }, 503)
   }
 
   const model = Deno.env.get('OPENAI_MODEL')
