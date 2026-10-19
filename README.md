@@ -230,6 +230,8 @@ The Phase 18 UI/UX rework is documented in [`docs/32-phase-18-ui-ux-enhancements
 
 Phase 19 removes repeated labels and visual noise across every page while keeping the minimal look; see [`docs/33-phase-19-cleanup-and-design-polish.md`](./docs/33-phase-19-cleanup-and-design-polish.md) and [`docs/screenshots/phase-19-after/`](./docs/screenshots/phase-19-after/).
 
+Phase 20 is the plan to make Hapag production ready (backend fixes, security and cost limits, monitoring, CI, signed-in QA, and launch essentials); see [`docs/34-phase-20-production-readiness.md`](./docs/34-phase-20-production-readiness.md).
+
 Detailed product, UX, visual, architecture, scope, and quality-gate documents are available in [`docs/`](./docs/).
 
 The complete product-flow document is available at [`output/pdf/hapag-project-flow-scope.pdf`](./output/pdf/hapag-project-flow-scope.pdf).
