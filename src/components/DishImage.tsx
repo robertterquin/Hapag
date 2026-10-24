@@ -1,4 +1,4 @@
-import { getDishPhoto } from '../lib/dishPhotoLookup.ts'
+import { getDishIcon, getDishPhoto } from '../lib/dishPhotoLookup.ts'
 
 interface DishImageProps {
   recipe: { id?: string; title: string; localTitle?: string }
@@ -9,8 +9,14 @@ export function DishImage({ recipe, variant }: DishImageProps) {
   const photo = getDishPhoto(recipe)
   const className = variant === 'card' ? 'recipe-card-image' : 'recipe-hero-image'
 
-  // No placeholder tile: a card without a verified photo simply starts with its text.
-  if (!photo) return null
+  // Dishes without a verified photo get a same-size tile, so cards in a grid line up.
+  if (!photo) {
+    return (
+      <div className={`${className} dish-image dish-image-placeholder`} aria-hidden="true">
+        <span className="dish-image-placeholder-icon">{getDishIcon(recipe)}</span>
+      </div>
+    )
+  }
 
   return (
     <figure className={`${className} dish-image`}>

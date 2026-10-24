@@ -26,3 +26,23 @@ export function getDishPhoto(recipe: { id?: string; title: string; localTitle?: 
   }
   return undefined
 }
+
+const categoryById = new Map(filipinoRecipeCatalog.map((dish) => [dish.id, dish.category]))
+const categoryByName = new Map(filipinoRecipeCatalog.flatMap((dish) => [dish.name, dish.localName].filter(Boolean).map((name) => [nameKey(name as string), dish.category])))
+
+const categoryIcons: Array<[RegExp, string]> = [
+  [/soup/, '🍲'],
+  [/stew|braised|simmered|steamed|stuffed|pie/, '🥘'],
+  [/grilled|roasted/, '🍢'],
+  [/noodle|pasta/, '🍜'],
+  [/vegetable|salad/, '🥬'],
+  [/seafood/, '🐟'],
+  [/breakfast|egg|rice|quick|fried|sautéed|appetizer/, '🍳'],
+]
+
+// Icon for the photo-less tile, from the catalog dish type; AI dishes outside the catalog get a plate.
+export function getDishIcon(recipe: { id?: string; title: string; localTitle?: string }) {
+  const category = (recipe.id && categoryById.get(recipe.id))
+    ?? [recipe.title, recipe.localTitle].map((title) => title && categoryByName.get(nameKey(title))).find(Boolean)
+  return categoryIcons.find(([pattern]) => category && pattern.test(category))?.[1] ?? '🍽️'
+}

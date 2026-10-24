@@ -1335,8 +1335,8 @@ figure.recipe-card-image, figure.recipe-hero-image { display: block; }
 .dish-image-img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .dish-image-credit { position: absolute; right: 0; bottom: 0; left: 0; padding: 14px 10px 5px; overflow: hidden; color: rgb(255 255 255 / 92%); font-size: 10px; font-weight: 600; line-height: 1.3; white-space: nowrap; text-overflow: ellipsis; background: linear-gradient(transparent, rgb(20 12 8 / 62%)); }
 .dish-image-credit a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
-.dish-image-placeholder { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; overflow: hidden; background: var(--color-brand-soft); }
-.dish-image-placeholder-icon { position: relative; font-size: 34px; line-height: 1; }
+.dish-image-placeholder { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; overflow: hidden; background: linear-gradient(135deg, var(--color-brand-soft) 0%, var(--sand-2) 100%); }
+.dish-image-placeholder-icon { position: relative; font-size: 44px; line-height: 1; }
 
 .have-progress { display: grid; gap: 6px; margin-bottom: var(--space-3); }
 .have-progress-label { color: var(--color-calamansi); font-size: 12px; font-weight: 800; letter-spacing: .02em; }

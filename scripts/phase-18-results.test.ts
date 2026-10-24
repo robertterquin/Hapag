@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises'
 import { dishPhotos } from '../src/data/dishPhotos.ts'
 import { filipinoRecipeCatalog } from '../src/data/filipinoRecipeCatalog.ts'
 import { recipeFixtures } from '../src/data/fixtures.ts'
-import { getDishPhoto } from '../src/lib/dishPhotoLookup.ts'
+import { getDishIcon, getDishPhoto } from '../src/lib/dishPhotoLookup.ts'
 import { getIngredientStatus, isPantryStaple } from '../src/lib/pantryStaples.ts'
 import { buildDishIdeas, suggestUnlockIngredient } from '../src/lib/catalogIdeas.ts'
 import { normalizeIngredientInput } from '../src/lib/ingredientParser.ts'
@@ -15,9 +15,9 @@ test('every dish photo belongs to a catalog dish and carries a free licence and 
   assert.ok(entries.length >= 40)
   for (const [dishId, photo] of entries) {
     assert.ok(catalogIds.has(dishId), `${dishId} is a catalog dish`)
-    assert.match(photo.src, /^https:\/\/(upload|thumb)\.wikimedia\.org\/[^?]+$/, dishId)
-    assert.match(photo.sourceUrl, /^https:\/\/commons\.wikimedia\.org\/wiki\/File:/, dishId)
-    assert.match(photo.license, /^(CC0|CC BY(-SA)? [0-9.]+)$/, dishId)
+    assert.match(photo.src, /^https:\/\/((upload|thumb)\.wikimedia\.org\/[^?]+|images\.pexels\.com\/photos\/\d+\/pexels-photo-\d+\.jpeg\?auto=compress&cs=tinysrgb&w=960)$/, dishId)
+    assert.match(photo.sourceUrl, /^https:\/\/(commons\.wikimedia\.org\/wiki\/File:|www\.pexels\.com\/photo\/)/, dishId)
+    assert.match(photo.license, /^(CC0|CC BY(-SA)? [0-9.]+|Pexels License)$/, dishId)
     assert.ok(photo.author.trim().length > 0, `${dishId} has an author`)
   }
   assert.equal(new Set(entries.map(([, photo]) => photo.src)).size, entries.length, 'no photo is reused for two dishes')
@@ -27,7 +27,7 @@ test('photos are matched by exact dish name only', () => {
   assert.equal(getDishPhoto({ title: 'Chicken Adobo' }), dishPhotos['chicken-adobo'])
   assert.equal(getDishPhoto({ title: 'Something else', localTitle: 'Adobong Manok' }), dishPhotos['chicken-adobo'])
   assert.equal(getDishPhoto({ id: 'sinigang-na-baboy', title: 'Anything' }), dishPhotos['sinigang-na-baboy'])
-  assert.equal(getDishPhoto({ title: 'Adobong Manok sa Gata' }), undefined)
+  assert.equal(getDishPhoto({ title: 'Adobong Manok sa Gata' }), dishPhotos['adobong-manok-sa-gata'])
   assert.equal(getDishPhoto({ title: 'Sarciadong Tilapia' }), undefined)
   assert.equal(getDishPhoto({ title: 'Pancit Bihon' }), undefined)
 })
@@ -79,4 +79,10 @@ test('results fall back to catalog ideas when AI is missing or fails', async () 
   assert.match(discovery, /setFallback\('error'\)/)
   assert.match(results, /<DishIdeaCard/)
   assert.match(results, /suggestUnlockIngredient/)
+})
+
+test('dishes without a photo get a tile icon from their dish type', () => {
+  assert.equal(getDishIcon({ id: 'sinigang-na-isda', title: 'Sinigang na Isda' }), '🍲')
+  assert.equal(getDishIcon({ title: 'Pancit Bihon' }), '🍜')
+  assert.equal(getDishIcon({ title: 'Something the AI invented' }), '🍽️')
 })
