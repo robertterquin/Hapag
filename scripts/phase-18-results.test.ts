@@ -86,3 +86,13 @@ test('dishes without a photo get a tile icon from their dish type', () => {
   assert.equal(getDishIcon({ title: 'Pancit Bihon' }), '🍜')
   assert.equal(getDishIcon({ title: 'Something the AI invented' }), '🍽️')
 })
+
+test('every dish photo uses one 16:9 shape, with valid crop positions', async () => {
+  const css = await readFile('src/App.css', 'utf8')
+  assert.match(css, /\.recipe-hero-image \{[^}]*aspect-ratio: 16 \/ 9/)
+  assert.match(css, /\.recipe-card-image \{[^}]*aspect-ratio: 16 \/ 9/)
+  assert.doesNotMatch(css, /recipe-card-image \{ aspect-ratio: 2 \/ 1/)
+  for (const [dishId, photo] of Object.entries(dishPhotos)) {
+    if (photo.position) assert.match(photo.position, /^(top|bottom|left|right|center)( (top|bottom|left|right|center))?$/, dishId)
+  }
+})

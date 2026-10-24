@@ -464,7 +464,8 @@ p { line-height: 1.6; }
 .recipe-hero { display: grid; grid-template-columns: 1fr; gap: clamp(24px, 4vw, 48px); padding: clamp(24px, 5vw, 48px); background: var(--color-surface); border: 1px solid var(--color-border-strong); border-radius: 28px; box-shadow: 0 16px 36px var(--color-shadow-soft); }
 .recipe-hero:has(.recipe-hero-image) { grid-template-columns: minmax(220px, .8fr) minmax(0, 1.2fr); }
 .recipe-hero:not(:has(.recipe-hero-image)) .recipe-hero-content { max-width: 780px; }
-.recipe-hero-image { width: 100%; min-height: 280px; height: 100%; object-fit: cover; border-radius: 20px; }
+/* One shape for every dish photo: 16:9, never stretched to the text beside it. */
+.recipe-hero-image { width: 100%; aspect-ratio: 16 / 9; height: auto; align-self: center; object-fit: cover; border-radius: 20px; }
 .recipe-hero-content { align-self: center; }
 .recipe-hero h1 { max-width: 760px; margin-top: var(--space-3); margin-bottom: var(--space-1); }
 .local-title { margin-top: 0; margin-bottom: var(--space-3); color: var(--color-brand-strong); font-family: var(--font-display); font-size: 16px; font-weight: 800; }
@@ -630,7 +631,7 @@ p { line-height: 1.6; }
   .detail-topbar .button { min-height: 40px; padding: 0 14px; font-size: 13px; }
   .recipe-hero { border-radius: 22px; padding: 22px 18px; }
   .recipe-hero, .recipe-hero:has(.recipe-hero-image) { grid-template-columns: 1fr; gap: var(--space-4); }
-  .recipe-hero-image { min-height: 200px; max-height: 260px; border-radius: 16px; }
+  .recipe-hero-image { border-radius: 16px; }
   .recipe-metrics-large { gap: 6px; }
   .recipe-metrics-large span { flex: 1 1 calc(50% - 6px); text-align: center; font-size: 12.5px; padding: 5px 8px; }
   .detail-ingredient-list li { grid-template-columns: 26px 1fr; gap: 8px; }
@@ -1513,7 +1514,6 @@ figure.recipe-hero-image { margin: 0; }
 }
 @media (min-width: 901px) {
   .page-shell-home .hero-preview-wrapper { padding-top: 0; }
-  .hero-preview-card .recipe-card-image { aspect-ratio: 2 / 1; }
   .hero-preview-content { gap: 6px; padding: 14px 20px 18px; }
 }
 
