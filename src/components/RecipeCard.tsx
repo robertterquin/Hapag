@@ -45,6 +45,7 @@ export function RecipeCard({ recipe, saved, onOpen, onToggleSave, feedback, onFe
       <button className="recipe-card-main" type="button" onClick={onOpen}>
         <HaveProgress have={have.length} total={have.length + missing.length} />
         <h2>{recipe.title}</h2>
+        {recipe.localTitle && recipe.localTitle !== recipe.title ? <p className="recipe-card-local-title">{recipe.localTitle}</p> : null}
         <div className="recipe-metrics" aria-label="Recipe summary">
           <span className="metric-price">{formatCost(recipe.estimatedCost)}</span>
           <span>{recipe.timeMinutes} min</span>
