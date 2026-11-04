@@ -27,10 +27,10 @@ export interface CookingPageProps {
 
 function formatHeat(heat?: 'low' | 'medium' | 'high' | 'none' | null): string {
   switch (heat) {
-    case 'low': return 'Low heat'
-    case 'medium': return 'Medium heat'
-    case 'high': return 'High heat'
-    default: return 'Preparation'
+    case 'low': return '♨️ Low simmer'
+    case 'medium': return '🔥 Medium heat'
+    case 'high': return '⚡ High heat'
+    default: return '🔪 Prep'
   }
 }
 
@@ -205,6 +205,14 @@ export function CookingPage({ recipeId, isSignedIn, feedback, sessionIngredients
           <Icon icon={soundEnabled ? 'lucide:volume-2' : 'lucide:volume-x'} width={18} height={18} aria-hidden="true" />
         </button>
       </header>
+      <div className="cooking-step-gauge" aria-hidden="true">
+        {Array.from({ length: stepCount }).map((_, i) => (
+          <div
+            key={i}
+            className={`gauge-segment ${i < stepIndex ? 'gauge-completed' : i === stepIndex ? 'gauge-current' : 'gauge-upcoming'}`}
+          />
+        ))}
+      </div>
       <div className="progress-track cooking-progress" aria-hidden="true">
         <motion.span animate={{ width: `${progress}%` }} transition={{ duration: 0.22, ease: 'easeOut' }} />
       </div>
@@ -226,6 +234,9 @@ export function CookingPage({ recipeId, isSignedIn, feedback, sessionIngredients
             transition={{ duration: 0.2, ease: 'easeOut' }}
           >
             <div className="cooking-step-header-row">
+              <span className="step-numeral-pill">
+                Hakbang {String(stepIndex + 1).padStart(2, '0')}
+              </span>
               {isVoiceSupported ? (
                 <button className={`cooking-voice-button ${isSpeaking ? 'voice-speaking' : ''}`} type="button" onClick={readStepAloud} aria-label={isSpeaking ? 'Stop reading this step' : 'Read this step aloud'}>
                   <Icon icon={isSpeaking ? 'lucide:pause' : 'lucide:volume-2'} width={14} height={14} aria-hidden="true" />
@@ -260,7 +271,23 @@ export function CookingPage({ recipeId, isSignedIn, feedback, sessionIngredients
                 whileTap={{ scale: 0.98 }}
                 transition={{ duration: 0.12 }}
               >
-                <Icon icon={shownFinished ? 'lucide:check' : shownRunning ? 'lucide:pause' : 'lucide:timer'} width={18} height={18} aria-hidden="true" />
+                {shownRunning || (shownSeconds > 0 && !shownFinished) ? (
+                  <svg className="timer-radial-ring" width={20} height={20} viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9" className="timer-ring-bg" />
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="9"
+                      className="timer-ring-progress"
+                      style={{
+                        strokeDasharray: 56.54,
+                        strokeDashoffset: 56.54 * (1 - (shownSeconds / (defaultDurationSeconds || 60))),
+                      }}
+                    />
+                  </svg>
+                ) : (
+                  <Icon icon={shownFinished ? 'lucide:check' : 'lucide:timer'} width={18} height={18} aria-hidden="true" />
+                )}
                 <span>
                   {shownFinished ? "Time's up · restart" : shownRunning ? formatClock(shownSeconds) : shownSeconds > 0 ? `Resume ${formatClock(shownSeconds)}` : `Start ${formatClock(defaultDurationSeconds)}`}
                 </span>
@@ -309,7 +336,10 @@ export function CookingPage({ recipeId, isSignedIn, feedback, sessionIngredients
         {showCompletion ? (
           <motion.div className="completion-overlay" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <motion.div className="completion-card" role="dialog" aria-modal="true" aria-labelledby="completion-title" initial={{ scale: 0.92, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: 'spring', damping: 20, stiffness: 300 }}>
-              <span className="completion-emoji" aria-hidden="true">🎉</span>
+              <div className="completion-badge-wrap" aria-hidden="true">
+                <span className="completion-emoji">🍲</span>
+                <span className="completion-sparkle">✨</span>
+              </div>
               <h2 className="completion-title" id="completion-title">Luto na!</h2>
               <p className="completion-dish">{recipe.title}</p>
               <p className="completion-time">Cooked in about {cookingMinutes} {cookingMinutes === 1 ? 'minute' : 'minutes'}</p>
