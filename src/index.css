@@ -70,7 +70,7 @@
   --radius-control: 14px;
   --radius-card: 20px;
   --radius-pill: 999px;
-  --shadow-card: 0 10px 26px var(--color-shadow-soft);
+  --shadow-card: none;
 
   font-family: var(--font-body);
   font-weight: 500;
