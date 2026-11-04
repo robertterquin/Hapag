@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Icon } from '@iconify/react'
+import { getDishPhoto } from '../lib/dishPhotoLookup.ts'
 
 export interface FanDeckDish {
   id: string
@@ -10,6 +11,7 @@ export interface FanDeckDish {
   price: string
   // Ingredients in the words a cook would type; tapping the card starts Ulam AI with them.
   ingredients: string
+  note?: string
 }
 
 interface DishFanDeckProps {
@@ -53,9 +55,10 @@ export function DishFanDeck({ dishes, onSelect }: DishFanDeckProps) {
         // -1 at the left edge, 0 in the middle, 1 at the right edge.
         const t = mid === 0 ? 0 : (index - mid) / mid
         const transform = isActive
-          ? 'translateY(-16px) rotate(0deg) scale(1.06)'
+          ? 'translateY(-22px) rotate(0deg) scale(1.08)'
           : `translateY(${t * t * ARC_DROP_PX}px) rotate(${t * MAX_ROTATION_DEG}deg)`
         const ingredientCount = dish.ingredients.split(',').length
+        const photo = getDishPhoto({ id: dish.id, title: dish.title })
 
         return (
           <li
@@ -64,7 +67,7 @@ export function DishFanDeck({ dishes, onSelect }: DishFanDeckProps) {
             style={{ transform, zIndex: isActive ? 50 : 10 + Math.round((1 - Math.abs(t)) * 10) }}
           >
             <button
-              className={`fan-card fan-card-${dish.category}`}
+              className={`fan-card fan-card-polaroid fan-card-${dish.category}`}
               type="button"
               onClick={() => onSelect(dish)}
               onMouseEnter={() => setActiveIndex(index)}
@@ -73,18 +76,33 @@ export function DishFanDeck({ dishes, onSelect }: DishFanDeckProps) {
               onBlur={() => setActiveIndex(null)}
               aria-label={`Cook ${dish.title}: start with ${dish.ingredients}`}
             >
-              <span className="fan-card-top">
-                <span className="fan-card-tag">{dish.categoryLabel}</span>
-                <Icon className="fan-card-icon" icon="lucide:chef-hat" width={16} height={16} aria-hidden="true" />
-              </span>
-              <span className="fan-card-body">
-                <span className="fan-card-title">{dish.title}</span>
-                <span className="fan-card-meta">
-                  <Icon icon="lucide:clock-3" width={13} height={13} aria-hidden="true" />
-                  <span>{dish.time} · {dish.price}</span>
+              {/* Masking tape washi strip */}
+              <span className={`fan-card-tape fan-card-tape-${index % 3}`} aria-hidden="true" />
+
+              {/* Photo viewport */}
+              <span className="fan-card-photo-frame">
+                {photo && (
+                  <img
+                    className="fan-card-photo"
+                    src={photo.src}
+                    alt=""
+                    style={photo.position ? { objectPosition: photo.position } : undefined}
+                    loading="lazy"
+                  />
+                )}
+                <span className="fan-card-time-badge">
+                  <Icon icon="lucide:clock-3" width={11} height={11} aria-hidden="true" />
+                  <span>{dish.time}</span>
                 </span>
+                <span className="fan-card-price-badge">{dish.price}</span>
               </span>
-              <span className="fan-card-foot">{ingredientCount} sangkap</span>
+
+              {/* Polaroid caption / memo */}
+              <span className="fan-card-memo">
+                <span className="fan-card-title">{dish.title}</span>
+                {dish.note && <span className="fan-card-note">{dish.note}</span>}
+                <span className="fan-card-foot">{ingredientCount} sangkap</span>
+              </span>
             </button>
           </li>
         )
