@@ -120,10 +120,3 @@ export function validateRecipeList(input: unknown): Recipe[] {
   if (!result.success) throw toValidationError(result.error.issues)
   return result.data
 }
-
-export function summarizeValidationError(error: unknown) {
-  if (error instanceof RecipeValidationError) {
-    return error.issues.map((issue) => `${issue.path.join('.')} ${issue.message}`).join(' ')
-  }
-  return 'Recipe data could not be validated.'
-}

@@ -1,4 +1,4 @@
-import type { IngredientDraft, IngredientInputUnit, IngredientSource, NormalizedIngredient } from '../types/domain.ts'
+import type { IngredientInputUnit, IngredientSource, NormalizedIngredient } from '../types/domain.ts'
 
 export const ingredientInputUnits: readonly IngredientInputUnit[] = [
   'piece', 'can', 'pack', 'bottle', 'bundle', 'clove', 'cup', 'gram', 'kilogram', 'block',
@@ -873,17 +873,6 @@ export function normalizeIngredientInput(input: string, source: IngredientSource
   return splitInput(input).map((item, index) => normalizeItem(item, index, source))
 }
 
-export function normalizeIngredientDraft(input: IngredientDraft, source: IngredientSource = 'manual'): NormalizedIngredient | undefined {
-  const parsed = normalizeIngredientInput(`1 piece ${input.name}`, source)[0]
-  if (!parsed || !input.name.trim()) return undefined
-  return {
-    ...parsed,
-    originalText: input.name.trim(),
-    quantity: 1,
-    unit: 'piece',
-  }
-}
-
 export function formatIngredientQuantity(item: Pick<NormalizedIngredient, 'quantity' | 'unit'>) {
   return `${item.quantity} ${ingredientInputUnitLabels[item.unit]}`
 }
@@ -923,8 +912,4 @@ export function getAutocompleteSuggestions(query: string, limit = 8) {
   }
 
   return results
-}
-
-export function isIngredientInputUnit(value: string | null | undefined): value is IngredientInputUnit {
-  return Boolean(value && ingredientInputUnits.includes(value as IngredientInputUnit))
 }

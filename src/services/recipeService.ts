@@ -112,15 +112,3 @@ export const recipeService: RecipeService = {
     return mockRecipeService.getRecipe(recipeId)
   },
 }
-
-export function createDefaultRequest(rawInput: string): GenerationRequest {
-  return {
-    rawInput,
-    ingredients: normalizeIngredientInput(rawInput, 'manual'),
-    constraints: {
-      servings: 3,
-      allergies: [],
-      spiceLevel: 'mild',
-    },
-  }
-}
