@@ -101,7 +101,22 @@ export function UlamPage({ session, notice, staples, staplesError, onAddIngredie
           </div>
           {/* display: contents, so the sticky bar's scroll container is the whole page on phones. */}
           <div className="ulam-order-cook">
-            <StickyActionBar summary={ingredientCount === 0 ? 'Add an ingredient to start' : `${ingredientCount} sangkap ready`}>
+            <StickyActionBar
+              active={ingredientCount > 0}
+              summary={
+                ingredientCount === 0 ? (
+                  <span className="sticky-summary-empty">
+                    <span className="sticky-summary-dot" aria-hidden="true" />
+                    <span>Add an ingredient to start</span>
+                  </span>
+                ) : (
+                  <span className="sticky-summary-active">
+                    <span className="sticky-count-pill" aria-hidden="true">{ingredientCount}</span>
+                    <span>{ingredientCount === 1 ? '1 sangkap ready' : `${ingredientCount} sangkap ready`}</span>
+                  </span>
+                )
+              }
+            >
               <button className="button button-primary" type="button" onClick={onGenerate} disabled={ingredientCount === 0}>
                 Let's cook <span aria-hidden="true">→</span>
               </button>
