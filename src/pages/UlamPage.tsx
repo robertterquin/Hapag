@@ -78,7 +78,10 @@ export function UlamPage({ session, notice, staples, staplesError, onAddIngredie
               <div>
                 <h2 id="review-heading">Your ingredients</h2>
               </div>
-              </div>
+              {ingredientCount > 0 ? (
+                <span className="count-badge" aria-label={`${ingredientCount} ingredients`}>{ingredientCount}</span>
+              ) : null}
+            </div>
             <IngredientChips ingredients={session.ingredients} onRemove={onRemove} />
             {session.ingredients.some((ingredient) => ingredient.confidence === 'low') ? (
               <p className="inline-warning">Some ingredients need checking. Hapag didn't recognize the ones marked with "?".</p>

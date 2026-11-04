@@ -11,7 +11,15 @@ interface IngredientChipsProps {
 
 export function IngredientChips({ ingredients, onRemove }: IngredientChipsProps) {
   const language = useDisplayLanguage()
-  if (ingredients.length === 0) return <p className="muted-copy">Nothing yet. Type above, or tap items from your pantry below.</p>
+  if (ingredients.length === 0) {
+    return (
+      <div className="empty-ingredients-tray" role="status">
+        <span className="empty-pot-icon" aria-hidden="true">🍲</span>
+        <strong className="empty-pot-title">Walang laman ang palayok</strong>
+        <p className="empty-pot-subtitle muted-copy">Type ingredients above, or tap items from your pantry below.</p>
+      </div>
+    )
+  }
 
   return (
     <ul className="ingredient-chips" aria-label="Recognized ingredients">

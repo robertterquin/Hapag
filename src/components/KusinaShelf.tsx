@@ -121,13 +121,18 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
             <motion.button
               layout
               key={item.name}
-              className={`shelf-item-chip ${isActive ? 'item-active' : 'item-inactive'}`}
+              className={`shelf-item-chip ${isActive ? 'item-active' : 'item-inactive'} cat-${item.category}`}
               type="button"
               onClick={() => onToggle(item.name, isActive, existingId)}
               aria-pressed={isActive}
               aria-label={`${isActive ? 'Remove' : 'Add'} ${label.secondary ? `${label.primary} (${label.secondary})` : label.primary}`}
               whileTap={{ scale: 0.95 }}
             >
+              <span className="item-emoji" aria-hidden="true">{item.emoji}</span>
+              <span className="item-name">
+                {label.primary}
+                {label.secondary ? <small>{label.secondary}</small> : null}
+              </span>
               <span className="chip-indicator" aria-hidden="true">
                 {isActive ? (
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
@@ -139,11 +144,6 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
                     <line x1="5" y1="12" x2="19" y2="12" />
                   </svg>
                 )}
-              </span>
-              <span className="item-emoji" aria-hidden="true">{item.emoji}</span>
-              <span className="item-name">
-                {label.primary}
-                {label.secondary ? <small>{label.secondary}</small> : null}
               </span>
             </motion.button>
           )

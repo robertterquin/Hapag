@@ -18,7 +18,9 @@ export function UlamPreferences({ constraints, onUpdate }: UlamPreferencesProps)
   return (
     <>
       <button className="preferences-summary" type="button" onClick={(event) => { event.currentTarget.focus(); setOpen(true) }} aria-haspopup="dialog">
-        <Icon className="preferences-summary-icon" icon="lucide:sliders-horizontal" width={18} height={18} aria-hidden="true" />
+        <span className="preferences-summary-icon-badge" aria-hidden="true">
+          <Icon className="preferences-summary-icon" icon="lucide:sliders-horizontal" width={18} height={18} />
+        </span>
         <span>
           <small>Preferences</small>
           <strong>{summarizeConstraints(constraints)}</strong>
