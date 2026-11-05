@@ -35,3 +35,10 @@ test('when the AI fails, catalog dishes still show', async ({ page }) => {
   await expect(page.getByText(/come from Hapag's Filipino dish catalog/)).toBeVisible()
   await expect(page.locator('.dish-idea-card').first()).toBeVisible()
 })
+
+test('a cooking link to a missing recipe offers a way out', async ({ page }) => {
+  await page.goto('/recipes/no-such-recipe/cook')
+  await expect(page.getByRole('heading', { name: "We couldn't find that recipe" })).toBeVisible()
+  await page.getByRole('button', { name: 'Start over' }).click()
+  await expect(page).toHaveURL(/\/ulam$/)
+})

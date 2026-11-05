@@ -1841,7 +1841,7 @@ p { line-height: 1.6; }
 .hapag-chip-have { color: var(--color-calamansi); background: var(--color-success-bg); border-color: var(--color-success-border); }
 .hapag-chip-missing { color: var(--tomato-11); background: var(--color-error-bg); border-color: var(--tomato-6); }
 .hapag-chip-staple { color: var(--color-muted); background: var(--sand-2); border-color: var(--sand-7); border-style: dashed; }
-.hapag-chip-substitute { color: var(--amber-11); background: var(--amber-2); border-color: var(--amber-7); }
+.hapag-chip-substitute { color: var(--amber-12); background: var(--amber-2); border-color: var(--amber-7); }
 .hapag-chip-remove { display: grid; width: 24px; height: 24px; margin-right: -6px; place-items: center; padding: 0; color: inherit; font-size: 16px; line-height: 1; background: transparent; border: 0; border-radius: 50%; }
 .hapag-chip-remove:hover { background: var(--sand-a3); }
 

@@ -44,3 +44,12 @@ test('cleanDishTitle strips artificial compound phrases and prefixes', async () 
   assert.equal(adapted.localTitle, 'Ginataang Tilapia')
 })
 
+
+test('cleanDishTitle never shortens a real catalog dish name', async () => {
+  const { cleanDishTitle } = await import('../src/schemas/recipeAdapter.ts')
+  const { filipinoRecipeCatalog } = await import('../src/data/filipinoRecipeCatalog.ts')
+  for (const dish of filipinoRecipeCatalog) {
+    for (const name of [dish.name, dish.localName].filter((value): value is string => Boolean(value))) assert.equal(cleanDishTitle(name), name)
+  }
+  assert.equal(cleanDishTitle('Adobong Baboy sa Gata'), 'Adobong Baboy sa Gata')
+})

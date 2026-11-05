@@ -122,3 +122,32 @@ export function validateRecipeGrounding(recipes: JsonRecord[], payload: JsonReco
     return usesProvidedIngredient && doesNotInventAvailability && keepsCandidateIngredients
   })
 }
+
+// English and Tagalog names for the same thing, so "Chicken Adobo" and "Adobong Manok" compare equal.
+const dishWordAliases: Record<string, string> = { chicken: 'manok', pork: 'baboy', beef: 'baka', fish: 'isda', shrimp: 'hipon', egg: 'itlog', eggplant: 'talong', milkfish: 'bangus', squid: 'pusit' }
+const fillerWords = new Set(['na', 'ng', 'with', 'and', 'at', 'the', 'style', 'filipino', 'classic', 'home', 'easy', 'quick', 'dry', 'saucy'])
+
+// One dish identity per name: lowercase words, parentheses dropped, Tagalog linkers trimmed ("adobong" -> "adobo"),
+// English proteins mapped to Tagalog, fillers removed, sorted so word order doesn't matter.
+function dishIdentity(value: unknown) {
+  if (typeof value !== 'string') return ''
+  return value.toLowerCase().replace(/\([^)]*\)/g, ' ').split(/[^a-z]+/)
+    .filter(Boolean)
+    .map((word) => (word.length > 5 && /[aeiou]ng$/.test(word) ? word.slice(0, -2) : word))
+    .map((word) => dishWordAliases[word] ?? word)
+    .filter((word) => !fillerWords.has(word))
+    .sort()
+    .join(' ')
+}
+
+// The model sometimes returns the same dish three ways ("Chicken Adobo", "Adobong Manok", "Chicken Adobo (Dry)").
+// Keep the first of each; showing two real choices beats three copies of one.
+export function dropRepeatedDishes(recipes: JsonRecord[]) {
+  const seen = new Set<string>()
+  return recipes.filter((recipe) => {
+    const identities = [dishIdentity(recipe.title), dishIdentity(recipe.localTitle)].filter(Boolean)
+    if (identities.some((identity) => seen.has(identity))) return false
+    identities.forEach((identity) => seen.add(identity))
+    return true
+  })
+}

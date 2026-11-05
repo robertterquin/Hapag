@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import { Icon } from '@iconify/react'
 import { ResultsSkeleton } from '../components/Skeletons.tsx'
 import { RecipeFeedback } from '../components/RecipeFeedback.tsx'
+import { StatePanel } from '../components/StatePanel.tsx'
 import { useRecipe } from '../hooks/useRecipe.ts'
 import { soundManager } from '../lib/audioAlert.ts'
 import { useWakeLock } from '../hooks/useWakeLock.ts'
@@ -23,6 +24,7 @@ export interface CookingPageProps {
   onBack: () => void
   onFeedback: (kind: RecipeFeedbackKind) => void
   onUseLeftovers: (names: string[], recipeTitle: string) => void
+  onStartOver: () => void
 }
 
 function formatHeat(heat?: 'low' | 'medium' | 'high' | 'none' | null): string {
@@ -42,8 +44,8 @@ function formatClock(totalSeconds: number) {
 
 const MIN_SWIPE_DISTANCE = 50
 
-export function CookingPage({ recipeId, isSignedIn, feedback, sessionIngredients, onFinish, onBack, onFeedback, onUseLeftovers }: CookingPageProps) {
-  const { recipe } = useRecipe(recipeId)
+export function CookingPage({ recipeId, isSignedIn, feedback, sessionIngredients, onFinish, onBack, onFeedback, onUseLeftovers, onStartOver }: CookingPageProps) {
+  const { recipe, status } = useRecipe(recipeId)
   const language = useDisplayLanguage()
   useWakeLock()
   const { isSupported: isVoiceSupported, isSpeaking, stop: stopVoice, toggle: toggleVoice } = useVoiceReadout()
@@ -168,6 +170,8 @@ export function CookingPage({ recipeId, isSignedIn, feedback, sessionIngredients
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [goNext, goPrevious, handleTimerToggle, handleTimerReset, readStepAloud, onBack, showCompletion])
 
+  // A link to a recipe from an ended session (or a recipe without steps) gets a way out, not an endless skeleton.
+  if (status === 'error' || (recipe && !step)) return <StatePanel tone="empty" title="We couldn't find that recipe" description="It may be from an earlier session that has ended. A new search will get you cooking again." actionLabel="Start over" onAction={onStartOver} />
   if (!recipe || !step) return <div className="page-shell"><ResultsSkeleton /></div>
 
   const handleTouchEnd = () => {

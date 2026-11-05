@@ -10,7 +10,8 @@ export function cleanDishTitle(title: string): string {
 
     .replace(/\s+(?:na\s+may|may)\s+[a-z0-9\s-]+style(?:\s+na)?\s+[\w\s]+$/i, '')
 
-    .replace(/\s+sa\s+(?:sibuyas|bawang|paminta|kamatis|luya|toyo|suka|mantika|asin|gata)(?:\s+(?:at|&)\s+(?:sibuyas|bawang|paminta|kamatis|luya|toyo|suka|mantika|asin|gata))?$/i, '')
+    // "sa Gata" is a real cooking style (Adobong Manok sa Gata), so only seasonings count as filler here.
+    .replace(/\s+sa\s+(?:sibuyas|bawang|paminta|kamatis|luya|toyo|suka|mantika|asin)(?:\s+(?:at|&)\s+(?:sibuyas|bawang|paminta|kamatis|luya|toyo|suka|mantika|asin))?$/i, '')
 
     .replace(/\s+with\s+(?:garlic|onion|pepper|black pepper|ginger|salt|oil|soy sauce|vinegar)(?:\s+(?:and|&)\s+(?:garlic|onion|pepper|black pepper|ginger|salt|oil|soy sauce|vinegar))?$/i, '')
     .trim()

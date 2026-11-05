@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { canonicalizeGeneratedIngredient, markOnlyProvidedAvailable, validateRecipeGrounding } from '../supabase/functions/generate-recipes/grounding.ts'
+import { canonicalizeGeneratedIngredient, dropRepeatedDishes, markOnlyProvidedAvailable, validateRecipeGrounding } from '../supabase/functions/generate-recipes/grounding.ts'
 
 const have = (canonicalName: string) => ({ name: canonicalName, canonicalName, available: true })
 const buy = (canonicalName: string) => ({ name: canonicalName, canonicalName, available: false })
@@ -45,4 +45,12 @@ test('aliases and plain names reach the same canonical form', () => {
   assert.equal(canonicalizeGeneratedIngredient('Sardinas'), canonicalizeGeneratedIngredient('sardines'))
   assert.equal(canonicalizeGeneratedIngredient('toyo'), 'soy sauce')
   assert.equal(canonicalizeGeneratedIngredient('Eggs'), 'egg')
+})
+
+test('repeats of one dish are dropped, distinct dishes stay', () => {
+  const titled = (title: string, localTitle?: string) => ({ title, localTitle })
+  const kept = (recipes: Array<{ title: string, localTitle?: string }>) => dropRepeatedDishes(recipes).map((recipe) => recipe.title)
+  assert.deepEqual(kept([titled('Chicken Adobo', 'Adobong Manok'), titled('Adobong Manok'), titled('Chicken Adobo (Dry)')]), ['Chicken Adobo'])
+  assert.deepEqual(kept([titled('Chicken Adobo'), titled('Adobong Manok sa Gata'), titled('Chicken Barbecue')]), ['Chicken Adobo', 'Adobong Manok sa Gata', 'Chicken Barbecue'])
+  assert.deepEqual(kept([titled('Sinigang na Tilapia'), titled('Paksiw na Tilapia'), titled('Tilapia Sinigang')]), ['Sinigang na Tilapia', 'Paksiw na Tilapia'])
 })

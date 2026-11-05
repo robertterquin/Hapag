@@ -1,5 +1,5 @@
 import { consumeRateLimit, getRateLimitConfig, rateLimiterHealthy } from './rateLimit.ts'
-import { getProvidedIngredientSet, isRecord, markOnlyProvidedAvailable, validateCandidateGrounding, validateRecipeGrounding, type JsonRecord } from './grounding.ts'
+import { getProvidedIngredientSet, isRecord, markOnlyProvidedAvailable, validateCandidateGrounding, validateRecipeGrounding, type JsonRecord, dropRepeatedDishes } from './grounding.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -284,7 +284,8 @@ function cleanDishTitle(title: string): string {
     // Strip artificial descriptive suffixes like "na may inihaw-style na bawang", "style na..."
     .replace(/\s+(?:na\s+may|may)\s+[a-z0-9\s-]+style(?:\s+na)?\s+[\w\s]+$/i, '')
     // Strip artificial aromatic compound suffixes like "sa sibuyas at paminta", "sa bawang at sibuyas"
-    .replace(/\s+sa\s+(?:sibuyas|bawang|paminta|kamatis|luya|toyo|suka|mantika|asin|gata)(?:\s+(?:at|&)\s+(?:sibuyas|bawang|paminta|kamatis|luya|toyo|suka|mantika|asin|gata))?$/i, '')
+    // "sa Gata" is a real cooking style (Adobong Manok sa Gata), so only seasonings count as filler here.
+    .replace(/\s+sa\s+(?:sibuyas|bawang|paminta|kamatis|luya|toyo|suka|mantika|asin)(?:\s+(?:at|&)\s+(?:sibuyas|bawang|paminta|kamatis|luya|toyo|suka|mantika|asin))?$/i, '')
     // Strip "with [ingredient] and [ingredient]"
     .replace(/\s+with\s+(?:garlic|onion|pepper|black pepper|ginger|salt|oil|soy sauce|vinegar)(?:\s+(?:and|&)\s+(?:garlic|onion|pepper|black pepper|ginger|salt|oil|soy sauce|vinegar))?$/i, '')
     .trim()
@@ -578,7 +579,7 @@ async function handler(request: Request) {
       return responseJson({ error: 'AI returned a recipe that was not grounded in the provided ingredients.' }, 502)
     }
 
-    return responseJson({ recipes: sanitizeMatchReasons(removeNullableFields(cleanGeneratedRecipeTitles(recipes))) })
+    return responseJson({ recipes: dropRepeatedDishes(sanitizeMatchReasons(removeNullableFields(cleanGeneratedRecipeTitles(recipes)))) })
   } catch (error) {
     console.error('Unexpected recipe generation error', error instanceof Error ? error.message : 'unknown error')
     return responseJson({ error: 'AI generation is temporarily unavailable.' }, 502)
