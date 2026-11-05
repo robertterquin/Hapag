@@ -6,6 +6,7 @@ import type { BudgetChoice } from '../lib/preferenceOptions.ts'
 import { BottomSheet } from './BottomSheet.tsx'
 import { SegmentedControl } from './SegmentedControl.tsx'
 import { ServingStepper } from './ServingStepper.tsx'
+import { AllergyInput } from './AllergyInput.tsx'
 
 interface UlamPreferencesProps {
   constraints: GenerationConstraints
@@ -29,7 +30,7 @@ export function UlamPreferences({ constraints, onUpdate }: UlamPreferencesProps)
       </button>
       <p className="allergy-note">
         <Icon icon="lucide:triangle-alert" width={16} height={16} aria-hidden="true" />
-        <span>Allergies? Always check food labels. Hapag can't guarantee allergen-free results.</span>
+        <span>{constraints.allergies.length > 0 ? 'Allergies set. Still check food labels; Hapag can\'t guarantee allergen-free results.' : 'Allergies? Add them in Preferences. Always check food labels.'}</span>
       </p>
 
       <BottomSheet
@@ -57,6 +58,8 @@ export function UlamPreferences({ constraints, onUpdate }: UlamPreferencesProps)
           options={dietOptions}
           onChange={(dietaryPreference) => onUpdate({ dietaryPreference })}
         />
+        <AllergyInput value={constraints.allergies} onChange={(allergies) => onUpdate({ allergies })} />
+        <p className="allergy-note">Dishes with these ingredients are left out. Still check food labels.</p>
       </BottomSheet>
     </>
   )

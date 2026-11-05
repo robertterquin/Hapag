@@ -25,6 +25,8 @@ export interface ResultsPageProps {
   onRetry: () => void
   onEdit: () => void
   onAddIngredient: (name: string) => void
+  // Fetches one catalog dish's recipe; only offered when the AI failed, not when it isn't set up.
+  onGetDishRecipe: (dishId: string) => Promise<void>
 }
 
 // One message explains the fallback; it replaces the separate error banner.
@@ -35,7 +37,7 @@ const fallbackNotes: Record<Exclude<FallbackReason, null>, string> = {
 
 const spiceLabels = { mild: 'Mild', medium: 'Medium', hot: 'Spicy' } as const
 
-export function ResultsPage({ session, status, suggestions, ideas, fallback, error, savedError, savedIds, onOpen, onToggleSave, onRetry, onEdit, onAddIngredient }: ResultsPageProps) {
+export function ResultsPage({ session, status, suggestions, ideas, fallback, error, savedError, savedIds, onOpen, onToggleSave, onRetry, onEdit, onAddIngredient, onGetDishRecipe }: ResultsPageProps) {
   const language = useDisplayLanguage()
 
   if (status === 'loading') {
@@ -77,12 +79,13 @@ export function ResultsPage({ session, status, suggestions, ideas, fallback, err
   }
 
   const ingredientList = session.ingredients.map((ingredient) => labelForIngredient(ingredient, language)).join(', ')
-  const { servings, spiceLevel, budgetLimit, dietaryPreference } = session.constraints
+  const { servings, spiceLevel, budgetLimit, dietaryPreference, allergies } = session.constraints
   const settings = [
     `${servings} ${servings === 1 ? 'serving' : 'servings'}`,
     spiceLabels[spiceLevel],
     budgetLimit ? `Under ₱${budgetLimit}` : null,
     dietaryPreference && dietaryPreference !== 'none' ? dietaryPreference.replace('-', ' ') : null,
+    allergies.length > 0 ? `No ${allergies.join(', ')}` : null,
   ].filter(Boolean).join(' · ')
   const hasAiRecipes = suggestions.some((recipe) => recipe.source === 'ai')
 
@@ -113,7 +116,7 @@ export function ResultsPage({ session, status, suggestions, ideas, fallback, err
             {fallback === 'error' ? <button className="text-button" type="button" onClick={onRetry}>Try again</button> : null}
           </p>
           <div className="results-grid">
-            {ideas.map((idea) => <DishIdeaCard key={idea.id} idea={idea} />)}
+            {ideas.map((idea) => <DishIdeaCard key={idea.id} idea={idea} onGetRecipe={fallback === 'error' ? () => onGetDishRecipe(idea.id) : undefined} />)}
           </div>
         </section>
       ) : null}

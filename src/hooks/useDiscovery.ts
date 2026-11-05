@@ -156,6 +156,23 @@ export function useDiscovery() {
     }
   }
 
+  // Asks the AI for one catalog dish by sending it as the only candidate. The endpoint still returns
+  // three recipes; they replace the catalog ideas, and the one matching the dish is returned to open.
+  const getDishRecipe = async (dishId: string, accessToken?: string) => {
+    const dish = filipinoRecipeCatalog.find((entry) => entry.id === dishId)
+    const [match] = dish ? matchRecipeCatalog(session.ingredients, [dish]) : []
+    if (!dish || !match) return undefined
+    const candidate: CatalogRecipeCandidate = { id: dish.id, name: dish.name, authenticity: dish.authenticity, category: dish.category, score: match.score, availableIngredients: match.availableIngredients, missingIngredients: match.missingIngredients, substitutedIngredients: match.substitutedIngredients }
+    const recipes = await recipeService.generateSuggestions({ rawInput: session.rawInput, ingredients: session.ingredients, constraints: session.constraints, candidateDishes: [candidate] }, accessToken)
+    setSuggestions(recipes)
+    setFallback(null)
+    setGenerationError(null)
+    setGenerationStatus('success')
+    const key = (value?: string) => (value ?? '').toLowerCase().replace(/[^a-z]/g, '')
+    const wanted = new Set([key(dish.id), key(dish.name), key(dish.localName)].filter(Boolean))
+    return recipes.find((recipe) => [recipe.id, recipe.title, recipe.localTitle].some((value) => wanted.has(key(value))))
+  }
+
   return {
     session,
     notice,
@@ -174,5 +191,6 @@ export function useDiscovery() {
     updateConstraints,
     removeIngredient,
     generateSuggestions,
+    getDishRecipe,
   }
 }

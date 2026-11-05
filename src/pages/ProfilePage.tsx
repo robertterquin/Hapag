@@ -5,6 +5,7 @@ import type { SegmentedOption } from '../components/SegmentedControl.tsx'
 import { ServingStepper } from '../components/ServingStepper.tsx'
 import { dietOptions, spiceOptions } from '../lib/preferenceOptions.ts'
 import type { Session } from '@supabase/supabase-js'
+import { AllergyInput } from '../components/AllergyInput.tsx'
 import type { UserPreferences } from '../services/persistenceService.ts'
 
 const languageOptions: readonly SegmentedOption<UserPreferences['language']>[] = [
@@ -58,14 +59,7 @@ export function ProfilePage({ session, preferences, status, error, onSave, onSig
             options={dietOptions}
             onChange={(dietary_preference) => setDraft({ ...draft, dietary_preference })}
           />
-          <label className="field-label">
-            Allergies
-            <input
-              value={draft.allergies.join(', ')}
-              onChange={(event) => setDraft({ ...draft, allergies: event.target.value.split(',').map((value) => value.trim()).filter(Boolean) })}
-              placeholder="shrimp, peanuts"
-            />
-          </label>
+          <AllergyInput value={draft.allergies} onChange={(allergies) => setDraft({ ...draft, allergies })} />
         </div>
         <p className="allergy-note">
           <Icon icon="lucide:triangle-alert" width={16} height={16} aria-hidden="true" />

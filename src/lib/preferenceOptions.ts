@@ -31,5 +31,6 @@ export function summarizeConstraints(constraints: GenerationConstraints) {
   ]
   const diet = constraints.dietaryPreference ?? 'none'
   if (diet !== 'none') parts.push(dietOptions.find((option) => option.value === diet)?.label ?? diet)
+  if (constraints.allergies.length > 0) parts.push(`No ${constraints.allergies.join(', ')}`)
   return parts.join(' · ')
 }

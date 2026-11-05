@@ -56,6 +56,12 @@ function App() {
     navigate('/ulam')
   }
 
+  // Opens the requested dish when the AI returns it; otherwise the new AI recipes are shown on the results page.
+  const openDishRecipe = async (dishId: string) => {
+    const recipe = await discovery.getDishRecipe(dishId, auth.session?.access_token)
+    if (recipe) navigate(`/recipes/${recipe.id}`)
+  }
+
   const generateSuggestions = () => {
     if (discovery.session.ingredients.length === 0) return
     navigate('/results')
@@ -96,7 +102,7 @@ function App() {
     switch (route.name) {
       case 'home': return <HomePage onStart={startDiscovery} onSurprise={startSurprise} />
       case 'ulam': return <UlamPage session={discovery.session} notice={discovery.notice} staples={kusinaStaples.staples} staplesError={kusinaStaples.error} onAddIngredients={discovery.addIngredients} onReset={discovery.resetDiscovery} onUpdateConstraints={discovery.updateConstraints} onGenerate={generateSuggestions} onRemove={discovery.removeIngredient} onToggleStaple={(item) => void kusinaStaples.toggleStaple(item)} onSurprise={startSurprise} />
-      case 'results': return <ResultsPage session={discovery.session} status={discovery.generationStatus} suggestions={recipeFeedback.rankRecipes(discovery.suggestions)} ideas={discovery.ideas} fallback={discovery.fallback} error={discovery.generationError} savedError={savedRecipes.error} savedIds={savedRecipes.savedIds} onOpen={(id) => navigate(`/recipes/${id}`)} onToggleSave={toggleSaved} onRetry={generateSuggestions} onEdit={() => navigate('/ulam')} onAddIngredient={(name) => { discovery.addIngredients({ name }); navigate('/ulam') }} />
+      case 'results': return <ResultsPage session={discovery.session} status={discovery.generationStatus} suggestions={recipeFeedback.rankRecipes(discovery.suggestions)} ideas={discovery.ideas} fallback={discovery.fallback} error={discovery.generationError} savedError={savedRecipes.error} savedIds={savedRecipes.savedIds} onOpen={(id) => navigate(`/recipes/${id}`)} onToggleSave={toggleSaved} onRetry={generateSuggestions} onEdit={() => navigate('/ulam')} onAddIngredient={(name) => { discovery.addIngredients({ name }); navigate('/ulam') }} onGetDishRecipe={openDishRecipe} />
       case 'recipe-detail': return <RecipeDetailPage key={route.recipeId} recipeId={route.recipeId} saved={savedRecipes.savedIds.includes(route.recipeId)} onToggleSave={() => toggleSaved(route.recipeId)} onStartCooking={() => navigate(`/recipes/${route.recipeId}/cook`)} onBack={() => navigate('/results')} onStartOver={() => navigateFromShell('/ulam')} />
       case 'cooking': return <CookingPage key={route.recipeId} recipeId={route.recipeId} isSignedIn={Boolean(auth.session)} feedback={recipeFeedback.feedback[route.recipeId]} sessionIngredients={discovery.session.ingredients} onFinish={finishCooking} onBack={() => navigate(`/recipes/${route.recipeId}`)} onFeedback={(kind) => submitFeedback(route.recipeId, kind)} onUseLeftovers={(names, recipeTitle) => { discovery.startDiscovery(names.join(', '), `Leftovers from ${recipeTitle}. Add anything else you have, then find your next ulam.`); navigate('/ulam') }} />
       case 'saved': return <SavedPage isAuthenticated={Boolean(auth.session)} status={savedRecipes.status} error={savedRecipes.error} savedIds={savedRecipes.savedIds} savedRecipes={savedRecipes.savedRecipes} cookedRecipes={savedRecipes.cookedRecipes} onOpen={(id) => navigate(`/recipes/${id}`)} onUnsave={(id) => savedRecipes.toggleSaved(id)} onStart={() => navigate('/ulam')} onSignIn={requireAuth} onRetry={savedRecipes.reload} />
