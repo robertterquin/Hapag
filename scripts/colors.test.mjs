@@ -28,7 +28,7 @@ test('Radix palettes are imported and mapped to Hapag semantic tokens', async ()
 
 test('application CSS uses semantic alpha tokens for translucent surfaces and borders', async () => {
   const css = await read('src/App.css')
-  const recipeCardRules = css.slice(css.indexOf('.recipe-card {'), css.indexOf('.recipe-card-image-placeholder'))
+  const recipeCardRules = css.slice(css.indexOf('.recipe-card {'), css.indexOf('.recipe-card-topline {'))
   assert.doesNotMatch(recipeCardRules, /rgb\(/)
   assert.match(css, /var\(--color-focus-ring\)/)
   assert.match(css, /var\(--color-shadow-soft\)/)

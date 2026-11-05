@@ -1,9 +1,5 @@
 import type { IngredientInputUnit, IngredientSource, NormalizedIngredient } from '../types/domain.ts'
 
-export const ingredientInputUnits: readonly IngredientInputUnit[] = [
-  'piece', 'can', 'pack', 'bottle', 'bundle', 'clove', 'cup', 'gram', 'kilogram', 'block',
-]
-
 export const ingredientInputUnitLabels: Record<IngredientInputUnit, string> = {
   piece: 'piece',
   can: 'can',

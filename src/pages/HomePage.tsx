@@ -32,10 +32,6 @@ const PRINCIPLES = [
 function PreviewFrame({ label, children, className = '' }: { label: string; children: ReactNode; className?: string }) {
   return (
     <figure className={`preview-frame ${className}`}>
-      <div className="preview-frame-bar" aria-hidden="true">
-        <span /><span /><span />
-        <small>{label}</small>
-      </div>
       <div className="preview-frame-body" aria-hidden="true">{children}</div>
       <figcaption className="sr-only">{label} preview</figcaption>
     </figure>
@@ -89,7 +85,6 @@ export function HomePage({ onStart, onSurprise }: HomePageProps) {
         <div className="how-row">
           <StepCopy n={1} title="Tell Hapag what's in your kusina">
             <p>Type what you have the way you'd say it: "1/2 kg manok, bawang, toyo." Or tap it from the pantry shelf.</p>
-            <p>Your usual staples, like garlic, onion, and oil, are one tap away.</p>
           </StepCopy>
           <PreviewFrame label="Ulam AI">
             <div className="preview-input">
@@ -108,8 +103,7 @@ export function HomePage({ onStart, onSurprise }: HomePageProps) {
 
         <div className="how-row how-row-reverse">
           <StepCopy n={2} title="See what you have and what to buy">
-            <p>Every dish shows what you already have, what's missing, how long it takes, and what it costs.</p>
-            <p>Missing ingredients turn into a shopping list with peso estimates.</p>
+            <p>Every dish shows how much you already have, what to buy, how long it takes, and what it costs.</p>
           </StepCopy>
           <PreviewFrame label="Results">
             <div className="preview-recipe">
@@ -123,7 +117,6 @@ export function HomePage({ onStart, onSurprise }: HomePageProps) {
                   <span>Medium</span>
                 </div>
                 <div className="ingredient-summary">
-                  <div><strong>You have</strong>{['pork', 'tomato', 'water spinach'].map((item) => <IngredientChip key={item} name={label(item)} variant="have" />)}</div>
                   <div><strong>To buy</strong><IngredientChip name={label('tamarind')} variant="missing" /></div>
                 </div>
               </div>
@@ -133,8 +126,7 @@ export function HomePage({ onStart, onSurprise }: HomePageProps) {
 
         <div className="how-row">
           <StepCopy n={3} title="Cook one step at a time">
-            <p>Cooking mode shows one big step at a time, with the ingredients it needs and a timer that keeps running.</p>
-            <p>Steps can be read aloud, and your screen stays on while you cook.</p>
+            <p>One big step at a time, with the ingredients it needs, a timer, and read-aloud.</p>
           </StepCopy>
           <PreviewFrame label="Cooking mode">
             <div className="preview-cooking">
@@ -180,7 +172,6 @@ export function HomePage({ onStart, onSurprise }: HomePageProps) {
             <Icon icon="lucide:dices" width={18} height={18} aria-hidden="true" /> Surprise me!
           </button>
         </div>
-        <p className="trust-note">Prices are estimates. Check labels before cooking.</p>
       </section>
     </div>
   )

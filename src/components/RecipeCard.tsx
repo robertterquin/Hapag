@@ -53,11 +53,12 @@ export function RecipeCard({ recipe, saved, onOpen, onToggleSave, feedback, onFe
           <span>{recipe.servings} serv.</span>
         </div>
         <p className="recipe-description">{recipe.description || recipe.matchReason}</p>
-        <div className="ingredient-summary" aria-label="Ingredient evidence">
-          <div><strong>You have</strong>{have.length > 0 ? have.map((ingredient) => <IngredientChip key={ingredient.id} name={ingredient.name} variant="have" />) : <span className="summary-empty">None</span>}</div>
-          {missing.length > 0 ? <div><strong>To buy</strong>{missing.map((ingredient) => <IngredientChip key={ingredient.id} name={ingredient.name} variant="missing" />)}</div> : null}
-          {staples.length > 0 ? <div><strong>Staples</strong>{staples.map((ingredient) => <IngredientChip key={ingredient.id} name={ingredient.name} variant="staple" />)}</div> : null}
-        </div>
+        {missing.length + staples.length > 0 ? (
+          <div className="ingredient-summary" aria-label="Ingredient evidence">
+            {missing.length > 0 ? <div><strong>To buy</strong>{missing.map((ingredient) => <IngredientChip key={ingredient.id} name={ingredient.name} variant="missing" />)}</div> : null}
+            {staples.length > 0 ? <div><strong>Staples</strong>{staples.map((ingredient) => <IngredientChip key={ingredient.id} name={ingredient.name} variant="staple" />)}</div> : null}
+          </div>
+        ) : null}
         <span className="card-action">View recipe <span aria-hidden="true">→</span></span>
       </button>
       {onFeedback ? <RecipeFeedback value={feedback} onChange={onFeedback} /> : null}

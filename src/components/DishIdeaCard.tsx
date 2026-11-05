@@ -25,11 +25,13 @@ export function DishIdeaCard({ idea }: DishIdeaCardProps) {
         <h2>{idea.name}</h2>
         {idea.localName && idea.localName !== idea.name ? <p className="dish-idea-local">{idea.localName}</p> : null}
         <p className="recipe-description">{idea.description}</p>
-        <div className="ingredient-summary" aria-label="Ingredient evidence">
-          <div><strong>You have</strong>{idea.have.map((item) => <IngredientChip key={item} name={label(item)} variant="have" />)}{idea.substitutions.map((item) => <IngredientChip key={item.requiredIngredient} name={`${label(item.providedIngredient)} for ${label(item.requiredIngredient)}`} variant="substitute" />)}</div>
-          {idea.missing.length > 0 ? <div><strong>To buy</strong>{idea.missing.map((item) => <IngredientChip key={item} name={label(item)} variant="missing" />)}</div> : null}
-          {idea.staples.length > 0 ? <div><strong>Staples</strong>{idea.staples.map((item) => <IngredientChip key={item} name={label(item)} variant="staple" />)}</div> : null}
-        </div>
+        {idea.substitutions.length + idea.missing.length + idea.staples.length > 0 ? (
+          <div className="ingredient-summary" aria-label="Ingredient evidence">
+            {idea.substitutions.length > 0 ? <div><strong>Swaps</strong>{idea.substitutions.map((item) => <IngredientChip key={item.requiredIngredient} name={`${label(item.providedIngredient)} for ${label(item.requiredIngredient)}`} variant="substitute" />)}</div> : null}
+            {idea.missing.length > 0 ? <div><strong>To buy</strong>{idea.missing.map((item) => <IngredientChip key={item} name={label(item)} variant="missing" />)}</div> : null}
+            {idea.staples.length > 0 ? <div><strong>Staples</strong>{idea.staples.map((item) => <IngredientChip key={item} name={label(item)} variant="staple" />)}</div> : null}
+          </div>
+        ) : null}
       </div>
     </article>
   )

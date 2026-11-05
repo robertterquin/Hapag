@@ -312,7 +312,6 @@ export function CookingPage({ recipeId, isSignedIn, feedback, sessionIngredients
           {isLastStep ? 'Finish' : 'Next'} <Icon icon={isLastStep ? 'lucide:check' : 'lucide:arrow-right'} width={18} height={18} aria-hidden="true" />
         </button>
       </div>
-      <p className="cooking-note">Swipe to change steps.</p>
 
       <AnimatePresence>
         {timerActive && !timerOnThisStep && timerStepIndex !== null && !showCompletion ? (
