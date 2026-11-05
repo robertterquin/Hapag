@@ -168,9 +168,6 @@ export function HomePage({ onStart, onSurprise }: HomePageProps) {
           <button className="button button-primary home-start-button" type="button" onClick={() => onStart('')}>
             Start with Ulam AI
           </button>
-          <button className="button button-secondary home-surprise-button" type="button" onClick={onSurprise}>
-            <Icon icon="lucide:dices" width={18} height={18} aria-hidden="true" /> Surprise me!
-          </button>
         </div>
       </section>
     </div>

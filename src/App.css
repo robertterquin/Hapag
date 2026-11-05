@@ -328,16 +328,6 @@ p { line-height: 1.6; }
   transform: translateX(3px);
 }
 
-.home-surprise-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 52px;
-  padding: 0 24px;
-  font-size: 15px;
-  border-radius: var(--radius-pill);
-}
-
 .home-deck {
   position: relative;
   width: 100%;
@@ -846,8 +836,7 @@ p { line-height: 1.6; }
     width: 100%;
   }
   .home-actions .home-start-button,
-  .home-actions .home-ghost-button,
-  .home-actions .home-surprise-button {
+  .home-actions .home-ghost-button {
     width: 100%;
     justify-content: center;
   }

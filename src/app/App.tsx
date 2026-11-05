@@ -33,7 +33,7 @@ const preferencesKey = (sessionId: string, value: UserPreferences) =>
 function App() {
   const { route, navigate } = useAppRouter()
   const auth = useAuth()
-  const discovery = useDiscovery()
+  const discovery = useDiscovery(Boolean(auth.session))
   const savedRecipes = useSavedRecipes(auth.session)
   const preferences = usePreferences(auth.session)
   const kusinaStaples = useKusinaStaples(auth.session)

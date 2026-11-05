@@ -21,6 +21,24 @@ const defaultConstraints: GenerationConstraints = {
   spiceLevel: 'mild',
 }
 
+// Signed-out visitors keep their sheet choices in this browser; signed-in ones use their profile instead.
+const CONSTRAINTS_STORAGE_KEY = 'hapag_preferences'
+
+function readStoredConstraints(): GenerationConstraints | null {
+  try {
+    const parsed: unknown = JSON.parse(localStorage.getItem(CONSTRAINTS_STORAGE_KEY) ?? 'null')
+    if (!parsed || typeof parsed !== 'object') return null
+    const value = parsed as Partial<GenerationConstraints>
+    if (typeof value.servings !== 'number' || !['mild', 'medium', 'hot'].includes(value.spiceLevel as string) || !Array.isArray(value.allergies)) return null
+    const dietaryPreference = (['none', 'vegetarian', 'low-sodium', 'diabetic-friendly'] as const).find((diet) => diet === value.dietaryPreference) ?? 'none'
+    return normalizeConstraints({ ...defaultConstraints, ...value, dietaryPreference, allergies: value.allergies.filter((item): item is string => typeof item === 'string') })
+  } catch { return null }
+}
+
+function writeStoredConstraints(constraints: GenerationConstraints) {
+  try { localStorage.setItem(CONSTRAINTS_STORAGE_KEY, JSON.stringify(constraints)) } catch { /* Storage blocked: choices last this visit. */ }
+}
+
 function constraintsFromPreferences(preferences: UserPreferences): GenerationConstraints {
   return normalizeConstraints({
     servings: preferences.default_servings,
@@ -43,9 +61,10 @@ function dedupeIngredients(ingredients: NormalizedIngredient[]) {
   return merged.map((ingredient, index) => ({ ...ingredient, id: `${ingredient.source}-${ingredient.canonicalName}-${index}` }))
 }
 
-export function useDiscovery() {
-  const preferredConstraints = useRef<GenerationConstraints>(defaultConstraints)
-  const [session, setSession] = useState<DiscoverySession>({ rawInput: '', ingredients: [], constraints: defaultConstraints })
+export function useDiscovery(signedIn: boolean) {
+  const [storedConstraints] = useState(() => readStoredConstraints() ?? defaultConstraints)
+  const preferredConstraints = useRef<GenerationConstraints>(storedConstraints)
+  const [session, setSession] = useState<DiscoverySession>({ rawInput: '', ingredients: [], constraints: storedConstraints })
   const [suggestions, setSuggestions] = useState<Recipe[]>([])
   const [candidateDishes, setCandidateDishes] = useState<CatalogRecipeCandidate[]>([])
   const [generationStatus, setGenerationStatus] = useState<GenerationStatus>('idle')
@@ -111,7 +130,12 @@ export function useDiscovery() {
   }
 
   const updateConstraints = (patch: Partial<GenerationConstraints>) => {
-    setSession((current) => ({ ...current, constraints: normalizeConstraints({ ...current.constraints, ...patch }) }))
+    const next = normalizeConstraints({ ...session.constraints, ...patch })
+    setSession((current) => ({ ...current, constraints: next }))
+    if (!signedIn) {
+      preferredConstraints.current = next
+      writeStoredConstraints(next)
+    }
   }
 
   const removeIngredient = (id: string) => {

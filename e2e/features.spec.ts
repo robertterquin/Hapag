@@ -39,3 +39,27 @@ test('unknown pages show not found', async ({ page }) => {
   await page.goto('/no-such-page')
   await expect(page.getByText('Page not found')).toBeVisible()
 })
+
+test('signed-out preferences survive a reload', async ({ page }) => {
+  await page.goto('/ulam')
+  await page.locator('.preferences-summary').click()
+  await page.getByRole('radio', { name: 'Spicy' }).click()
+  await page.getByRole('button', { name: 'Done' }).click()
+  await expect(page.locator('.preferences-summary')).toContainText('Spicy')
+  await page.reload()
+  await expect(page.locator('.preferences-summary')).toContainText('Spicy')
+})
+
+test('icons are bundled: nothing is fetched from Iconify', async ({ page }) => {
+  const iconRequests: string[] = []
+  await page.route(/api\.(iconify\.design|simplesvg\.com|unisvg\.com)/, (route) => { iconRequests.push(route.request().url()); return route.abort() })
+  await page.goto('/ulam')
+  await expect(page.locator('.item-emoji svg').first()).toBeVisible()
+  await expect(page.locator('.preferences-summary svg').first()).toBeVisible()
+  expect(iconRequests).toEqual([])
+})
+
+test('the old /pantry link opens Ulam AI', async ({ page }) => {
+  await page.goto('/pantry')
+  await expect(page).toHaveURL(/\/ulam$/)
+})
