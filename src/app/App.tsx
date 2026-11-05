@@ -1,4 +1,6 @@
 import { type ReactNode, Suspense, lazy, useEffect, useRef } from 'react'
+import type { GenerationConstraints } from '../types/domain.ts'
+import type { UserPreferences } from '../services/persistenceService.ts'
 import '../App.css'
 import { AppShell } from '../components/AppShell.tsx'
 import { ErrorBoundary } from '../components/ErrorBoundary.tsx'
@@ -25,6 +27,9 @@ const RecipeDetailPage = lazy(() => import('../pages/RecipeDetailPage.tsx').then
 const ResultsPage = lazy(() => import('../pages/ResultsPage.tsx').then((module) => ({ default: module.ResultsPage })))
 const SavedPage = lazy(() => import('../pages/SavedPage.tsx').then((module) => ({ default: module.SavedPage })))
 
+const preferencesKey = (sessionId: string, value: UserPreferences) =>
+  [sessionId, value.language, value.default_servings, value.dietary_preference, value.spice_level, value.allergies.join('|')].join(':')
+
 function App() {
   const { route, navigate } = useAppRouter()
   const auth = useAuth()
@@ -41,12 +46,23 @@ function App() {
   useEffect(() => {
     if (!sessionId || preferences.status !== 'ready') return
     const value = preferences.preferences
-    const key = [sessionId, value.language, value.default_servings, value.dietary_preference, value.spice_level, value.allergies.join('|')].join(':')
+    const key = preferencesKey(sessionId, value)
     if (appliedPreferencesKey.current === key) return
     appliedPreferencesKey.current = key
     applyPreferences(value)
   }, [sessionId, preferences.status, preferences.preferences, applyPreferences])
   const recipeFeedback = useRecipeFeedback(auth.session)
+  // Signed-in allergies typed in the Ulam sheet are saved to the profile when the sheet closes.
+  const saveSheetAllergies = (constraints: GenerationConstraints) => {
+    if (!sessionId || preferences.status !== 'ready') return
+    const current = preferences.preferences
+    if (current.allergies.join('|') === constraints.allergies.join('|')) return
+    const next = { ...current, allergies: constraints.allergies }
+    // This search already uses these allergies; skip re-applying saved preferences so sheet choices stay.
+    appliedPreferencesKey.current = preferencesKey(sessionId, next)
+    discovery.rememberAllergies(constraints.allergies)
+    void preferences.save(next).catch(() => undefined)
+  }
   const startDiscovery = (value: string) => {
     discovery.startDiscovery(value)
     navigate('/ulam')
@@ -104,12 +120,12 @@ function App() {
   const page: ReactNode = (() => {
     switch (route.name) {
       case 'home': return <HomePage onStart={startDiscovery} onSurprise={startSurprise} />
-      case 'ulam': return <UlamPage session={discovery.session} notice={discovery.notice} staples={kusinaStaples.staples} staplesError={kusinaStaples.error} onAddIngredients={discovery.addIngredients} onReset={discovery.resetDiscovery} onUpdateConstraints={discovery.updateConstraints} onGenerate={generateSuggestions} onRemove={discovery.removeIngredient} onToggleStaple={(item) => void kusinaStaples.toggleStaple(item)} onSurprise={startSurprise} />
+      case 'ulam': return <UlamPage session={discovery.session} notice={discovery.notice} staples={kusinaStaples.staples} staplesError={kusinaStaples.error} onAddIngredients={discovery.addIngredients} onReset={discovery.resetDiscovery} onUpdateConstraints={discovery.updateConstraints} onPreferencesClosed={saveSheetAllergies} onGenerate={generateSuggestions} onRemove={discovery.removeIngredient} onToggleStaple={(item) => void kusinaStaples.toggleStaple(item)} onSurprise={startSurprise} />
       case 'results': return <ResultsPage session={discovery.session} status={discovery.generationStatus} suggestions={recipeFeedback.rankRecipes(discovery.suggestions)} ideas={discovery.ideas} fallback={discovery.fallback} error={discovery.generationError} savedError={savedRecipes.error} savedIds={savedRecipes.savedIds} onOpen={(id) => navigate(`/recipes/${id}`)} onToggleSave={toggleSaved} onRetry={generateSuggestions} onEdit={() => navigate('/ulam')} onAddIngredient={(name) => { discovery.addIngredients({ name }); navigate('/ulam') }} onGetDishRecipe={openDishRecipe} />
       case 'recipe-detail': return <RecipeDetailPage key={route.recipeId} recipeId={route.recipeId} saved={savedRecipes.savedIds.includes(route.recipeId)} saveError={savedRecipes.error} onToggleSave={() => toggleSaved(route.recipeId)} onStartCooking={() => navigate(`/recipes/${route.recipeId}/cook`)} onBack={() => navigate('/results')} onStartOver={() => navigateFromShell('/ulam')} />
       case 'cooking': return <CookingPage key={route.recipeId} recipeId={route.recipeId} isSignedIn={Boolean(auth.session)} feedback={recipeFeedback.feedback[route.recipeId]} sessionIngredients={discovery.session.ingredients} onFinish={finishCooking} onBack={() => navigate(`/recipes/${route.recipeId}`)} onStartOver={() => navigateFromShell('/ulam')} onFeedback={(kind) => submitFeedback(route.recipeId, kind)} onUseLeftovers={(names, recipeTitle) => { discovery.startDiscovery(names.join(', '), `Leftovers from ${recipeTitle}. Add anything else you have, then find your next ulam.`); navigate('/ulam') }} />
       case 'saved': return <SavedPage isAuthenticated={Boolean(auth.session)} status={savedRecipes.status} error={savedRecipes.error} savedIds={savedRecipes.savedIds} savedRecipes={savedRecipes.savedRecipes} cookedRecipes={savedRecipes.cookedRecipes} onOpen={(id) => navigate(`/recipes/${id}`)} onUnsave={(id) => savedRecipes.toggleSaved(id)} onStart={() => navigate('/ulam')} onSignIn={requireAuth} onRetry={savedRecipes.reload} />
-      case 'profile': return <ProfilePage key={auth.session?.user.id ?? 'signed-out'} session={auth.session} preferences={preferences.preferences} status={preferences.status} error={preferences.error} onSave={preferences.save} onSignIn={requireAuth} onSignOut={auth.signOut} />
+      case 'profile': return <ProfilePage key={auth.session?.user.id ?? 'signed-out'} session={auth.session} preferences={preferences.preferences} status={preferences.status} error={preferences.error} onSave={preferences.save} onSignIn={requireAuth} onSignOut={auth.signOut} onDeleteAccount={async () => { await auth.deleteAccount(); navigate('/') }} />
       case 'auth': return <AuthPage session={auth.session} status={auth.status} error={auth.error} onSignIn={auth.signIn} onSignUp={auth.signUp} onSignOut={auth.signOut} onContinue={() => navigate(returnPath.current)} recovering={auth.recovering} onRequestPasswordReset={auth.requestPasswordReset} onUpdatePassword={auth.updatePassword} />
       case 'not-found': return <NotFoundPage onBack={() => navigate('/')} />
     }

@@ -11,10 +11,13 @@ import { AllergyInput } from './AllergyInput.tsx'
 interface UlamPreferencesProps {
   constraints: GenerationConstraints
   onUpdate: (patch: Partial<GenerationConstraints>) => void
+  // Called when the sheet closes, so signed-in allergies can be saved once rather than on every keystroke.
+  onClosed?: (constraints: GenerationConstraints) => void
 }
 
-export function UlamPreferences({ constraints, onUpdate }: UlamPreferencesProps) {
+export function UlamPreferences({ constraints, onUpdate, onClosed }: UlamPreferencesProps) {
   const [open, setOpen] = useState(false)
+  const close = () => { setOpen(false); onClosed?.(constraints) }
 
   return (
     <>
@@ -36,8 +39,8 @@ export function UlamPreferences({ constraints, onUpdate }: UlamPreferencesProps)
       <BottomSheet
         open={open}
         title="Tailor to your household"
-        onClose={() => setOpen(false)}
-        footer={<button className="button button-primary full-width" type="button" onClick={() => setOpen(false)}>Done</button>}
+        onClose={close}
+        footer={<button className="button button-primary full-width" type="button" onClick={close}>Done</button>}
       >
         <ServingStepper value={constraints.servings} onChange={(servings) => onUpdate({ servings })} />
         <SegmentedControl

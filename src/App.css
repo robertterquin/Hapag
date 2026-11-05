@@ -2435,3 +2435,8 @@ figure.recipe-hero-image { margin: 0; }
 /* Auth extras: Forgot password sits under the password field; signed-in actions sit side by side. */
 .auth-forgot { justify-self: end; margin-top: -6px; font-size: 13px; }
 .auth-signed-in-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+/* Destructive action: tomato red, flat like the other buttons. */
+.danger-panel { border-color: var(--tomato-6); }
+.button-danger { color: #fff; background: var(--tomato-10); }
+.button-danger:hover:not(:disabled) { background: var(--tomato-11); }
+.button-danger:disabled { color: var(--color-muted); background: var(--color-border); }

@@ -16,13 +16,14 @@ export interface UlamPageProps {
   onAddIngredients: (input: IngredientDraft) => void
   onReset: () => void
   onUpdateConstraints: (patch: Partial<GenerationConstraints>) => void
+  onPreferencesClosed?: (constraints: GenerationConstraints) => void
   onGenerate: () => void
   onRemove: (id: string) => void
   onToggleStaple: (canonicalName: string) => void
   onSurprise: () => void
 }
 
-export function UlamPage({ session, notice, staples, staplesError, onAddIngredients, onReset, onUpdateConstraints, onGenerate, onRemove, onToggleStaple, onSurprise }: UlamPageProps) {
+export function UlamPage({ session, notice, staples, staplesError, onAddIngredients, onReset, onUpdateConstraints, onGenerate, onRemove, onToggleStaple, onSurprise, onPreferencesClosed }: UlamPageProps) {
   const ingredientCount = session.ingredients.length
 
   const handleKusinaToggle = (name: string, isCurrentlyActive: boolean, existingId?: string) => {
@@ -94,7 +95,7 @@ export function UlamPage({ session, notice, staples, staplesError, onAddIngredie
             ) : null}
           </section>
           <div className="ulam-order-prefs">
-            <UlamPreferences constraints={session.constraints} onUpdate={onUpdateConstraints} />
+            <UlamPreferences constraints={session.constraints} onUpdate={onUpdateConstraints} onClosed={onPreferencesClosed} />
           </div>
           {/* display: contents, so the sticky bar's scroll container is the whole page on phones. */}
           <div className="ulam-order-cook">

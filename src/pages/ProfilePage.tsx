@@ -14,11 +14,14 @@ const languageOptions: readonly SegmentedOption<UserPreferences['language']>[] =
   { value: 'English', label: 'English' },
 ]
 
-interface ProfilePageProps { session: Session | null; preferences: UserPreferences; status: string; error: string | null; onSave: (preferences: UserPreferences) => Promise<void>; onSignIn: () => void; onSignOut: () => Promise<void> }
+interface ProfilePageProps { session: Session | null; preferences: UserPreferences; status: string; error: string | null; onSave: (preferences: UserPreferences) => Promise<void>; onSignIn: () => void; onSignOut: () => Promise<void>; onDeleteAccount: () => Promise<void> }
 
-export function ProfilePage({ session, preferences, status, error, onSave, onSignIn, onSignOut }: ProfilePageProps) {
+export function ProfilePage({ session, preferences, status, error, onSave, onSignIn, onSignOut, onDeleteAccount }: ProfilePageProps) {
   const [draft, setDraft] = useState(preferences)
   const [saved, setSaved] = useState(false)
+  const [confirmText, setConfirmText] = useState('')
+  const [deleting, setDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
   const preferencesKey = `${preferences.language}-${preferences.default_servings}-${preferences.dietary_preference}-${preferences.spice_level}-${preferences.allergies.join('|')}`
 
   const [syncedPreferencesKey, setSyncedPreferencesKey] = useState(preferencesKey)
@@ -73,6 +76,23 @@ export function ProfilePage({ session, preferences, status, error, onSave, onSig
         <h2>Account</h2>
         <p>{session.user.email}</p>
         <button className="button button-secondary" type="button" onClick={() => void onSignOut()}>Sign out</button>
+      </section>
+      <section className="account-panel danger-panel" aria-labelledby="delete-heading">
+        <h2 id="delete-heading">Delete account</h2>
+        <p>This permanently deletes your account, saved recipes, cooking history, preferences and staples. It can't be undone.</p>
+        <label className="field-label" htmlFor="delete-confirm">Type DELETE to confirm<input id="delete-confirm" value={confirmText} onChange={(event) => setConfirmText(event.target.value)} autoComplete="off" /></label>
+        {deleteError ? <div className="error-banner" role="alert">{deleteError}</div> : null}
+        <button
+          className="button button-danger"
+          type="button"
+          disabled={confirmText.trim() !== 'DELETE' || deleting}
+          onClick={() => {
+            setDeleting(true); setDeleteError(null)
+            onDeleteAccount().catch(() => setDeleteError('Could not delete your account. Please try again.')).finally(() => setDeleting(false))
+          }}
+        >
+          {deleting ? 'Deleting…' : 'Delete my account'}
+        </button>
       </section>
     </div>
   )

@@ -68,6 +68,14 @@ export const persistenceService = {
     if (error) throw error
   },
 
+  // The delete-account edge function removes the user; their rows cascade. Then drop the now-dead local session.
+  async deleteAccount() {
+    const client = requireClient()
+    const { error } = await client.functions.invoke('delete-account', { method: 'POST' })
+    if (error) throw error
+    await client.auth.signOut({ scope: 'local' })
+  },
+
   async signOut() {
     const client = requireClient()
     const { error } = await client.auth.signOut()

@@ -76,6 +76,11 @@ export function useDiscovery() {
     setSession((current) => ({ ...current, constraints: nextConstraints }))
   }, [])
 
+  // Allergies saved from the sheet become the default for new lists, without touching this search's other choices.
+  const rememberAllergies = useCallback((allergies: string[]) => {
+    preferredConstraints.current = { ...preferredConstraints.current, allergies }
+  }, [])
+
   const startFromIngredients = (rawInput: string, ingredients: NormalizedIngredient[]) => {
     setSession((current) => ({ ...current, rawInput, ingredients }))
     setGenerationStatus('idle')
@@ -185,6 +190,7 @@ export function useDiscovery() {
     startDiscovery,
     resetDiscovery,
     applyPreferences,
+    rememberAllergies,
     startFromIngredients,
     updateIngredients,
     addIngredients,

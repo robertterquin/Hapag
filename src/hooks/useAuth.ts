@@ -63,5 +63,12 @@ export function useAuth() {
     }
   }
 
-  return { session, status, error, recovering, signIn, signUp, signOut, requestPasswordReset, updatePassword }
+  const deleteAccount = async () => {
+    setError(null)
+    try { await persistenceService.deleteAccount() } catch (reason: unknown) {
+      setError('Could not delete your account. Please try again.'); throw reason
+    }
+  }
+
+  return { session, status, error, recovering, signIn, signUp, signOut, requestPasswordReset, updatePassword, deleteAccount }
 }
