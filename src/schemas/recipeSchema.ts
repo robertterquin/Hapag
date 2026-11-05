@@ -63,7 +63,8 @@ export const recipeSchema = z.object({
   imageUrl: z.string().url().optional(),
   localTitle: z.string().min(1).optional(),
   description: z.string().min(12),
-  matchReason: z.string().min(12),
+  // May be empty: the adapter clears generic or leaky reasons, and the page then hides Why it works.
+  matchReason: z.string(),
   authenticity: z.enum(['classic', 'home-style', 'hapag-adaptation']).optional(),
   matchScore: z.number().int().min(0).max(100).optional(),
   ingredients: z.array(ingredientLineSchema).min(1),

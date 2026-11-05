@@ -74,7 +74,7 @@ test('sample recipes only match when every on-hand ingredient was provided', asy
 test('results fall back to catalog ideas when AI is missing or fails', async () => {
   const discovery = await readFile('src/hooks/useDiscovery.ts', 'utf8')
   const results = await readFile('src/pages/ResultsPage.tsx', 'utf8')
-  assert.match(discovery, /setIdeas\(buildDishIdeas\(session\.ingredients\)\)/)
+  assert.match(discovery, /setIdeas\(buildDishIdeas\(session\.ingredients, catalog\)\)/)
   assert.match(discovery, /hasRecipeGenerationConfig \? null : 'not-configured'/)
   assert.match(discovery, /setFallback\('error'\)/)
   assert.match(results, /<DishIdeaCard/)

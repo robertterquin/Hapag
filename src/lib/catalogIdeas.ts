@@ -1,4 +1,4 @@
-import type { CatalogMealType } from '../data/filipinoRecipeCatalog.ts'
+import type { CatalogMealType, FilipinoRecipeCatalogEntry } from '../data/filipinoRecipeCatalog.ts'
 import { filipinoRecipeCatalog } from '../data/filipinoRecipeCatalog.ts'
 import { kusinaPantryItems } from '../data/kusinaShelf.ts'
 import { normalizeIngredientInput } from './ingredientParser.ts'
@@ -32,8 +32,8 @@ const mealTypeLabels: Record<CatalogMealType, string> = {
   breakfast: 'Breakfast',
 }
 
-export function buildDishIdeas(ingredients: NormalizedIngredient[], limit = 6): DishIdea[] {
-  return matchRecipeCatalog(ingredients, filipinoRecipeCatalog, limit).map((match) => ({
+export function buildDishIdeas(ingredients: NormalizedIngredient[], catalog: FilipinoRecipeCatalogEntry[] = filipinoRecipeCatalog, limit = 6): DishIdea[] {
+  return matchRecipeCatalog(ingredients, catalog, limit).map((match) => ({
     id: match.dish.id,
     name: match.dish.name,
     localName: match.dish.localName,

@@ -172,10 +172,9 @@ function sanitizeRecipe(recipe: Recipe): Recipe {
       cleaned.matchReason
     )
   ) {
-    const availableNames = cleaned.ingredients.filter((i) => i.available).map((i) => i.name)
     cleaned = {
       ...cleaned,
-      matchReason: generateDishCulinaryInsight(cleaned.title, availableNames),
+      matchReason: generateDishCulinaryInsight(cleaned.title),
     }
   }
   return cleaned

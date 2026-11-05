@@ -2,20 +2,16 @@ import { motion } from 'motion/react'
 import type { Recipe } from '../types/domain.ts'
 import { formatCost } from '../lib/format.ts'
 import type { RecipeAuthenticity } from '../types/domain.ts'
-import { RecipeFeedback } from './RecipeFeedback.tsx'
 import { IngredientChip } from './IngredientChip.tsx'
 import { DishImage } from './DishImage.tsx'
 import { HaveProgress } from './HaveProgress.tsx'
 import { getIngredientStatus } from '../lib/pantryStaples.ts'
-import type { RecipeFeedbackKind } from '../hooks/useRecipeFeedback.ts'
 
 interface RecipeCardProps {
   recipe: Recipe
   saved: boolean
   onOpen: () => void
   onToggleSave: () => void
-  feedback?: RecipeFeedbackKind
-  onFeedback?: (kind: RecipeFeedbackKind) => void
   animationIndex?: number
 }
 
@@ -25,7 +21,7 @@ const authenticityLabels: Record<RecipeAuthenticity, string> = {
   'hapag-adaptation': 'Hapag adaptation',
 }
 
-export function RecipeCard({ recipe, saved, onOpen, onToggleSave, feedback, onFeedback, animationIndex = 0 }: RecipeCardProps) {
+export function RecipeCard({ recipe, saved, onOpen, onToggleSave, animationIndex = 0 }: RecipeCardProps) {
   const have = recipe.ingredients.filter((ingredient) => getIngredientStatus(ingredient) === 'have')
   const staples = recipe.ingredients.filter((ingredient) => getIngredientStatus(ingredient) === 'staple')
   const missing = recipe.ingredients.filter((ingredient) => getIngredientStatus(ingredient) === 'missing')
@@ -61,7 +57,6 @@ export function RecipeCard({ recipe, saved, onOpen, onToggleSave, feedback, onFe
         ) : null}
         <span className="card-action">View recipe <span aria-hidden="true">→</span></span>
       </button>
-      {onFeedback ? <RecipeFeedback value={feedback} onChange={onFeedback} /> : null}
     </motion.article>
   )
 }

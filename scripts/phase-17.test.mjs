@@ -19,7 +19,7 @@ test('Phase 17 stores feedback locally and reranks suggestions', async () => {
   assert.match(source, /not-filipino/)
   const app = await read('src/app/App.tsx')
   assert.match(app, /recipeFeedback\.rankRecipes\(discovery\.suggestions\)/)
-  assert.match(app, /onFeedback=\{submitFeedback\}/)
+  assert.match(app, /onFeedback=\{\(kind\) => submitFeedback\(route\.recipeId, kind\)\}/)
 })
 
 test('Phase 17 includes authenticated persistence with user-owned RLS', async () => {

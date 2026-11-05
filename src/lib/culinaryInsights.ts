@@ -1,6 +1,5 @@
-export function generateDishCulinaryInsight(dishTitle: string, availableIngredientNames: string[] = []): string {
+export function generateDishCulinaryInsight(dishTitle: string): string {
   const lower = dishTitle.toLowerCase()
-  const ingredientsStr = availableIngredientNames.join(', ')
 
   if (/afritada/i.test(lower)) {
     return 'Simmering the meat in savory tomato sauce creates a rich, hearty sauce that thickens naturally without requiring heavy seasoning.'
@@ -75,8 +74,6 @@ export function generateDishCulinaryInsight(dishTitle: string, availableIngredie
     return 'Slow-simmered mung beans break down into a comforting, earthy stew enriched with savory aromatics.'
   }
 
-  if (ingredientsStr) {
-    return `Cooking ${ingredientsStr} with classic Filipino aromatics unlocks deep, natural flavors that come together effortlessly in this dish.`
-  }
-  return 'A classic home-style preparation where gentle simmering coaxes out rich, comforting flavors with minimal effort.'
+  // No dish-specific insight: say nothing rather than generic filler, and the page hides "Why it works".
+  return ''
 }

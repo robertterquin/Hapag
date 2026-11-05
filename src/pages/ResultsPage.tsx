@@ -10,7 +10,6 @@ import { suggestUnlockIngredient } from '../lib/catalogIdeas.ts'
 import type { DishIdea } from '../lib/catalogIdeas.ts'
 import type { FallbackReason, GenerationStatus } from '../hooks/useDiscovery.ts'
 import type { DiscoverySession, Recipe } from '../types/domain.ts'
-import type { RecipeFeedbackKind } from '../hooks/useRecipeFeedback.ts'
 
 export interface ResultsPageProps {
   session: DiscoverySession
@@ -23,8 +22,6 @@ export interface ResultsPageProps {
   savedIds: string[]
   onOpen: (recipeId: string) => void
   onToggleSave: (recipeId: string) => void
-  feedback: Record<string, RecipeFeedbackKind>
-  onFeedback: (recipeId: string, kind: RecipeFeedbackKind) => void
   onRetry: () => void
   onEdit: () => void
   onAddIngredient: (name: string) => void
@@ -38,7 +35,7 @@ const fallbackNotes: Record<Exclude<FallbackReason, null>, string> = {
 
 const spiceLabels = { mild: 'Mild', medium: 'Medium', hot: 'Spicy' } as const
 
-export function ResultsPage({ session, status, suggestions, ideas, fallback, error, savedError, savedIds, feedback, onOpen, onToggleSave, onFeedback, onRetry, onEdit, onAddIngredient }: ResultsPageProps) {
+export function ResultsPage({ session, status, suggestions, ideas, fallback, error, savedError, savedIds, onOpen, onToggleSave, onRetry, onEdit, onAddIngredient }: ResultsPageProps) {
   const language = useDisplayLanguage()
 
   if (status === 'loading') {
@@ -103,7 +100,7 @@ export function ResultsPage({ session, status, suggestions, ideas, fallback, err
 
       {suggestions.length > 0 ? (
         <div className="results-grid">
-          {suggestions.map((recipe, index) => <RecipeCard key={recipe.id} recipe={recipe} animationIndex={index} saved={savedIds.includes(recipe.id)} feedback={feedback[recipe.id]} onOpen={() => onOpen(recipe.id)} onToggleSave={() => onToggleSave(recipe.id)} onFeedback={(kind) => onFeedback(recipe.id, kind)} />)}
+          {suggestions.map((recipe, index) => <RecipeCard key={recipe.id} recipe={recipe} animationIndex={index} saved={savedIds.includes(recipe.id)} onOpen={() => onOpen(recipe.id)} onToggleSave={() => onToggleSave(recipe.id)} />)}
         </div>
       ) : null}
 

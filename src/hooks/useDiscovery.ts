@@ -5,6 +5,8 @@ import { matchRecipeCatalog } from '../services/recipeMatcher.ts'
 import type { CatalogRecipeCandidate, DiscoverySession, GenerationConstraints, IngredientDraft, NormalizedIngredient, Recipe } from '../types/domain.ts'
 import { normalizeConstraints } from '../lib/recipeControls.ts'
 import { buildDishIdeas } from '../lib/catalogIdeas.ts'
+import { fitsDietAndAllergies } from '../lib/dietFilter.ts'
+import { filipinoRecipeCatalog } from '../data/filipinoRecipeCatalog.ts'
 import type { DishIdea } from '../lib/catalogIdeas.ts'
 import { hasRecipeGenerationConfig } from '../config/env.ts'
 import type { UserPreferences } from '../services/persistenceService.ts'
@@ -122,7 +124,9 @@ export function useDiscovery() {
     setGenerationStatus('loading')
     setGenerationError(null)
     try {
-      const candidateDishes: CatalogRecipeCandidate[] = matchRecipeCatalog(session.ingredients).map(({ dish, score, availableIngredients, missingIngredients, substitutedIngredients }) => ({
+      // Allergies and diet narrow the catalog first, so neither the AI candidates nor the fallback ideas include ruled-out dishes.
+      const catalog = filipinoRecipeCatalog.filter((dish) => fitsDietAndAllergies(dish, session.constraints))
+      const candidateDishes: CatalogRecipeCandidate[] = matchRecipeCatalog(session.ingredients, catalog).map(({ dish, score, availableIngredients, missingIngredients, substitutedIngredients }) => ({
         id: dish.id,
         name: dish.name,
         authenticity: dish.authenticity,
@@ -133,7 +137,7 @@ export function useDiscovery() {
         substitutedIngredients,
       }))
       setCandidateDishes(candidateDishes)
-      setIdeas(buildDishIdeas(session.ingredients))
+      setIdeas(buildDishIdeas(session.ingredients, catalog))
       setFallback(hasRecipeGenerationConfig ? null : 'not-configured')
 
       const result = await recipeService.generateSuggestions({ rawInput: session.rawInput, ingredients: session.ingredients, constraints: session.constraints, candidateDishes }, accessToken)
