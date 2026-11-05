@@ -1,8 +1,9 @@
+import type { ReactNode } from 'react'
 import { isPantryStaple } from '../lib/pantryStaples.ts'
 import type { Recipe } from '../types/domain.ts'
 import { formatCost } from '../lib/format.ts'
 
-export function CostBreakdown({ recipe }: { recipe: Recipe }) {
+export function CostBreakdown({ recipe, children }: { recipe: Recipe; children?: ReactNode }) {
   return (
     <section className="cost-panel" aria-labelledby="cost-heading">
       <div className="section-heading-row">
@@ -23,6 +24,7 @@ export function CostBreakdown({ recipe }: { recipe: Recipe }) {
         ))}
       </ul>
       <p className="cost-note">{recipe.estimatedCost.note}</p>
+      {children}
     </section>
   )
 }

@@ -1031,10 +1031,12 @@ p { line-height: 1.6; }
 .recipe-metrics span { display: inline-flex; align-items: center; font-size: 11.5px; font-weight: 700; color: var(--color-ink); background: var(--sand-2); border: 1px solid var(--sand-a4); padding: 3px 9px; border-radius: var(--radius-pill); }
 .recipe-metrics .metric-price { color: var(--color-brand-strong); background: var(--color-brand-soft); border-color: var(--color-brand-border); font-weight: 800; }
 
-.recipe-metrics-large { display: flex; flex-wrap: wrap; gap: 8px; margin: var(--space-4) 0; }
-.recipe-metrics-large span { font-size: 13.5px; font-weight: 700; color: var(--color-ink); background: var(--sand-2); border: 1px solid var(--color-border-strong); padding: 6px 12px; border-radius: 8px; }
-.recipe-metrics-large span:nth-child(3) { color: var(--amber-11); background: var(--amber-2); border-color: var(--amber-7); font-weight: 800; }
-.recipe-metrics-large strong { color: inherit; }
+/* Detail page facts read as one plain line: 20 min · Easy · ₱50–₱85 · 3 servings. */
+.recipe-metrics-large { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 0; margin: var(--space-4) 0; }
+.recipe-metrics-large span { display: inline; padding: 0; font-size: 14px; font-weight: 600; color: var(--color-muted); background: none; border: 0; border-radius: 0; }
+.recipe-metrics-large span + span::before { content: '·'; margin: 0 10px; color: var(--sand-8); }
+.recipe-metrics-large strong { color: var(--color-ink); font-weight: 800; }
+.recipe-metrics-large span:nth-child(3) strong { color: var(--color-brand-strong); }
 
 .ingredient-summary { display: grid; gap: 10px; padding: 12px 0 0; border-top: 1px solid var(--color-border); }
 .ingredient-summary div { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; font-size: 11px; }
@@ -1181,6 +1183,7 @@ p { line-height: 1.6; }
 .safety-note { margin: var(--space-4) 0; padding: 14px 16px; color: var(--color-ink); background: var(--color-surface); border: var(--surface-border); border-radius: 14px; font-size: 12px; line-height: 1.5; box-shadow: var(--surface-shadow); }
 .safety-note strong { display: block; font-weight: 800; color: var(--color-ink); margin-bottom: 2px; }
 .safety-note p { margin: var(--space-1) 0 0; color: var(--color-muted); }
+.cost-panel .safety-note { margin: var(--space-4) 0 0; padding: var(--space-4) 0 0; background: none; border: 0; border-top: 1px solid var(--color-border); border-radius: 0; box-shadow: none; }
 
 .cooking-page { width: min(760px, 100%); margin: 0 auto; padding: var(--space-4) 0; }
 .progress-track { height: 10px; overflow: hidden; background: var(--color-border); border-radius: var(--radius-pill); }
@@ -1268,8 +1271,6 @@ p { line-height: 1.6; }
   .recipe-hero { border-radius: 22px; padding: 22px 18px; }
   .recipe-hero, .recipe-hero:has(.recipe-hero-image) { grid-template-columns: 1fr; gap: var(--space-4); }
   .recipe-hero-image { border-radius: 16px; }
-  .recipe-metrics-large { gap: 6px; }
-  .recipe-metrics-large span { flex: 1 1 calc(50% - 6px); text-align: center; font-size: 12.5px; padding: 5px 8px; }
   .detail-ingredient-list li { grid-template-columns: 26px 1fr; gap: 8px; }
   .detail-ingredient-list li em { grid-column: 2 / -1; font-size: 11px; }
   .cooking-controls { flex-direction: column-reverse; }
@@ -2082,21 +2083,17 @@ html:has(dialog.bottom-sheet[open]) { overflow: hidden; }
 /* Phase 18.3 results */
 
 .dish-image { position: relative; overflow: hidden; background: var(--sand-3); }
-.dish-image::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(32, 19, 14, 0.45) 0%, rgba(32, 19, 14, 0.05) 35%, transparent 60%);
-  pointer-events: none;
-  z-index: 1;
-}
-.dish-image-placeholder::before { display: none; }
 figure.recipe-card-image, figure.recipe-hero-image { display: block; }
 .dish-image-img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.dish-image-credit { position: absolute; right: 0; bottom: 0; left: 0; z-index: 2; padding: 14px 10px 5px; overflow: hidden; color: rgb(255 255 255 / 92%); font-size: 10px; font-weight: 600; line-height: 1.3; white-space: nowrap; text-overflow: ellipsis; background: linear-gradient(transparent, rgb(20 12 8 / 62%)); }
+.dish-image-credit { position: absolute; right: 8px; bottom: 8px; z-index: 2; display: flex; align-items: center; max-width: calc(100% - 16px); color: #fff; background: rgb(20 12 8 / 58%); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-radius: var(--radius-pill); font-size: 11px; font-weight: 600; line-height: 1.3; }
+.dish-image-credit-open { padding-left: 10px; }
+.dish-image-credit > span { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.dish-image-credit button { display: grid; place-items: center; width: 28px; height: 28px; flex: none; padding: 0; color: inherit; background: none; border: 0; border-radius: 50%; cursor: pointer; }
+.dish-image-credit button:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
 .dish-image-credit a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
-.dish-image-placeholder { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; overflow: hidden; background: linear-gradient(135deg, var(--color-brand-soft) 0%, var(--sand-2) 100%); }
-.dish-image-placeholder-icon { position: relative; font-size: 44px; line-height: 1; }
+/* Checked tablecloth (hapag = table) with a plate in the middle. */
+.dish-image-placeholder { position: relative; display: grid; place-items: center; overflow: hidden; background-color: var(--sand-2); background-image: repeating-linear-gradient(0deg, var(--orange-a2) 0 10px, transparent 10px 28px), repeating-linear-gradient(90deg, var(--orange-a2) 0 10px, transparent 10px 28px); }
+.dish-image-plate { display: grid; place-items: center; width: clamp(84px, 30%, 128px); aspect-ratio: 1; font-size: clamp(36px, 7vw, 54px); line-height: 1; background: radial-gradient(circle, #fff 0 58%, var(--sand-1) 59% 100%); border: 1px solid var(--sand-a4); border-radius: 50%; box-shadow: var(--elevation-1); }
 
 .have-progress { display: grid; gap: 6px; margin-bottom: var(--space-3); }
 .have-progress-label { font-size: 12px; font-weight: 800; letter-spacing: .02em; }
@@ -2442,7 +2439,7 @@ figure.recipe-hero-image { margin: 0; }
 .results-footer-actions { display: flex; justify-content: center; margin-top: var(--space-5); }
 
 /* Detail: lighter "why" text without the heavy side bar. */
-.detail-section .match-callout { padding: 0; background: none; border: 0; border-radius: 0; color: var(--color-ink); font-size: 15px; line-height: 1.6; }
+.detail-section .match-callout { padding: 0; background: none; border: 0; border-radius: 0; box-shadow: none; color: var(--color-ink); font-size: 15px; line-height: 1.6; }
 
 /* Profile: controls stacked with even spacing. */
 .preference-form { display: grid; gap: var(--space-4); }

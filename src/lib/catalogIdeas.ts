@@ -1,3 +1,4 @@
+import type { CatalogMealType } from '../data/filipinoRecipeCatalog.ts'
 import { filipinoRecipeCatalog } from '../data/filipinoRecipeCatalog.ts'
 import { kusinaPantryItems } from '../data/kusinaShelf.ts'
 import { normalizeIngredientInput } from './ingredientParser.ts'
@@ -13,11 +14,22 @@ export interface DishIdea {
   localName?: string
   description: string
   cookingMethod: string
+  mealType: string
   score: number
   have: string[]
   missing: string[]
   staples: string[]
   substitutions: Array<{ requiredIngredient: string; providedIngredient: string; note: string }>
+}
+
+const mealTypeLabels: Record<CatalogMealType, string> = {
+  'main-dish': 'Ulam',
+  soup: 'Sabaw',
+  stew: 'Stew',
+  'noodle-dish': 'Noodles',
+  'rice-meal': 'Rice meal',
+  'vegetable-dish': 'Gulay',
+  breakfast: 'Breakfast',
 }
 
 export function buildDishIdeas(ingredients: NormalizedIngredient[], limit = 6): DishIdea[] {
@@ -27,6 +39,7 @@ export function buildDishIdeas(ingredients: NormalizedIngredient[], limit = 6): 
     localName: match.dish.localName,
     description: match.dish.description,
     cookingMethod: match.dish.cookingMethod,
+    mealType: mealTypeLabels[match.dish.mealType],
     score: match.score,
     have: match.availableIngredients,
     missing: match.missingIngredients.filter((item) => !isPantryStaple(item)),

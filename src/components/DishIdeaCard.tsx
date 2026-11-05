@@ -17,13 +17,15 @@ export function DishIdeaCard({ idea }: DishIdeaCardProps) {
   return (
     <article className="recipe-card dish-idea-card">
       <DishImage recipe={{ id: idea.id, title: idea.name, localTitle: idea.localName }} variant="card" />
-      <div className="recipe-card-topline">
-        <span className="recipe-badge">{idea.cookingMethod}</span>
-      </div>
       <div className="recipe-card-main dish-idea-body">
         <HaveProgress have={haveCount} total={haveCount + idea.missing.length} />
         <h2>{idea.name}</h2>
         {idea.localName && idea.localName !== idea.name ? <p className="dish-idea-local">{idea.localName}</p> : null}
+        {/* Catalog dishes carry no price or time, so the row shows what the catalog does know. */}
+        <div className="recipe-metrics" aria-label="Dish summary">
+          <span>{idea.mealType}</span>
+          <span>{idea.cookingMethod.replace(/^./, (letter) => letter.toUpperCase())}</span>
+        </div>
         <p className="recipe-description">{idea.description}</p>
         {idea.substitutions.length + idea.missing.length + idea.staples.length > 0 ? (
           <div className="ingredient-summary" aria-label="Ingredient evidence">

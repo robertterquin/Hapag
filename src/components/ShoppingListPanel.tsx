@@ -13,6 +13,8 @@ export function ShoppingListPanel({ recipe }: { recipe: Recipe }) {
   // Stable so the box is focused and selected once when it appears, not on every render.
   const selectFallback = useCallback((element: HTMLTextAreaElement | null) => { element?.focus(); element?.select() }, [])
   const canShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function'
+  // Nothing missing means no list to make; staples are assumed on hand, as on the ingredient list.
+  if (buildShoppingList(recipe, { includeStaples: false }).items.length === 0) return null
 
   const copy = async () => {
     try {

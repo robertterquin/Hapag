@@ -131,11 +131,12 @@ export function RecipeDetailPage({ recipeId, saved, onToggleSave, onStartCooking
           </div>
         </div>
         <aside className="detail-side-column">
-          <CostBreakdown recipe={scaledRecipe} />
-          <div className="safety-note">
-            <strong>Check before cooking</strong>
-            <p>{recipe.source === 'ai' ? 'AI-generated suggestion. ' : ''}Verify ingredients, labels, and allergy context. Dietary labels are a guide and not medical advice.</p>
-          </div>
+          <CostBreakdown recipe={scaledRecipe}>
+            <div className="safety-note">
+              <strong>Check before cooking</strong>
+              <p>{recipe.source === 'ai' ? 'AI-generated suggestion. ' : ''}Verify ingredients, labels, and allergy context. Dietary labels are a guide and not medical advice.</p>
+            </div>
+          </CostBreakdown>
         </aside>
       </div>
       <StickyActionBar>
