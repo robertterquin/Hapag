@@ -32,7 +32,6 @@ export function RecipeCard({ recipe, saved, onOpen, onToggleSave, animationIndex
       <DishImage recipe={recipe} variant="card" />
       <div className="recipe-card-topline">
         {/* Only an adaptation needs flagging; "classic" is the default and adds noise. */}
-        {recipe.authenticity === 'hapag-adaptation' ? <span className="recipe-authenticity-badge">{authenticityLabels[recipe.authenticity]}</span> : null}
         <motion.button className={`save-button ${saved ? 'save-button-saved' : ''}`} type="button" onClick={onToggleSave} aria-label={saved ? `Remove from saved: ${recipe.title}` : `Save ${recipe.title}`} aria-pressed={saved} whileTap={{ scale: 0.9 }} transition={{ duration: 0.12 }}>
           <motion.span key={saved ? 'saved' : 'unsaved'} initial={{ scale: 0.7, opacity: 0.5 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.16 }}>{saved ? '♥' : '♡'}</motion.span>
         </motion.button>
@@ -46,7 +45,8 @@ export function RecipeCard({ recipe, saved, onOpen, onToggleSave, animationIndex
           <span>{recipe.timeMinutes} min</span>
           <span>{recipe.difficulty}</span>
           <span>{recipe.servings} serv.</span>
-          {recipe.tags[0] ? <span>{recipe.tags[0]}</span> : null}
+          {recipe.tags[0] ? <span>{recipe.tags[0].replace(/^./, (letter) => letter.toUpperCase())}</span> : null}
+          {recipe.authenticity === 'hapag-adaptation' ? <span>{authenticityLabels[recipe.authenticity]}</span> : null}
         </div>
         <p className="recipe-description">{recipe.description || recipe.matchReason}</p>
         {missing.length + staples.length > 0 ? (

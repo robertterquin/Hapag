@@ -76,26 +76,22 @@ export function UlamPage({ session, notice, staples, staplesError, onAddIngredie
         <aside className="ulam-side" aria-label="Your list and preferences">
           <section className="review-panel selected-panel ulam-order-selected" aria-labelledby="review-heading">
             <div className="section-heading-row">
-              <div>
-                <h2 id="review-heading">Your ingredients</h2>
-              </div>
+              <h2 id="review-heading">
+                Your ingredients
+                {ingredientCount > 0 ? <span className="count-badge" aria-label={`${ingredientCount} ingredients`}>{ingredientCount}</span> : null}
+              </h2>
               {ingredientCount > 0 ? (
-                <span className="count-badge" aria-label={`${ingredientCount} ingredients`}>{ingredientCount}</span>
-              ) : null}
-            </div>
-            <IngredientChips ingredients={session.ingredients} onRemove={onRemove} />
-            {session.ingredients.some((ingredient) => ingredient.confidence === 'low') ? (
-              <p className="inline-warning">Some ingredients need checking. Hapag didn't recognize the ones marked with "?".</p>
-            ) : null}
-            <div className="selected-panel-actions">
-              {ingredientCount > 0 ? (
-                <button className="text-button" type="button" onClick={onReset}>Start a new list</button>
+                <button className="text-button" type="button" onClick={onReset}>Clear list</button>
               ) : (
                 <button className="text-button" type="button" onClick={onSurprise}>
                   <Icon icon="lucide:dices" width={16} height={16} aria-hidden="true" /> Surprise me!
                 </button>
               )}
             </div>
+            <IngredientChips ingredients={session.ingredients} onRemove={onRemove} />
+            {session.ingredients.some((ingredient) => ingredient.confidence === 'low') ? (
+              <p className="inline-warning">Some ingredients need checking. Hapag didn't recognize the ones marked with "?".</p>
+            ) : null}
           </section>
           <div className="ulam-order-prefs">
             <UlamPreferences constraints={session.constraints} onUpdate={onUpdateConstraints} />

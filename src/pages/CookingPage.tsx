@@ -238,7 +238,7 @@ export function CookingPage({ recipeId, isSignedIn, feedback, sessionIngredients
                 Hakbang {String(stepIndex + 1).padStart(2, '0')}
               </span>
               {isVoiceSupported ? (
-                <button className={`cooking-voice-button ${isSpeaking ? 'voice-speaking' : ''}`} type="button" onClick={readStepAloud} aria-label={isSpeaking ? 'Stop reading this step' : 'Read this step aloud'}>
+                <button className={`cooking-voice-button ${isSpeaking ? 'voice-speaking' : ''}`} type="button" onClick={readStepAloud} aria-label={isSpeaking ? 'Stop reading this step' : 'Listen: read this step aloud'}>
                   <Icon icon={isSpeaking ? 'lucide:pause' : 'lucide:volume-2'} width={14} height={14} aria-hidden="true" />
                   <span>{isSpeaking ? 'Stop' : 'Listen'}</span>
                 </button>
@@ -263,7 +263,7 @@ export function CookingPage({ recipeId, isSignedIn, feedback, sessionIngredients
             ) : null}
 
             <div className="timer-row">
-              <button className="timer-adjust-button" type="button" onClick={() => handleTimerAdjust(-60)} aria-label="One minute less">−1m</button>
+              <button className="timer-adjust-button" type="button" onClick={() => handleTimerAdjust(-60)} aria-label="−1m: one minute less">−1m</button>
               <motion.button
                 className={`timer-button ${shownFinished ? 'timer-button-finished' : shownRunning ? 'timer-button-active' : shownSeconds > 0 ? 'timer-button-paused' : ''}`}
                 type="button"
@@ -292,7 +292,7 @@ export function CookingPage({ recipeId, isSignedIn, feedback, sessionIngredients
                   {shownFinished ? "Time's up · restart" : shownRunning ? formatClock(shownSeconds) : shownSeconds > 0 ? `Resume ${formatClock(shownSeconds)}` : `Start ${formatClock(defaultDurationSeconds)}`}
                 </span>
               </motion.button>
-              <button className="timer-adjust-button" type="button" onClick={() => handleTimerAdjust(60)} aria-label="One minute more">+1m</button>
+              <button className="timer-adjust-button" type="button" onClick={() => handleTimerAdjust(60)} aria-label="+1m: one minute more">+1m</button>
             </div>
             {timerOnThisStep && timerActive ? (
               <button className="timer-reset-button" type="button" onClick={handleTimerReset}>

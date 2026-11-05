@@ -24,8 +24,8 @@ export function AppShell({ routeName, contentKey, onNavigate, fullName, isSigned
   const profileInitial = fullName?.[0]?.toUpperCase()
   // Cooking Mode is full screen: no header or nav competing with the step.
   const immersive = routeName === 'cooking'
-  // The sign-in page has its own form; a second "Sign in" in the header only repeats it.
-  const showSignIn = !isSignedIn && routeName !== 'auth'
+  // The sign-in page and the signed-out Profile page each have their own Sign in; the header would repeat it.
+  const showSignIn = !isSignedIn && routeName !== 'auth' && routeName !== 'profile'
 
   return (
     <div className={`app-shell app-shell-${routeName} ${immersive ? 'app-shell-immersive' : ''}`}>

@@ -38,7 +38,7 @@ export function RecipeDetailPage({ recipeId, saved, onToggleSave, onStartCooking
       <section className="recipe-hero">
         <DishImage recipe={recipe} variant="hero" />
         <div className="recipe-hero-content">
-          <span className="recipe-badge">{recipe.tags[0]}</span>
+          {recipe.tags[0] ? <span className="recipe-badge">{recipe.tags[0].replace(/^./, (letter) => letter.toUpperCase())}</span> : null}
           <h1>{recipe.title}</h1>
           {recipe.localTitle ? <p className="local-title">{recipe.localTitle}</p> : null}
           <RecipeMeta recipe={scaledRecipe} />

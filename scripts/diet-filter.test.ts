@@ -29,3 +29,10 @@ test('vegetarian drops meat and fish dishes but keeps vegetable ones', () => {
   assert.ok(vegetarian.length > 0)
   assert.equal(allowed([]).length, filipinoRecipeCatalog.length)
 })
+
+test('low-sodium and diabetic-friendly drop clearly salty or sweet dishes', () => {
+  const ids = (diet: 'low-sodium' | 'diabetic-friendly') => new Set(filipinoRecipeCatalog.filter((entry) => fitsDietAndAllergies(entry, { allergies: [], dietaryPreference: diet })).map((entry) => entry.id))
+  assert.equal(ids('low-sodium').has('chicken-adobo'), false)
+  assert.equal(ids('diabetic-friendly').has('champorado'), false)
+  assert.equal(ids('diabetic-friendly').has('chicken-adobo'), true)
+})

@@ -16,7 +16,7 @@ interface KusinaShelfProps {
 }
 
 export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
-  const [selectedCategory, setSelectedCategory] = useState<KusinaCategory['id']>('all')
+  const [selectedCategory, setSelectedCategory] = useState<KusinaCategory['id']>('protina')
   const language = useDisplayLanguage()
 
   const activeCanonicalMap = useMemo(() => {
@@ -37,19 +37,16 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
   }, [activeCanonicalNames])
 
   const activeCountByCategory = useMemo(() => {
-    const counts: Record<KusinaCategory['id'], number> = { all: 0, protina: 0, gulay: 0, pampalasa: 0 }
+    const counts: Record<KusinaCategory['id'], number> = { protina: 0, gulay: 0, pampalasa: 0 }
     for (const item of kusinaPantryItems) {
       if (!findExistingId(activeCanonicalMap, item)) continue
-      counts.all += 1
       counts[item.category] += 1
     }
     return counts
   }, [activeCanonicalMap])
 
-  const filteredItems = useMemo(() => {
-    if (selectedCategory === 'all') return kusinaPantryItems
-    return kusinaPantryItems.filter((item) => item.category === selectedCategory)
-  }, [selectedCategory])
+  // One category at a time keeps the shelf short; the tab counts show picks in the others.
+  const filteredItems = useMemo(() => kusinaPantryItems.filter((item) => item.category === selectedCategory), [selectedCategory])
 
   return (
     <section className="kusina-shelf" aria-labelledby="pantry-heading">
@@ -126,13 +123,14 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
               type="button"
               onClick={() => onToggle(item.name, isActive, existingId)}
               aria-pressed={isActive}
-              aria-label={`${isActive ? 'Remove' : 'Add'} ${label.secondary ? `${label.primary} (${label.secondary})` : label.primary}`}
               whileTap={{ scale: 0.95 }}
             >
               <span className="item-emoji" aria-hidden="true"><Icon icon={item.icon} width={20} height={20} /></span>
+              {/* The chip's own text is its name, so voice control can say what it sees; the verb is for screen readers. */}
+              <span className="sr-only">{isActive ? 'Remove ' : 'Add '}</span>
               <span className="item-name">
                 {label.primary}
-                {label.secondary ? <small>{label.secondary}</small> : null}
+                {label.secondary ? <small> {label.secondary}</small> : null}
               </span>
               <span className="chip-indicator" aria-hidden="true">
                 {isActive ? (

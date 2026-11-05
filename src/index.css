@@ -67,7 +67,8 @@
   --space-6: 32px;
   --space-7: 48px;
   --space-8: 64px;
-  --radius-control: 14px;
+  /* Three corner sizes: small for controls and inner boxes, card for surfaces, pill for chips. */
+  --radius-control: 12px;
   --radius-card: 20px;
   --radius-pill: 999px;
   /* Elevation, one level per role, cast in dark clay so depth reads on the cream background:

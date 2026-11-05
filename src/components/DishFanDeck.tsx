@@ -75,7 +75,6 @@ export function DishFanDeck({ dishes, onSelect }: DishFanDeckProps) {
               onMouseLeave={() => setActiveIndex(null)}
               onFocus={() => setActiveIndex(index)}
               onBlur={() => setActiveIndex(null)}
-              aria-label={`Cook ${dish.title}: start with ${dish.ingredients}`}
             >
               {/* Masking tape washi strip */}
               <span className={`fan-card-tape fan-card-tape-${index % 3}`} aria-hidden="true" />
@@ -85,7 +84,8 @@ export function DishFanDeck({ dishes, onSelect }: DishFanDeckProps) {
                 {photo && (
                   <img
                     className="fan-card-photo"
-                    src={photo.src}
+                    // Polaroids show ~150px wide, so Wikimedia's 330px thumbnail is enough (about 40 KB instead of 250 KB).
+                    src={photo.src.replace('/960px-', '/330px-')}
                     alt=""
                     style={photo.position ? { objectPosition: photo.position } : undefined}
                     loading="lazy"

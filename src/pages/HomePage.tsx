@@ -32,7 +32,7 @@ const PRINCIPLES = [
 function PreviewFrame({ label, children, className = '' }: { label: string; children: ReactNode; className?: string }) {
   return (
     <figure className={`preview-frame ${className}`}>
-      <div className="preview-frame-body" aria-hidden="true">{children}</div>
+      <div className="preview-frame-body" aria-hidden="true" inert>{children}</div>
       <figcaption className="sr-only">{label} preview</figcaption>
     </figure>
   )

@@ -10,16 +10,15 @@ export interface KusinaItem {
 }
 
 export interface KusinaCategory {
-  id: 'all' | 'protina' | 'gulay' | 'pampalasa'
+  id: 'protina' | 'gulay' | 'pampalasa'
   label: string
   sublabel: string
 }
 
 export const kusinaCategories: readonly KusinaCategory[] = [
-  { id: 'all', label: 'All', sublabel: 'Essential ingredients' },
-  { id: 'protina', label: 'Proteins & Meat', sublabel: 'Chicken, Pork, Fish, Eggs' },
-  { id: 'gulay', label: 'Fresh Vegetables', sublabel: 'Bok Choy, Kangkong, Eggplant' },
-  { id: 'pampalasa', label: 'Spices & Seasonings', sublabel: 'Garlic, Onion, Soy Sauce, Vinegar' },
+  { id: 'protina', label: 'Meat & fish', sublabel: 'Chicken, Pork, Fish, Eggs' },
+  { id: 'gulay', label: 'Vegetables', sublabel: 'Bok Choy, Kangkong, Eggplant' },
+  { id: 'pampalasa', label: 'Seasonings', sublabel: 'Garlic, Onion, Soy Sauce, Vinegar' },
 ] as const
 
 export const kusinaPantryItems: readonly KusinaItem[] = [
