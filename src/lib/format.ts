@@ -28,3 +28,22 @@ export function formatQuantity(quantity: number | string, unit: IngredientUnit) 
   return `${quantity} ${formatUnit(unit, quantity)}`
 }
 
+export function formatTagalogSangkap(count: number, capitalize = false): string {
+  const map: Record<number, string> = {
+    1: 'isang sangkap',
+    2: 'dalawang sangkap',
+    3: 'tatlong sangkap',
+    4: 'apat na sangkap',
+    5: 'limang sangkap',
+    6: 'anim na sangkap',
+    7: 'pitong sangkap',
+    8: 'walong sangkap',
+    9: 'siyam na sangkap',
+    10: 'sampung sangkap',
+    11: 'labing-isang sangkap',
+    12: 'labindalawang sangkap',
+  }
+  const result = count <= 0 ? 'walang sangkap' : (map[count] ?? `${count} na sangkap`)
+  return capitalize ? result.charAt(0).toUpperCase() + result.slice(1) : result
+}
+

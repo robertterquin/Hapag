@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { getAutocompleteSuggestions, normalizeIngredientInput, normalizeIngredientName } from '../src/lib/ingredientParser.ts'
+import { formatTagalogSangkap } from '../src/lib/format.ts'
 
 test('Tagalog and English aliases share catalog-aligned canonical names', () => {
   const cases = [
@@ -101,5 +102,24 @@ test('getAutocompleteSuggestions returns prefix and fuzzy matches with display n
 
   const suggestions = getAutocompleteSuggestions('a', 5)
   assert.ok(suggestions.length <= 5)
+})
+
+test('formatTagalogSangkap correctly formats counts with Tagalog number agreement', () => {
+  assert.equal(formatTagalogSangkap(1), 'isang sangkap')
+  assert.equal(formatTagalogSangkap(2), 'dalawang sangkap')
+  assert.equal(formatTagalogSangkap(3), 'tatlong sangkap')
+  assert.equal(formatTagalogSangkap(4), 'apat na sangkap')
+  assert.equal(formatTagalogSangkap(5), 'limang sangkap')
+  assert.equal(formatTagalogSangkap(6), 'anim na sangkap')
+  assert.equal(formatTagalogSangkap(4, true), 'Apat na sangkap')
+  assert.equal(formatTagalogSangkap(1, true), 'Isang sangkap')
+})
+
+test('Tagalog compound ingredients with ng linker normalize correctly', () => {
+  assert.equal(normalizeIngredientName('dahon ng sili'), 'chili leaves')
+  assert.equal(normalizeIngredientName('dahon sili'), 'chili leaves')
+  assert.equal(normalizeIngredientName('dahon ng sibuyas'), 'green onion')
+  assert.equal(normalizeIngredientName('hilaw na langka'), 'young jackfruit')
+  assert.equal(normalizeIngredientName('sabaw ng buko'), 'coconut water')
 })
 

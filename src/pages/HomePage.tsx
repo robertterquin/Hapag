@@ -17,10 +17,10 @@ export interface HomePageProps {
 const DECK_DISHES: readonly FanDeckDish[] = [
   { id: 'chicken-adobo', title: 'Adobong Manok', category: 'classic', categoryLabel: 'Classic', time: '35 min', price: '₱140', ingredients: 'manok, bawang, toyo, suka', note: 'Lasang lutong nanay!' },
   { id: 'sinigang-na-baboy', title: 'Sinigang na Baboy', category: 'sabaw', categoryLabel: 'Sabaw', time: '50 min', price: '₱220', ingredients: 'baboy, sampalok, kamatis, sibuyas, kangkong', note: 'Mainit at maasim na sabaw' },
-  { id: 'tortang-talong', title: 'Tortang Talong', category: 'tipid', categoryLabel: 'Tipid', time: '20 min', price: '₱60', ingredients: 'talong, itlog, bawang, sibuyas', note: 'Crispy & inihaw na sarap' },
+  { id: 'tortang-talong', title: 'Tortang Talong', category: 'tipid', categoryLabel: 'Tipid', time: '20 min', price: '₱60', ingredients: 'talong, itlog, bawang, sibuyas', note: 'Inihaw at malutong na sarap' },
   { id: 'ginataang-kalabasa-at-sitaw', title: 'Ginataang Kalabasa at Sitaw', category: 'gata', categoryLabel: 'Gata', time: '30 min', price: '₱90', ingredients: 'kalabasa, sitaw, gata, bawang', note: 'Kakang gata at gulay' },
-  { id: 'tinolang-manok', title: 'Tinolang Manok', category: 'sabaw', categoryLabel: 'Sabaw', time: '40 min', price: '₱160', ingredients: 'manok, luya, sibuyas, papaya', note: 'Sariwang luya at dahon sili' },
-  { id: 'ginisang-monggo', title: 'Ginisang Monggo', category: 'gulay', categoryLabel: 'Gulay', time: '45 min', price: '₱70', ingredients: 'monggo, kamatis, bawang, sibuyas', note: 'Biyernes paborito!' },
+  { id: 'tinolang-manok', title: 'Tinolang Manok', category: 'sabaw', categoryLabel: 'Sabaw', time: '40 min', price: '₱160', ingredients: 'manok, luya, sibuyas, papaya', note: 'Sariwang luya at dahon ng sili' },
+  { id: 'ginisang-monggo', title: 'Ginisang Monggo', category: 'gulay', categoryLabel: 'Gulay', time: '45 min', price: '₱70', ingredients: 'monggo, kamatis, bawang, sibuyas', note: 'Paborito tuwing Biyernes!' },
 ]
 
 const PRINCIPLES = [
@@ -100,7 +100,7 @@ export function HomePage({ onStart, onSurprise }: HomePageProps) {
               {['chicken', 'garlic', 'soy sauce', 'vinegar'].map((item) => <IngredientChip key={item} name={label(item)} variant="have" />)}
             </div>
             <div className="preview-cook-bar">
-              <span>4 sangkap ready</span>
+              <span>Apat na sangkap ang handa</span>
               <span className="preview-fake-button">Let's cook →</span>
             </div>
           </PreviewFrame>

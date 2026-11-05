@@ -249,7 +249,7 @@ const regionalDishIds: Record<string, CatalogRegion> = {
 
 export const filipinoRecipeCatalog: FilipinoRecipeCatalogEntry[] = rawFilipinoRecipeCatalog.map((entry) => ({
   ...entry,
-  mealType: mealTypeByCategory[entry.category] ?? (entry.category === 'quick meal' || entry.category === 'fried' || entry.category === 'grilled' || entry.category === 'braised' || entry.category === 'simmered' || entry.category === 'roasted' || entry.category === 'steamed' || entry.category === 'stuffed' || entry.category === 'egg' || entry.category === 'sautÃ©ed' || entry.category === 'pasta' || entry.category === 'pie' || entry.category === 'seafood' || entry.category === 'salad' || entry.category === 'appetizer' ? 'main-dish' : 'main-dish'),
+  mealType: mealTypeByCategory[entry.category] ?? (entry.category === 'quick meal' || entry.category === 'fried' || entry.category === 'grilled' || entry.category === 'braised' || entry.category === 'simmered' || entry.category === 'roasted' || entry.category === 'steamed' || entry.category === 'stuffed' || entry.category === 'egg' || entry.category === 'sautéed' || entry.category === 'pasta' || entry.category === 'pie' || entry.category === 'seafood' || entry.category === 'salad' || entry.category === 'appetizer' ? 'main-dish' : 'main-dish'),
   region: regionalDishIds[entry.id] ?? 'National',
   verificationStatus: 'reviewed',
   essentialIngredients: entry.requiredIngredients.slice(0, Math.min(2, entry.requiredIngredients.length)),

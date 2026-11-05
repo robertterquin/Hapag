@@ -5,6 +5,7 @@ import { KusinaShelf } from '../components/KusinaShelf.tsx'
 import { PantryStaplesCard } from '../components/PantryStaplesCard.tsx'
 import { StickyActionBar } from '../components/StickyActionBar.tsx'
 import { UlamPreferences } from '../components/UlamPreferences.tsx'
+import { formatTagalogSangkap } from '../lib/format.ts'
 import type { DiscoverySession, GenerationConstraints, IngredientDraft } from '../types/domain.ts'
 
 export interface UlamPageProps {
@@ -112,7 +113,7 @@ export function UlamPage({ session, notice, staples, staplesError, onAddIngredie
                 ) : (
                   <span className="sticky-summary-active">
                     <span className="sticky-count-pill" aria-hidden="true">{ingredientCount}</span>
-                    <span>{ingredientCount === 1 ? '1 sangkap ready' : `${ingredientCount} sangkap ready`}</span>
+                    <span>{ingredientCount === 1 ? 'Isang sangkap ang handa' : `${formatTagalogSangkap(ingredientCount, true)} ang handa`}</span>
                   </span>
                 )
               }

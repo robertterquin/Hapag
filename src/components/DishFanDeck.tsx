@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Icon } from '@iconify/react'
 import { getDishPhoto } from '../lib/dishPhotoLookup.ts'
+import { formatTagalogSangkap } from '../lib/format.ts'
 
 export interface FanDeckDish {
   id: string
@@ -101,7 +102,7 @@ export function DishFanDeck({ dishes, onSelect }: DishFanDeckProps) {
               <span className="fan-card-memo">
                 <span className="fan-card-title">{dish.title}</span>
                 {dish.note && <span className="fan-card-note">{dish.note}</span>}
-                <span className="fan-card-foot">{ingredientCount} sangkap</span>
+                <span className="fan-card-foot">{formatTagalogSangkap(ingredientCount)}</span>
               </span>
             </button>
           </li>
