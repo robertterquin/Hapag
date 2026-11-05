@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
+import { Icon } from '@iconify/react'
 import type { NormalizedIngredient } from '../types/domain.ts'
 import { kusinaCategories, kusinaPantryItems, getSmartPairings, type KusinaCategory, type KusinaItem } from '../data/kusinaShelf.ts'
 import { useDisplayLanguage } from '../app/displayLanguage.ts'
@@ -128,7 +129,7 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
               aria-label={`${isActive ? 'Remove' : 'Add'} ${label.secondary ? `${label.primary} (${label.secondary})` : label.primary}`}
               whileTap={{ scale: 0.95 }}
             >
-              <span className="item-emoji" aria-hidden="true">{item.emoji}</span>
+              <span className="item-emoji" aria-hidden="true"><Icon icon={item.icon} width={20} height={20} /></span>
               <span className="item-name">
                 {label.primary}
                 {label.secondary ? <small>{label.secondary}</small> : null}

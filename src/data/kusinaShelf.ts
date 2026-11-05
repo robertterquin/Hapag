@@ -1,8 +1,11 @@
+import type { IconifyIcon } from '@iconify/react'
+import { pantryIcons } from './pantryIcons.ts'
 export interface KusinaItem {
   name: string
   localName: string
   canonicalName: string
-  emoji: string
+  // An Iconify name (Fluent Emoji Flat) or one of our own drawings, so every phone shows the same picture.
+  icon: string | IconifyIcon
   category: 'protina' | 'gulay' | 'pampalasa'
 }
 
@@ -21,34 +24,34 @@ export const kusinaCategories: readonly KusinaCategory[] = [
 
 export const kusinaPantryItems: readonly KusinaItem[] = [
 
-  { name: 'Chicken', localName: 'Manok', canonicalName: 'chicken', emoji: '🍗', category: 'protina' },
-  { name: 'Pork', localName: 'Baboy', canonicalName: 'pork', emoji: '🥓', category: 'protina' },
-  { name: 'Egg', localName: 'Itlog', canonicalName: 'egg', emoji: '🥚', category: 'protina' },
-  { name: 'Sardines', localName: 'Sardinas', canonicalName: 'canned sardines', emoji: '🥫', category: 'protina' },
-  { name: 'Tofu', localName: 'Tokwa', canonicalName: 'tofu', emoji: '🫘', category: 'protina' },
-  { name: 'Bangus', localName: 'Bangus', canonicalName: 'milkfish', emoji: '🐟', category: 'protina' },
-  { name: 'Tilapia', localName: 'Tilapia', canonicalName: 'tilapia', emoji: '🐟', category: 'protina' },
-  { name: 'Shrimp', localName: 'Hipon', canonicalName: 'shrimp', emoji: '🦐', category: 'protina' },
-  { name: 'Corned Beef', localName: 'Corned Beef', canonicalName: 'corned beef', emoji: '🥫', category: 'protina' },
+  { name: 'Chicken', localName: 'Manok', canonicalName: 'chicken', icon: 'fluent-emoji-flat:poultry-leg', category: 'protina' },
+  { name: 'Pork', localName: 'Baboy', canonicalName: 'pork', icon: 'fluent-emoji-flat:bacon', category: 'protina' },
+  { name: 'Egg', localName: 'Itlog', canonicalName: 'egg', icon: 'fluent-emoji-flat:egg', category: 'protina' },
+  { name: 'Sardines', localName: 'Sardinas', canonicalName: 'canned sardines', icon: 'fluent-emoji-flat:canned-food', category: 'protina' },
+  { name: 'Tofu', localName: 'Tokwa', canonicalName: 'tofu', icon: pantryIcons.tofu, category: 'protina' },
+  { name: 'Bangus', localName: 'Bangus', canonicalName: 'milkfish', icon: 'fluent-emoji-flat:fish', category: 'protina' },
+  { name: 'Tilapia', localName: 'Tilapia', canonicalName: 'tilapia', icon: 'fluent-emoji-flat:fish', category: 'protina' },
+  { name: 'Shrimp', localName: 'Hipon', canonicalName: 'shrimp', icon: 'fluent-emoji-flat:shrimp', category: 'protina' },
+  { name: 'Corned Beef', localName: 'Corned Beef', canonicalName: 'corned beef', icon: pantryIcons.cornedBeef, category: 'protina' },
 
-  { name: 'Pechay', localName: 'Pechay', canonicalName: 'pechay', emoji: '🥬', category: 'gulay' },
-  { name: 'Kangkong', localName: 'Kangkong', canonicalName: 'kangkong', emoji: '🌿', category: 'gulay' },
-  { name: 'Eggplant', localName: 'Talong', canonicalName: 'eggplant', emoji: '🍆', category: 'gulay' },
-  { name: 'Sayote', localName: 'Sayote', canonicalName: 'sayote', emoji: '🍐', category: 'gulay' },
-  { name: 'Potato', localName: 'Patatas', canonicalName: 'potato', emoji: '🥔', category: 'gulay' },
-  { name: 'Tomato', localName: 'Kamatis', canonicalName: 'tomato', emoji: '🍅', category: 'gulay' },
-  { name: 'Cabbage', localName: 'Repolyo', canonicalName: 'cabbage', emoji: '🥬', category: 'gulay' },
-  { name: 'String Beans', localName: 'Sitaw', canonicalName: 'string beans', emoji: '🫛', category: 'gulay' },
-  { name: 'Squash', localName: 'Kalabasa', canonicalName: 'squash', emoji: '🎃', category: 'gulay' },
+  { name: 'Pechay', localName: 'Pechay', canonicalName: 'pechay', icon: 'fluent-emoji-flat:leafy-green', category: 'gulay' },
+  { name: 'Kangkong', localName: 'Kangkong', canonicalName: 'kangkong', icon: 'fluent-emoji-flat:herb', category: 'gulay' },
+  { name: 'Eggplant', localName: 'Talong', canonicalName: 'eggplant', icon: 'fluent-emoji-flat:eggplant', category: 'gulay' },
+  { name: 'Sayote', localName: 'Sayote', canonicalName: 'sayote', icon: pantryIcons.chayote, category: 'gulay' },
+  { name: 'Potato', localName: 'Patatas', canonicalName: 'potato', icon: 'fluent-emoji-flat:potato', category: 'gulay' },
+  { name: 'Tomato', localName: 'Kamatis', canonicalName: 'tomato', icon: 'fluent-emoji-flat:tomato', category: 'gulay' },
+  { name: 'Cabbage', localName: 'Repolyo', canonicalName: 'cabbage', icon: pantryIcons.cabbage, category: 'gulay' },
+  { name: 'String Beans', localName: 'Sitaw', canonicalName: 'string beans', icon: pantryIcons.longBeans, category: 'gulay' },
+  { name: 'Squash', localName: 'Kalabasa', canonicalName: 'squash', icon: pantryIcons.squash, category: 'gulay' },
 
-  { name: 'Garlic', localName: 'Bawang', canonicalName: 'garlic', emoji: '🧄', category: 'pampalasa' },
-  { name: 'Onion', localName: 'Sibuyas', canonicalName: 'onion', emoji: '🧅', category: 'pampalasa' },
-  { name: 'Ginger', localName: 'Luya', canonicalName: 'luya', emoji: '🫚', category: 'pampalasa' },
-  { name: 'Chili', localName: 'Sili', canonicalName: 'chili', emoji: '🌶️', category: 'pampalasa' },
-  { name: 'Soy Sauce', localName: 'Toyo', canonicalName: 'soy sauce', emoji: '🍶', category: 'pampalasa' },
-  { name: 'Vinegar', localName: 'Suka', canonicalName: 'vinegar', emoji: '🧴', category: 'pampalasa' },
-  { name: 'Fish Sauce', localName: 'Patis', canonicalName: 'fish sauce', emoji: '🐠', category: 'pampalasa' },
-  { name: 'Black Pepper', localName: 'Paminta', canonicalName: 'black pepper', emoji: '🧂', category: 'pampalasa' },
+  { name: 'Garlic', localName: 'Bawang', canonicalName: 'garlic', icon: 'fluent-emoji-flat:garlic', category: 'pampalasa' },
+  { name: 'Onion', localName: 'Sibuyas', canonicalName: 'onion', icon: 'fluent-emoji-flat:onion', category: 'pampalasa' },
+  { name: 'Ginger', localName: 'Luya', canonicalName: 'luya', icon: 'fluent-emoji-flat:ginger-root', category: 'pampalasa' },
+  { name: 'Chili', localName: 'Sili', canonicalName: 'chili', icon: 'fluent-emoji-flat:hot-pepper', category: 'pampalasa' },
+  { name: 'Soy Sauce', localName: 'Toyo', canonicalName: 'soy sauce', icon: pantryIcons.soySauce, category: 'pampalasa' },
+  { name: 'Vinegar', localName: 'Suka', canonicalName: 'vinegar', icon: pantryIcons.vinegar, category: 'pampalasa' },
+  { name: 'Fish Sauce', localName: 'Patis', canonicalName: 'fish sauce', icon: pantryIcons.fishSauce, category: 'pampalasa' },
+  { name: 'Black Pepper', localName: 'Paminta', canonicalName: 'black pepper', icon: pantryIcons.blackPepper, category: 'pampalasa' },
 ]
 
 export interface SmartPairing {
