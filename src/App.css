@@ -2407,7 +2407,7 @@ figure.recipe-hero-image { margin: 0; }
   .ulam-page { width: min(1180px, 100%); }
   .ulam-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 400px); align-items: start; gap: var(--space-5); }
   .ulam-main { display: block; }
-  .ulam-side { position: sticky; top: 96px; display: flex; flex-direction: column; max-height: calc(100vh - 112px); overflow-y: auto; overscroll-behavior: contain; padding-bottom: var(--space-2); }
+  .ulam-side { position: sticky; top: 96px; display: flex; flex-direction: column; }
   .ulam-page .ulam-side .review-panel.selected-panel { margin-top: var(--space-4); }
   .ulam-side .sticky-action-bar { position: static; margin-top: var(--space-4); }
 }
