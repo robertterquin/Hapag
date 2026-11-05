@@ -57,6 +57,17 @@ export const persistenceService = {
     return { session: data.session }
   },
 
+  // The email link returns to /auth, where Supabase signs the user in for recovery and the app asks for a new password.
+  async sendPasswordReset(email: string) {
+    const { error } = await requireClient().auth.resetPasswordForEmail(email, { redirectTo: `${window.location.origin}/auth` })
+    if (error) throw error
+  },
+
+  async updatePassword(password: string) {
+    const { error } = await requireClient().auth.updateUser({ password })
+    if (error) throw error
+  },
+
   async signOut() {
     const client = requireClient()
     const { error } = await client.auth.signOut()
@@ -112,6 +123,12 @@ export const persistenceService = {
       updated_at: new Date().toISOString(),
     }, { onConflict: 'user_id,recipe_id' })
     if (error) throw error
+  },
+
+  async loadRecipeFeedback(userId: string): Promise<Array<{ recipe_id: string; feedback_type: string }>> {
+    const { data, error } = await requireClient().from('recipe_feedback').select('recipe_id,feedback_type').eq('user_id', userId)
+    if (error) throw error
+    return data ?? []
   },
 
   async removeRecipeFeedback(userId: string, recipeId: string) {

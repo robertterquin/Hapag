@@ -81,7 +81,7 @@ export function KusinaShelf({ activeIngredients, onToggle }: KusinaShelfProps) {
                   onClick={() => onToggle(pair.name, false)}
                   aria-label={`Add ${labelForName(pair.name, language)}`}
                 >
-                  <span className="plus-glyph" aria-hidden="true">+</span> {getIngredientLabel(pair.name, pair.localName, language).primary}
+                  <Icon className="plus-glyph" icon="lucide:plus" width={14} height={14} aria-hidden="true" /> {getIngredientLabel(pair.name, pair.localName, language).primary}
                 </button>
               ))}
             </div>

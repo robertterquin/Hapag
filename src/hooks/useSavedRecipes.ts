@@ -46,14 +46,22 @@ export function useSavedRecipes(session: Session | null) {
 
   const toggleCooked = async (recipeId: string) => {
     if (!session) throw new Error('Sign in to record cooked recipes.')
-    const recipe = await recipeService.getRecipe(recipeId)
-    if (!recipe) throw new Error('This recipe is no longer available.')
-    await persistenceService.markCooked(session.user.id, recipe)
-    setCookedRecipes((recipes) => [recipe, ...recipes])
+    try {
+      const recipe = await recipeService.getRecipe(recipeId)
+      if (!recipe) throw new Error('This recipe is no longer available.')
+      await persistenceService.markCooked(session.user.id, recipe)
+      setCookedRecipes((recipes) => [recipe, ...recipes])
+      setError(null)
+    } catch (reason: unknown) {
+      setError(getErrorMessage(reason, 'Unable to save this as cooked.'))
+    }
   }
 
+  // After sign-out the previous account's lists must not linger (hearts on cards, the Saved page).
+  const saved = session ? savedRecipes : []
+  const cooked = session ? cookedRecipes : []
   return {
-    savedIds: savedRecipes.map((recipe) => recipe.id), cookedIds: cookedRecipes.map((recipe) => recipe.id),
-    savedRecipes, cookedRecipes, status, error, reload: () => setReloadKey((key) => key + 1), toggleSaved, toggleCooked,
+    savedIds: saved.map((recipe) => recipe.id), cookedIds: cooked.map((recipe) => recipe.id),
+    savedRecipes: saved, cookedRecipes: cooked, status: session ? status : 'idle', error: session ? error : null, reload: () => setReloadKey((key) => key + 1), toggleSaved, toggleCooked,
   }
 }

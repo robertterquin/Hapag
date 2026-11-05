@@ -12,9 +12,10 @@ test('Phase 17 exposes the four result feedback choices', async () => {
   assert.match(source, /Not a Filipino dish/)
 })
 
-test('Phase 17 stores feedback locally and reranks suggestions', async () => {
+test('Phase 17 keeps feedback in Supabase when signed in, locally otherwise, and reranks suggestions', async () => {
   const source = await read('src/hooks/useRecipeFeedback.ts')
   assert.match(source, /localStorage/)
+  assert.match(source, /loadRecipeFeedback\(userId\)/)
   assert.match(source, /rankRecipes/)
   assert.match(source, /not-filipino/)
   const app = await read('src/app/App.tsx')

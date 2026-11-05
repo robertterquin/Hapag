@@ -1,3 +1,4 @@
+import { Icon } from '@iconify/react'
 export type IngredientChipVariant = 'have' | 'missing' | 'staple' | 'substitute'
 
 const variantTitles: Record<IngredientChipVariant, string> = {
@@ -18,7 +19,7 @@ export function IngredientChip({ name, variant, onRemove }: IngredientChipProps)
     <span className={`hapag-chip hapag-chip-${variant}`} title={variantTitles[variant]}>
       <span>{name}</span>
       {onRemove ? (
-        <button className="hapag-chip-remove" type="button" onClick={onRemove} aria-label={`Remove ${name}`}>×</button>
+        <button className="hapag-chip-remove" type="button" onClick={onRemove} aria-label={`Remove ${name}`}><Icon icon="lucide:x" width={14} height={14} aria-hidden="true" /></button>
       ) : null}
     </span>
   )

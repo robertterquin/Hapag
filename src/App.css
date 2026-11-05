@@ -1240,8 +1240,8 @@ p { line-height: 1.6; }
   .recipe-hero { padding: 22px 18px; }
   .recipe-hero, .recipe-hero:has(.recipe-hero-image) { grid-template-columns: 1fr; gap: var(--space-4); }
   .recipe-hero-image { border-radius: var(--radius-control); }
-  .detail-ingredient-list li { grid-template-columns: 26px 1fr; gap: 8px; }
-  .detail-ingredient-list li em { grid-column: 2 / -1; font-size: 11px; }
+  .detail-ingredient-list li { grid-template-columns: 26px 1fr auto; gap: 8px; }
+  .detail-ingredient-list li em { font-size: 11px; }
   .cooking-controls { flex-direction: column-reverse; }
   .cooking-controls .button { width: 100%; min-height: 48px; }
   .ingredient-add-footer { align-items: stretch; flex-direction: column; }
@@ -1357,9 +1357,9 @@ p { line-height: 1.6; }
   transform: translateY(-1px);
 }
 
-.pairing-chip .plus-glyph {
-  font-weight: 800;
-}
+/* Icons, not typed symbols: text glyphs like × and + sit on the baseline and look low in round buttons. */
+.pairing-chip .plus-glyph { flex: none; }
+.save-button-saved svg, .button-saved svg { fill: currentColor; }
 
 .shelf-tabs {
   display: flex;
@@ -2431,3 +2431,7 @@ figure.recipe-hero-image { margin: 0; }
 .pairings-label svg { display: none; }
 .pairing-chip { padding: 0 12px; font-size: 13px; border-color: var(--color-brand-border); }
 .recipe-card-main { align-content: start; }
+
+/* Auth extras: Forgot password sits under the password field; signed-in actions sit side by side. */
+.auth-forgot { justify-self: end; margin-top: -6px; font-size: 13px; }
+.auth-signed-in-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }

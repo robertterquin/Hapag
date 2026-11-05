@@ -1,3 +1,4 @@
+import { Icon } from '@iconify/react'
 import { useEffect, useId, useRef } from 'react'
 import type { ReactNode } from 'react'
 import { motion, useDragControls } from 'motion/react'
@@ -63,7 +64,7 @@ export function BottomSheet({ open, title, onClose, children, footer }: BottomSh
           </div>
           <header className="bottom-sheet-header">
             <h2 id={titleId}>{title}</h2>
-            <button className="bottom-sheet-close" type="button" onClick={onClose} aria-label="Close">×</button>
+            <button className="bottom-sheet-close" type="button" onClick={onClose} aria-label="Close"><Icon icon="lucide:x" width={20} height={20} aria-hidden="true" /></button>
           </header>
           <div className="bottom-sheet-body">{children}</div>
           {footer ? <footer className="bottom-sheet-footer">{footer}</footer> : null}

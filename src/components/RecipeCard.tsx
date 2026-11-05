@@ -1,3 +1,4 @@
+import { Icon } from '@iconify/react'
 import { motion } from 'motion/react'
 import type { Recipe } from '../types/domain.ts'
 import { formatCost } from '../lib/format.ts'
@@ -33,7 +34,7 @@ export function RecipeCard({ recipe, saved, onOpen, onToggleSave, animationIndex
       <div className="recipe-card-topline">
         {/* Only an adaptation needs flagging; "classic" is the default and adds noise. */}
         <motion.button className={`save-button ${saved ? 'save-button-saved' : ''}`} type="button" onClick={onToggleSave} aria-label={saved ? `Remove from saved: ${recipe.title}` : `Save ${recipe.title}`} aria-pressed={saved} whileTap={{ scale: 0.9 }} transition={{ duration: 0.12 }}>
-          <motion.span key={saved ? 'saved' : 'unsaved'} initial={{ scale: 0.7, opacity: 0.5 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.16 }}>{saved ? '♥' : '♡'}</motion.span>
+          <motion.span key={saved ? 'saved' : 'unsaved'} initial={{ scale: 0.7, opacity: 0.5 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.16 }}><Icon icon="lucide:heart" width={18} height={18} aria-hidden="true" /></motion.span>
         </motion.button>
       </div>
       <button className="recipe-card-main" type="button" onClick={onOpen}>

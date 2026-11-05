@@ -35,6 +35,9 @@ function App() {
   const sessionId = auth.session?.user.id
   const { applyPreferences } = discovery
   const appliedPreferencesKey = useRef<string | null>(null)
+  // Where to return after signing in: the last page that wasn't the sign-in page.
+  const returnPath = useRef('/')
+  useEffect(() => { if (route.name !== 'auth') returnPath.current = window.location.pathname }, [route])
   useEffect(() => {
     if (!sessionId || preferences.status !== 'ready') return
     const value = preferences.preferences
@@ -43,7 +46,7 @@ function App() {
     appliedPreferencesKey.current = key
     applyPreferences(value)
   }, [sessionId, preferences.status, preferences.preferences, applyPreferences])
-  const recipeFeedback = useRecipeFeedback()
+  const recipeFeedback = useRecipeFeedback(auth.session)
   const startDiscovery = (value: string) => {
     discovery.startDiscovery(value)
     navigate('/ulam')
@@ -103,11 +106,11 @@ function App() {
       case 'home': return <HomePage onStart={startDiscovery} onSurprise={startSurprise} />
       case 'ulam': return <UlamPage session={discovery.session} notice={discovery.notice} staples={kusinaStaples.staples} staplesError={kusinaStaples.error} onAddIngredients={discovery.addIngredients} onReset={discovery.resetDiscovery} onUpdateConstraints={discovery.updateConstraints} onGenerate={generateSuggestions} onRemove={discovery.removeIngredient} onToggleStaple={(item) => void kusinaStaples.toggleStaple(item)} onSurprise={startSurprise} />
       case 'results': return <ResultsPage session={discovery.session} status={discovery.generationStatus} suggestions={recipeFeedback.rankRecipes(discovery.suggestions)} ideas={discovery.ideas} fallback={discovery.fallback} error={discovery.generationError} savedError={savedRecipes.error} savedIds={savedRecipes.savedIds} onOpen={(id) => navigate(`/recipes/${id}`)} onToggleSave={toggleSaved} onRetry={generateSuggestions} onEdit={() => navigate('/ulam')} onAddIngredient={(name) => { discovery.addIngredients({ name }); navigate('/ulam') }} onGetDishRecipe={openDishRecipe} />
-      case 'recipe-detail': return <RecipeDetailPage key={route.recipeId} recipeId={route.recipeId} saved={savedRecipes.savedIds.includes(route.recipeId)} onToggleSave={() => toggleSaved(route.recipeId)} onStartCooking={() => navigate(`/recipes/${route.recipeId}/cook`)} onBack={() => navigate('/results')} onStartOver={() => navigateFromShell('/ulam')} />
+      case 'recipe-detail': return <RecipeDetailPage key={route.recipeId} recipeId={route.recipeId} saved={savedRecipes.savedIds.includes(route.recipeId)} saveError={savedRecipes.error} onToggleSave={() => toggleSaved(route.recipeId)} onStartCooking={() => navigate(`/recipes/${route.recipeId}/cook`)} onBack={() => navigate('/results')} onStartOver={() => navigateFromShell('/ulam')} />
       case 'cooking': return <CookingPage key={route.recipeId} recipeId={route.recipeId} isSignedIn={Boolean(auth.session)} feedback={recipeFeedback.feedback[route.recipeId]} sessionIngredients={discovery.session.ingredients} onFinish={finishCooking} onBack={() => navigate(`/recipes/${route.recipeId}`)} onStartOver={() => navigateFromShell('/ulam')} onFeedback={(kind) => submitFeedback(route.recipeId, kind)} onUseLeftovers={(names, recipeTitle) => { discovery.startDiscovery(names.join(', '), `Leftovers from ${recipeTitle}. Add anything else you have, then find your next ulam.`); navigate('/ulam') }} />
       case 'saved': return <SavedPage isAuthenticated={Boolean(auth.session)} status={savedRecipes.status} error={savedRecipes.error} savedIds={savedRecipes.savedIds} savedRecipes={savedRecipes.savedRecipes} cookedRecipes={savedRecipes.cookedRecipes} onOpen={(id) => navigate(`/recipes/${id}`)} onUnsave={(id) => savedRecipes.toggleSaved(id)} onStart={() => navigate('/ulam')} onSignIn={requireAuth} onRetry={savedRecipes.reload} />
       case 'profile': return <ProfilePage key={auth.session?.user.id ?? 'signed-out'} session={auth.session} preferences={preferences.preferences} status={preferences.status} error={preferences.error} onSave={preferences.save} onSignIn={requireAuth} onSignOut={auth.signOut} />
-      case 'auth': return <AuthPage session={auth.session} status={auth.status} error={auth.error} onSignIn={auth.signIn} onSignUp={auth.signUp} onSignOut={auth.signOut} onContinue={() => navigate('/')} />
+      case 'auth': return <AuthPage session={auth.session} status={auth.status} error={auth.error} onSignIn={auth.signIn} onSignUp={auth.signUp} onSignOut={auth.signOut} onContinue={() => navigate(returnPath.current)} recovering={auth.recovering} onRequestPasswordReset={auth.requestPasswordReset} onUpdatePassword={auth.updatePassword} />
       case 'not-found': return <NotFoundPage onBack={() => navigate('/')} />
     }
   })()
