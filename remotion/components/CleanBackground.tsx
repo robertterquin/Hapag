@@ -1,5 +1,5 @@
 import React from 'react';
-import { interpolate, useCurrentFrame } from 'remotion';
+import { useCurrentFrame } from 'remotion';
 
 export const CleanBackground: React.FC = () => {
   const frame = useCurrentFrame();

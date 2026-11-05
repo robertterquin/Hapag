@@ -1,5 +1,5 @@
 import React from 'react';
-import { Img, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
+import { Img, spring, staticFile, useCurrentFrame, useVideoConfig } from 'remotion';
 import { ChefKalabawSVG } from '../components/ChefKalabawSVG';
 
 export const Scene5HumanOutro: React.FC = () => {
