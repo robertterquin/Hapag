@@ -1,5 +1,4 @@
-import { useState, type ReactNode } from 'react'
-import { mealTimeLabel } from '../lib/mealTime.ts'
+import type { ReactNode } from 'react'
 import { Icon } from '@iconify/react'
 import { DishFanDeck } from '../components/DishFanDeck.tsx'
 import type { FanDeckDish } from '../components/DishFanDeck.tsx'
@@ -52,12 +51,10 @@ function StepCopy({ n, title, children }: { n: number; title: string; children: 
 export function HomePage({ onStart, onSurprise }: HomePageProps) {
   const language = useDisplayLanguage()
   const label = (name: string) => labelForName(name, language)
-  const [meal] = useState(() => mealTimeLabel(new Date()))
 
   return (
     <div className="page-shell page-shell-home">
       <section className="home-hero" aria-labelledby="home-heading">
-        <p className="home-meal-chip">{meal.time} · <span>{meal.meal}</span></p>
         <h1 id="home-heading">
           Ano'ng ulam? <span className="home-hero-line">Cook from your <em>kusina</em>.</span>
         </h1>

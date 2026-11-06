@@ -8,7 +8,6 @@ test.beforeEach(async ({ page }) => {
 
 test('Surprise me starts a search from a dish', async ({ page }) => {
   await page.goto('/')
-  await expect(page.locator('.home-meal-chip')).toContainText(/\d{1,2}:\d{2} [AP]M · (Almusal|Tanghalian|Merienda|Hapunan|Gabi) na/)
   await page.getByRole('button', { name: /Surprise me/ }).first().click()
   await expect(page).toHaveURL(/\/(ulam|results)$/)
   await expect(page.getByRole('list', { name: 'Recognized ingredients' }).getByRole('listitem').first()).toBeVisible()
