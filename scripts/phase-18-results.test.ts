@@ -29,7 +29,7 @@ test('photos are matched by exact dish name only', () => {
   assert.equal(getDishPhoto({ id: 'sinigang-na-baboy', title: 'Anything' }), dishPhotos['sinigang-na-baboy'])
   assert.equal(getDishPhoto({ title: 'Adobong Manok sa Gata' }), dishPhotos['adobong-manok-sa-gata'])
   assert.equal(getDishPhoto({ title: 'Sarciadong Tilapia' }), undefined)
-  assert.equal(getDishPhoto({ title: 'Pancit Bihon' }), undefined)
+  assert.equal(getDishPhoto({ title: 'Pancit Luglug' }), undefined)
 })
 
 test('sample recipes no longer use unrelated stock photos', async () => {
