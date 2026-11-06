@@ -1,5 +1,13 @@
 project_id = "hapag"
 
+# Local stack for the signed-in browser tests (`npx supabase start`). Hosted settings live in the dashboard.
+[auth]
+site_url = "http://localhost:5180"
+additional_redirect_urls = ["http://localhost:5180/auth"]
+
+[auth.email]
+enable_confirmations = false
+
 [functions.generate-recipes]
 verify_jwt = true
 

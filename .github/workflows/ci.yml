@@ -30,3 +30,30 @@ jobs:
           name: playwright-report
           path: playwright-report
           retention-days: 7
+
+  signed-in:
+    # Real sign-up, saving, cooking history, staples, preferences, password reset and account
+    # deletion against a throwaway local Supabase built from supabase/migrations.
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx supabase start -x studio,postgres-meta,imgproxy,vector,logflare,realtime,storage-api,supavisor
+      # Edge functions don't start with the stack here, so serve them for the delete-account test.
+      - run: |
+          npx supabase functions serve > functions.log 2>&1 &
+          for i in $(seq 1 40); do curl -sf -X OPTIONS http://127.0.0.1:54321/functions/v1/delete-account && exit 0; sleep 3; done
+          cat functions.log; exit 1
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e:signed-in
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report-signed-in
+          path: playwright-report
+          retention-days: 7

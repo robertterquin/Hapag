@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "test": "node --experimental-strip-types --test 'scripts/*.test.*'",
     "test:e2e": "playwright test",
+    "test:e2e:signed-in": "playwright test -c playwright.signed-in.config.ts",
     "icons": "node scripts/build-icons.mjs",
     "preview": "vite preview"
   },
