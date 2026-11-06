@@ -1,12 +1,18 @@
 import { useEffect, useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 import type { NormalizedIngredient } from '../types/domain.ts'
+import type { DishIdea } from '../lib/catalogIdeas.ts'
 import { getMascotLoadingBanter } from '../lib/mascotBanter.ts'
+import { kusinaProgress } from '../lib/kusinaProgress.ts'
 import { ChefKalabaw } from './ChefKalabaw.tsx'
+import { DishShortlist } from './DishShortlist.tsx'
+import { KusinaSteps } from './KusinaSteps.tsx'
 
 interface CookingLoadingStateProps {
   ingredients?: NormalizedIngredient[]
   rawInput?: string
+  // Catalog matches found before the AI call; shown as the shortlist.
+  ideas?: DishIdea[]
 }
 
 function getStirFeedback(count: number): { text: string; sub: string } {
@@ -18,9 +24,16 @@ function getStirFeedback(count: number): { text: string; sub: string } {
   return { text: `${count}x stirred! Master Chef level unlocked!`, sub: 'Your meal is almost ready!' }
 }
 
-export function CookingLoadingState({ ingredients = [], rawInput = '' }: CookingLoadingStateProps) {
+export function CookingLoadingState({ ingredients = [], rawInput = '', ideas = [] }: CookingLoadingStateProps) {
   const [banterIndex, setBanterIndex] = useState(0)
   const [stirCount, setStirCount] = useState(0)
+  const [startedAt] = useState(() => Date.now())
+  const [elapsedMs, setElapsedMs] = useState(0)
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setElapsedMs(Date.now() - startedAt), 250)
+    return () => window.clearInterval(timer)
+  }, [startedAt])
 
   const banters = useMemo(() => {
     return getMascotLoadingBanter(ingredients, rawInput)
@@ -43,63 +56,48 @@ export function CookingLoadingState({ ingredients = [], rawInput = '' }: Cooking
 
   const activeBanter = banters[banterIndex] || banters[0]
   const stirFeedback = getStirFeedback(stirCount)
+  // His pose follows the steps: reading your list, pleased with the matches, then stirring while the AI writes.
+  const { active } = kusinaProgress(elapsedMs)
+  const mood = active === 0 ? 'idle' : active === 1 ? 'excited' : 'stir'
 
   return (
-    <section className="cooking-loading-mascot-card" aria-live="polite">
-      <div className="mascot-avatar-area">
-        <ChefKalabaw size={150} onStir={handleStir} stirCount={stirCount} />
-
-        <motion.button
-          type="button"
-          className={`mascot-stir-pill ${stirCount > 0 ? 'stir-active' : ''}`}
-          onClick={handleStir}
-          whileTap={{ scale: 0.94 }}
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-          </svg>
-          <span>{stirFeedback.text}</span>
-        </motion.button>
-      </div>
-
-      <div className="mascot-dialogue-area">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={banterIndex}
-            className="mascot-speech-bubble"
-            initial={{ opacity: 0, y: 8, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -6, scale: 0.98 }}
-            transition={{ duration: 0.22, ease: 'easeOut' }}
+    <section className="cooking-loading-mascot-card" aria-label="Finding dishes">
+      <div className="loading-host">
+        <div className="loading-chef">
+          {/* Tapping Chef Kalabaw stirs too; the pill below is the accessible control for the same action. */}
+          <div className="chef-kalabaw-tap" onClick={handleStir} aria-hidden="true">
+            <ChefKalabaw mood={mood} size={140} stirKey={stirCount} />
+          </div>
+          <motion.button
+            type="button"
+            className={`mascot-stir-pill ${stirCount > 0 ? 'stir-active' : ''}`}
+            onClick={handleStir}
+            whileTap={{ scale: 0.94 }}
           >
-            <div className="mascot-speech-header">
-              <span className="mascot-chef-name">Chef Kalabaw</span>
-              <span className="mascot-speech-tag">{activeBanter.tag}</span>
-            </div>
-            <strong className="mascot-speech-headline">{activeBanter.headline}</strong>
-            <p className="mascot-speech-subline">{activeBanter.subline}</p>
-            {activeBanter.tip && (
-              <div className="mascot-speech-tip">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="16" x2="12" y2="12" />
-                  <line x1="12" y1="8" x2="12.01" y2="8" />
-                </svg>
-                <span>{activeBanter.tip}</span>
-              </div>
-            )}
-          </motion.div>
-        </AnimatePresence>
-
-        <div className="mascot-loading-progress-bar" aria-hidden="true">
-          <motion.div
-            className="mascot-progress-indicator"
-            animate={{ x: ['-100%', '100%'] }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
-          />
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+            </svg>
+            <span>{stirFeedback.text}</span>
+          </motion.button>
         </div>
+        {/* Chef's running commentary; decorative, so screen readers hear the steps instead. */}
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={banterIndex}
+            className="loading-bubble"
+            aria-hidden="true"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+          >
+            <b>Chef Kalabaw</b>
+            {activeBanter.headline}
+          </motion.p>
+        </AnimatePresence>
       </div>
+      <KusinaSteps elapsedMs={elapsedMs} />
+      <DishShortlist ideas={ideas} />
     </section>
   )
 }
-

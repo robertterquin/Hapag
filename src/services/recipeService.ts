@@ -4,6 +4,8 @@ import { normalizeIngredientInput } from '../lib/ingredientParser.ts'
 import { adaptRecipeListPayload, adaptRecipePayload } from '../schemas/recipeAdapter.ts'
 import { loadRecentRecipes, saveRecentRecipes } from '../lib/recipeSessionCache.ts'
 import type { GenerationRequest, IngredientSource, RecipeService } from '../types/domain.ts'
+import { AI_TIMEOUT_MS } from '../lib/aiTimeout.ts'
+
 
 const wait = (milliseconds: number) => new Promise((resolve) => setTimeout(resolve, milliseconds))
 
@@ -55,7 +57,7 @@ export class RecipeGenerationError extends Error {
 
 async function generateWithOpenAI(request: GenerationRequest, accessToken?: string) {
   const controller = new AbortController()
-  const timeoutId = setTimeout(() => controller.abort(), 25_000)
+  const timeoutId = setTimeout(() => controller.abort(), AI_TIMEOUT_MS)
   let response: Response
   try {
     response = await fetch(`${appConfig.supabaseFunctionUrl}/generate-recipes`, {

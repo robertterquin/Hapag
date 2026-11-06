@@ -64,3 +64,27 @@ test('the old /pantry link opens Ulam AI', async ({ page }) => {
   await page.goto('/pantry')
   await expect(page).toHaveURL(/\/ulam$/)
 })
+
+test('while the AI works, the loading screen shows real steps and the catalog shortlist', async ({ page }) => {
+  // Needs the real AI endpoint to intercept; without Supabase settings the sample data answers instantly.
+  const fs = await import('node:fs')
+  const aiConfigured = process.env.VITE_SUPABASE_URL ?? (fs.existsSync('.env.local') ? 'from .env.local' : '')
+  test.skip(!aiConfigured, 'No AI endpoint configured to slow down')
+  await page.route('**/generate-recipes', async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 4000))
+    await route.fulfill({ json: { recipes: recipeFixtures } })
+  })
+  await page.goto('/ulam')
+  const input = page.getByPlaceholder('e.g. 1/2 kg manok, patatas, bawang')
+  await input.fill('manok, toyo, suka, bawang')
+  await input.press('Escape')
+  await page.getByRole('button', { name: 'Add', exact: true }).click()
+  await page.getByRole('button', { name: "Let's cook" }).click()
+
+  await expect(page.getByText(/^3 of 4 · Writing steps and prices/)).toBeVisible()
+  await expect(page.getByText('This can take up to 25 seconds.')).toBeVisible()
+  const shortlist = page.locator('.dish-shortlist-card')
+  await expect(shortlist.first()).toBeVisible()
+  await expect(page.locator('.dish-shortlist-card', { hasText: 'Chicken Adobo' })).toContainText('You have all 4')
+  await expect(page.getByRole('heading', { name: 'Dishes you can cook' })).toBeVisible({ timeout: 10_000 })
+})

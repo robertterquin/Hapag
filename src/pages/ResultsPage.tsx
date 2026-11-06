@@ -4,7 +4,6 @@ import { labelForIngredient, labelForName } from '../lib/ingredientLabels.ts'
 import { useDisplayLanguage } from '../app/displayLanguage.ts'
 import { DishIdeaCard } from '../components/DishIdeaCard.tsx'
 import { RecipeCard } from '../components/RecipeCard.tsx'
-import { ResultsSkeleton } from '../components/Skeletons.tsx'
 import { StatePanel } from '../components/StatePanel.tsx'
 import { suggestUnlockIngredient } from '../lib/catalogIdeas.ts'
 import type { DishIdea } from '../lib/catalogIdeas.ts'
@@ -44,8 +43,7 @@ export function ResultsPage({ session, status, suggestions, ideas, fallback, err
     return (
       <div className="page-shell">
         <h1>Finding dishes…</h1>
-        <CookingLoadingState ingredients={session.ingredients} rawInput={session.rawInput} />
-        <ResultsSkeleton />
+        <CookingLoadingState ingredients={session.ingredients} rawInput={session.rawInput} ideas={ideas} />
       </div>
     )
   }

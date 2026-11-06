@@ -41,10 +41,15 @@ test('controls meet the 44px touch target and links show a focus ring', async ()
   assert.match(tokens, /a:focus-visible, \[tabindex\]:focus-visible/)
 })
 
-test('reduced motion also stops the mascot looping pulses', async () => {
+test('Chef Kalabaw only loops (steam, blinking) for visitors who allow motion', async () => {
   const mascot = await read('src/components/ChefKalabaw.tsx')
-  assert.match(mascot, /const reduceMotion = useReducedMotion\(\)/)
-  assert.equal(mascot.match(/animate=\{reduceMotion \? undefined :/g)?.length, 4)
+  const css = await read('src/App.css')
+  assert.doesNotMatch(mascot, /repeat:\s*Infinity/)
+  const allowed = css.match(/@media \(prefers-reduced-motion: no-preference\) \{\n([^@]*?)\n\}/)?.[1] ?? ''
+  assert.match(allowed, /\.kalabaw-steam path \{ animation:/)
+  assert.match(allowed, /\.kalabaw-eyes \{[^}]*animation:/)
+  const outside = css.replace(allowed, '')
+  assert.doesNotMatch(outside, /\.kalabaw-(steam|eyes)[^{]*\{[^}]*animation:/)
 })
 
 test('secondary pages and libraries load as separate chunks', async () => {
