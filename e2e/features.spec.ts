@@ -80,6 +80,7 @@ test('while the AI works, the loading screen shows real steps and the catalog sh
   await page.getByRole('button', { name: 'Add', exact: true }).click()
   await page.getByRole('button', { name: "Let's cook" }).click()
 
+  await expect(page.getByRole('heading', { level: 1, name: 'Finding dishes…' })).toBeVisible()
   await expect(page.getByText(/^3 of 4 · Writing steps and prices/)).toBeVisible()
   await expect(page.getByText('This can take up to 25 seconds.')).toBeVisible()
   const shortlist = page.locator('.dish-shortlist-card')

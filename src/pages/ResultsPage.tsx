@@ -42,7 +42,6 @@ export function ResultsPage({ session, status, suggestions, ideas, fallback, err
   if (status === 'loading') {
     return (
       <div className="page-shell">
-        <h1>Finding dishes…</h1>
         <CookingLoadingState ingredients={session.ingredients} rawInput={session.rawInput} ideas={ideas} />
       </div>
     )

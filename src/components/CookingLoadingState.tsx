@@ -80,21 +80,23 @@ export function CookingLoadingState({ ingredients = [], rawInput = '', ideas = [
             <span>{stirFeedback.text}</span>
           </motion.button>
         </div>
-        {/* Chef's running commentary; decorative, so screen readers hear the steps instead. */}
-        <AnimatePresence mode="wait">
-          <motion.p
-            key={banterIndex}
-            className="loading-bubble"
-            aria-hidden="true"
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -4 }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
-          >
-            <b>Chef Kalabaw</b>
-            {activeBanter.headline}
-          </motion.p>
-        </AnimatePresence>
+        {/* Chef Kalabaw announces the page title; his running commentary under it is decorative,
+            so screen readers hear the steps instead. */}
+        <div className="loading-bubble">
+          <h1>Finding dishes…</h1>
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={banterIndex}
+              aria-hidden="true"
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+            >
+              <b>Chef Kalabaw:</b> {activeBanter.headline}
+            </motion.p>
+          </AnimatePresence>
+        </div>
       </div>
       <KusinaSteps elapsedMs={elapsedMs} />
       <DishShortlist ideas={ideas} />
